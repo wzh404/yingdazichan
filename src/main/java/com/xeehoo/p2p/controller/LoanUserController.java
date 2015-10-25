@@ -278,7 +278,7 @@ public class LoanUserController {
     @RequestMapping(value = "/ajax/username", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> checkUserName(@RequestParam(value = "name", required = true) String name) {
-        boolean exist = userService.checkUser("NAME", name);
+        boolean exist = userService.checkUser("name", name);
 
         if (exist) {
             return CommonUtil.generateJsonMap("OK", messageSource.getMessage("register.name.exists", null, "", null));
@@ -297,7 +297,7 @@ public class LoanUserController {
     @ResponseBody
     public Map checkUserMobile(@RequestParam(value = "mobile", required = true) String mobile,
                                @RequestParam(value = "send", required = false) Boolean sendAuthCode) {
-        boolean exist = userService.checkUser("MOBILE", mobile);
+        boolean exist = userService.checkUser("mobile", mobile);
 
         Map map ;
         if (exist) {
