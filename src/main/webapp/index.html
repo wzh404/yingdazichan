@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>UploadiFive Test</title>
+    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery.uploadify.min.js" type="text/javascript"></script>
+    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
+    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
+    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/browser.min.js"></script>
+
+    <link rel="stylesheet" type="text/css"
+          href="http://192.168.10.10/NeowaveHealthCommunitySource/css/ui/uploadify.css">
+
+    <style type="text/css">
+        body {
+            font: 13px Arial, Helvetica, Sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Uploadify Demo</h1>
+
+<form>
+    <div id="queue"></div>
+    <input id="file_upload" name="file_upload" type="file" multiple="true">
+</form>
+<div id="container"></div>
+<script type="text/javascript">
+    $(function () {
+        $('#file_upload').uploadify({
+            'formData': {
+                'timestamp': '1234567',
+                'token': 'dadafdfdsafasdfasdfadsfasf'
+            },
+            'fileObjName': 'file',
+            'buttonImage': 'http://renben.neowave.com.cn:8080/xeehoo/images/addImg.png',
+            'height': 90,
+            'swf': '/flash/uploadify.swf?' + Math.random(),
+            'uploader': '/ajax/upload?' + Math.random()
+        });
+    });
+</script>
+
+<script type="text/babel">
+      var ValidateCode = React.createClass({
+          render: function() {
+              var show = this.showValidateCode();
+              //console.log(this.props.element);
+              if (show){
+                  return(
+                   <p>
+                        <img id="validate_code" src="/vdcode" onClick={this.refreshValidateCode}/>
+                   </p>
+                  );
+              }
+              else{
+                  $("#" + this.props.element).attr('style', 'display:none');
+                  return <p></p>;
+              }
+          },
+
+          refreshValidateCode: function(event){
+            $('#validate_code').attr('src', '/vdcode?' + Math.random());
+          },
+
+          showValidateCode: function(){
+              var result = false;
+              $.ajax({
+                  url: "/ajax/vdshow",
+                  data: {type: "login"},
+                  type: "get",
+                  dataType: "json",
+                  async: false,
+                  success: function (data) {
+                      console.log(data.showValidateCode);
+                      if (data.showValidateCode) {
+                          result = true;
+                      }
+                  },
+                  error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus + ": " + XMLHttpRequest.status);
+                  },
+              });
+
+              return result;
+          }
+      });
+      //var start = new Date().getTime();
+      //setInterval(function() {
+        var element_id = document.getElementById('container');
+        ReactDOM.render(
+          <ValidateCode element="container"/>,
+          element_id
+        );
+      //}, 50);
+
+</script>
+</body>
+</html>

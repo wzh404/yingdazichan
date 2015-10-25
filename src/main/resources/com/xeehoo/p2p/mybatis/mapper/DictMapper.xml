@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.DictMapper">
+    <!-- 数据字典1 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanDict1" id="dict1">
+        <id property="Dict1ID" column="dict_1_id"/>
+        <id property="DictID" column="dict_id"/>
+        <result property="Dict1Name" column="dict_1_name"/>
+        <result property="Dict1Code" column="dict_1_code"/>
+    </resultMap>
+
+    <!-- 根据字典代码查询字典数据  -->
+    <select id="getAllDict1" resultMap="dict1">
+        SELECT d1.*
+          FROM t_loan_dict d, t_loan_dict_1 d1
+         WHERE d.dict_id = d1.dict_id
+           AND d.dict_code = #{dictCode}
+    </select>
+</mapper>

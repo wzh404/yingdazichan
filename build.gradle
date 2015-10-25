@@ -1,0 +1,68 @@
+buildscript {
+    ext {
+        springBootVersion = '1.2.6.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+        classpath("io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot' 
+apply plugin: 'io.spring.dependency-management'
+
+//configurations {
+//    compile.exclude group:'ch.qos.logback'
+//}
+
+jar {
+    baseName = 'yingdazichan'
+    version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+//    compile ('org.springframework.boot:spring-boot-starter'){
+//        exclude module: 'org.springframework.boot:spring-boot-starter-logging'
+//    }
+
+    compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-redis")
+    compile("org.springframework.boot:spring-boot-starter-web")
+
+//    compile("org.springframework.boot:spring-boot-starter-log4j")
+    compile("org.apache.tomcat.embed:tomcat-embed-jasper")
+    compile("jstl:jstl:1.2")
+    compile("org.mybatis:mybatis:3.3.0")
+    compile("org.mybatis:mybatis-spring:1.2.2")
+    compile("commons-fileupload:commons-fileupload:1.3.1")
+    compile fileTree(dir: 'F:\\yingdazichan\\src\\main\\webapp\\WEB-INF\\lib', include: '*.jar')
+
+//    compile('commons-lang:commons-lang:2.6')
+//    runtime("mysql:mysql-connector-java")
+    runtime("org.postgresql:postgresql:9.4-1201-jdbc41")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+
+eclipse {
+    classpath {
+         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

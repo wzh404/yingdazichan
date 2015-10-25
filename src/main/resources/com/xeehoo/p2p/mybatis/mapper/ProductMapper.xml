@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.ProductMapper">
+    <!-- 产品信息 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanProduct" id="product">
+        <id property="productID" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productType" column="product_type"/>
+        <result property="loanRate" column="loan_rate"/>
+        <result property="investDay" column="invest_day"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="residualAmount" column="residual_amount"/>
+        <result property="incomeMode" column="income_mode"/>
+        <result property="minAmount" column="min_amount"/>
+    </resultMap>
+
+    <sql id="product_pager_where">
+        <where>
+            <if test="type != '0000'">
+                product_type = #{type}
+            </if>
+            <if test="minRate > 5">
+                AND loan_rate &gt;= #{minRate}
+                AND loan_rate &lt; #{maxRate}
+            </if>
+            <if test="stat != 9">
+                AND product_status = #{stat}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 分页查询产品信息  -->
+    <select id="getProductPager" resultMap="product" parameterType="java.util.Map">
+        SELECT * FROM t_loan_product
+        <include refid="product_pager_where"/>
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 产品记录数  -->
+    <select id="getTotalProduct" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(*) FROM t_loan_product
+        <include refid="product_pager_where"/>
+    </select>
+
+</mapper>

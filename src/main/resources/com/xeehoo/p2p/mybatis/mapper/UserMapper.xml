@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.UserMapper">
+
+    <!-- 用户信息 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanUser" id="user">
+        <id property="userId" column="user_id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="loginPwd" column="login_pwd"/>
+        <result property="payPwd" column="pay_pwd"/>
+        <result property="userStatus" column="user_status"/>
+        <result property="registerIP" column="register_ip"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="idCard" column="id_card"/>
+    </resultMap>
+
+    <!-- 用户资产信息-->
+    <resultMap type="com.xeehoo.p2p.po.LoanUserFund" id="userFund">
+        <id property="userId" column="user_id"/>
+        <result property="totalAssets" column="total_assets"/>
+        <result property="notDueAmount" column="not_due_amount"/>
+        <result property="awaitEarnings" column="await_earnings"/>
+        <result property="totalEarnings" column="total_earnings"/>
+        <result property="dynamicEarnings" column="dynamic_earnings"/>
+    </resultMap>
+
+    <insert id="saveUser" parameterType="com.xeehoo.p2p.po.LoanUser">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="userId" >
+            SELECT currval('t_loan_userinfo_user_id_seq') AS userId
+        </selectKey>
+
+        INSERT INTO t_loan_userinfo (
+          login_name,
+          login_pwd,
+          mobile,
+          register_time,
+          register_ip,
+          user_status
+        )
+        VALUES (
+          #{loginName},
+          #{loginPwd},
+          #{mobile},
+          #{registerTime},
+          #{registerIP},
+          #{userStatus}
+        )
+    </insert>
+
+    <!-- 根据用户ID获取用户信息 -->
+    <select id="getUser" resultMap="user" parameterType="int">
+        SELECT * FROM t_loan_userinfo WHERE user_id = #{userId}
+    </select>
+
+    <!-- 获取用户登录信息 -->
+    <select id="getUserLoginInfo" resultMap="user">
+        SELECT user_id,
+               login_pwd,
+               id_card,
+               user_status,
+               register_time,
+               register_ip
+         FROM t_loan_userinfo
+        <if test="loginType == 'name'">
+            WHERE login_name = #{loginName}
+        </if>
+        <if test="loginType == 'mobile'">
+            WHERE mobile = #{loginName}
+        </if>
+    </select>
+
+    <!-- 修改预留安全信息，防止钓鱼网站 -->
+    <update id="updateUserSecurityMessage">
+        UPDATE t_loan_userinfo
+           SET security_message = #{securityMessage}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 身份认证 -->
+    <update id="updateUserIdCard" parameterType="java.util.Map">
+        UPDATE t_loan_userinfo
+           SET real_name = #{realName},
+               id_type = '00',
+               id_card = #{idCard},
+               birth = #{birth, jdbcType=DATE},
+               sex = #{sex}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 修改用户状态 -->
+    <update id="updateUserStatus">
+        UPDATE t_loan_userinfo
+           SET user_status = #{userStatus}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 修改用户邮寄地址 -->
+    <update id="updateUserAddress">
+        UPDATE t_loan_userinfo
+           SET city_code = #{city_code},
+               zipcode = #{zipcode}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 修改用户登录密码 -->
+    <update id="updateUserLoginPwd">
+        UPDATE t_loan_userinfo
+           SET login_pwd = #{loginPwd}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 修改用户支付密码 -->
+    <update id="updateUserPayPwd">
+        UPDATE t_loan_userinfo
+           SET pay_pwd = #{payPwd}
+         WHERE user_id = #{userId}
+    </update>
+
+    <!-- 获取用户资产信息 -->
+    <select id="getUserFund" resultMap="userFund" parameterType="int">
+        SELECT * FROM t_loan_user_fund WHERE user_id = #{userId}
+    </select>
+</mapper>
