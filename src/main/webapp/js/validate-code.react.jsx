@@ -43,7 +43,7 @@ var ValidateCode = React.createClass({
             }
         });
 
-        return result;kkkkk
+        return result;
     }
 });
 
