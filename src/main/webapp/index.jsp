@@ -28,7 +28,7 @@
     <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
     <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
     <%--<script src="http://renben.neowave.com.cn:8080/xeehoo/js/browser.min.js"></script>--%>
-    <script src="/js/validate-code.react.js?1234"></script>
+    <script src="/js/validate-code.react.js?1235ed"></script>
 </head>
 <body>
 
@@ -94,14 +94,7 @@
         </div>
 
         <div id="full-screen-slider">
-	        <ul id="slides">
-                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150824131046.png') no-repeat center top"><a href="/zscp/productdetail_xs.aspx" target="_blank" ></a></li>
-                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917113953.jpg') no-repeat center top"><a href="/system/20150831_notice.aspx" target="_blank" ></a></li>
-                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917114013.jpg') no-repeat center top"><a href="/system/20150818_notice.aspx" target="_blank" ></a></li>
-                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150602135536.png') no-repeat center top"><a href="system/20150526_notice.aspx" target="_blank" ></a></li>
-                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150731145738.png') no-repeat center top"><a href="system/20150129_notice.aspx" target="_blank" ></a></li>
 
-            </ul>
         </div>
     </div>
 
@@ -208,7 +201,7 @@ function homeclick() {
 }
 
 react_validate_code_render('validateCode');
-
+react_slides_render('full-screen-slider');
 </script>
 
 

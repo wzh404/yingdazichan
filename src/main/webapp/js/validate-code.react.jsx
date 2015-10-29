@@ -32,7 +32,7 @@ var ValidateCode = React.createClass({
             dataType: "json",
             async: false,
             success: function (data) {
-                console.log(data.showValidateCode);
+                //console.log(data.showValidateCode);
                 if (data.showValidateCode) {
                     result = true;
                 }
@@ -53,4 +53,54 @@ function react_validate_code_render(elementName){
         element_id
     );
 }
+
+var Slide = React.createClass({
+    render: function () {
+        var imgUrl = 'url(' + this.props.img + ') no-repeat center top';
+        var liStyle = {
+            background: imgUrl
+        };
+
+        return(
+            <li style={liStyle}><a href={this.props.url} target="_blank" ></a></li>);
+    }
+});
+
+var Slides = React.createClass({
+    render: function () {
+        return(
+            <ul id="slides">
+                {this.props.slides.map(function(slider, id) {
+                    return <Slide url={slider.sliderUrl} img={slider.sliderImg} key={id}/>;
+                })}
+            </ul>);
+    }
+});
+
+function react_slides_render(elementName){
+    var slides
+    $.ajax({
+        url: "/cache/slide",
+        data: {version: "0.1.1"},
+        type: "get",
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            slides = data;
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert(textStatus + ": " + XMLHttpRequest.status);
+        }
+    });
+
+    //for (var i in slides){
+    //    console.log(slides[i].sliderImg);
+    //}
+
+    ReactDOM.render(
+        <Slides slides={slides}/>,
+        document.getElementById(elementName)
+    );
+}
+
 

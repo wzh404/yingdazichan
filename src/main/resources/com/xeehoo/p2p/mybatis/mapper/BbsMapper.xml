@@ -15,12 +15,12 @@
 
     <!-- 分页查询系统公告  -->
     <select id="getBbsPager" resultMap="bbs" parameterType="java.util.Map">
-        SELECT * FROM t_loan_adm_bbs
+        SELECT * FROM t_loan_admin_bbs
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <!-- 系统公告记录数  -->
     <select id="getTotalBbs" resultType="java.lang.Integer">
-        SELECT count(*) FROM t_loan_adm_bbs
+        SELECT count(*) FROM t_loan_admin_bbs
     </select>
 </mapper>
