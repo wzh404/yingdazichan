@@ -199,8 +199,9 @@
 function homeclick() {
     window.location.href = "/fund";
 }
-
+<c:if test="${sessionScope.user == null}">
 react_validate_code_render('validateCode');
+</c:if>
 react_slides_render('full-screen-slider');
 </script>
 
