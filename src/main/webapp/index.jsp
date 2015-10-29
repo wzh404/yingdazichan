@@ -33,7 +33,8 @@
 <body>
 
 
-<jsp:include page="top.jsp"/>
+<%--<jsp:include page="top.jsp"/>--%>
+<%@ include file="top.jsp" %>
 
     <div class="banner">
         <div id="div_logined" class="login-wrap">
@@ -69,14 +70,9 @@
                         <span class="ui-icon-checkcodeT"></span>
                     </label>
                     <input name="txtYZCode" type="text" maxlength="8" id="txtYZCode" class="ui-input-checkcode" size="10" placeholder="验证码" />
-                    <div id="validateCode"style="float:right">
-                        <%--<img id="imgCode" name="" src="/vdcode" width="100" height="37" alt="验证码"--%>
-                             <%--title="点击图片刷新验证码" onclick="UpdateCheckCode();" />--%>
-                    </div>
+                    <div id="validateCode" style="float:right"></div>
                 </div>
-
-
-                    <p class="ui-form-other">
+                <p class="ui-form-other">
                     <a href="hyzc/yanzheng_forget.aspx" class="forgot">忘记登录密码？</a>
                     <span class="RememberPwd"><input id="chkPwd" type="checkbox" name="chkPwd" /><label for="chkPwd">记住密码</label></span>
                 </p>
@@ -99,17 +95,12 @@
 
         <div id="full-screen-slider">
 	        <ul id="slides">
-                
-                        <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150824131046.png') no-repeat center top"><a href="/zscp/productdetail_xs.aspx" target="_blank" ></a></li>
-                    
-                        <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917113953.jpg') no-repeat center top"><a href="/system/20150831_notice.aspx" target="_blank" ></a></li>
-                    
-                        <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917114013.jpg') no-repeat center top"><a href="/system/20150818_notice.aspx" target="_blank" ></a></li>
-                    
-                        <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150602135536.png') no-repeat center top"><a href="system/20150526_notice.aspx" target="_blank" ></a></li>
-                    
-                        <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150731145738.png') no-repeat center top"><a href="system/20150129_notice.aspx" target="_blank" ></a></li>
-                    
+                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150824131046.png') no-repeat center top"><a href="/zscp/productdetail_xs.aspx" target="_blank" ></a></li>
+                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917113953.jpg') no-repeat center top"><a href="/system/20150831_notice.aspx" target="_blank" ></a></li>
+                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150917114013.jpg') no-repeat center top"><a href="/system/20150818_notice.aspx" target="_blank" ></a></li>
+                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150602135536.png') no-repeat center top"><a href="system/20150526_notice.aspx" target="_blank" ></a></li>
+                <li style="background: url('http://renben.neowave.com.cn:8080/xeehoo/slides/20150731145738.png') no-repeat center top"><a href="system/20150129_notice.aspx" target="_blank" ></a></li>
+
             </ul>
         </div>
     </div>
@@ -207,8 +198,9 @@
         </ul>
         </div>
     </div>
-    
-<jsp:include page="footer.jsp"/>
+
+<%--<jsp:include page="footer.jsp"/>--%>
+<%@ include file="footer.jsp" %>
 
 <script type="text/javascript">
 function homeclick() {

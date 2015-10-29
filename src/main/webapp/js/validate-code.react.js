@@ -17,7 +17,7 @@ var ValidateCode = React.createClass({
                 React.createElement("img", { id: "validate_code", src: "/vdcode", onClick: this.refreshValidateCode })
             );
         } else {
-            $("#" + this.props.element).attr('style', 'display:none');
+            $("#" + this.props.element).parent().attr('style', 'display:none');
             return React.createElement("p", null);
         }
     },

@@ -1,5 +1,6 @@
 package com.xeehoo.p2p;
 
+import com.xeehoo.p2p.filter.CacheFilter;
 import com.xeehoo.p2p.interceptor.LoginInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -8,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
 import javax.sql.DataSource;
 
@@ -58,6 +61,22 @@ public class YdzcApplication extends WebMvcConfigurerAdapter {
 //        sessionFactory.setMapperLocations(resolver
 //                .getResources("classpath:com/xeehoo/p2p/mybatis/mapper/*.xml"));
         return sessionFactory.getObject();
+    }
+
+    @Bean
+    public FilterRegistrationBean someFilterRegistration() {
+
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(cacheFilter());
+//        registration.addUrlPatterns("/url/*");
+//        registration.addInitParameter("paramName", "paramValue");
+//        registration.setName("someFilter");
+        return registration;
+    }
+
+    @Bean(name = "cacheFilter")
+    public Filter cacheFilter() {
+        return new CacheFilter();
     }
 
 //    @Bean

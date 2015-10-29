@@ -5,9 +5,8 @@
 var ValidateCode = React.createClass({
     render: function() {
         var show = this.showValidateCode();
-        //console.log(this.props.element);
         if (show){
-            $("#" + this.props.element).attr('style', 'display:block');
+            $("#" + this.props.element).parent().attr('style', 'display:block');
             return(
                 <p>
                 <img id="validate_code" src="/vdcode" width="100" height="37" onClick={this.refreshValidateCode}/>
@@ -15,7 +14,7 @@ var ValidateCode = React.createClass({
             );
         }
         else{
-            $("#" + this.props.element).attr('style', 'display:none');
+            $("#" + this.props.element).parent().attr('style', 'display:none');
             return <p></p>;
         }
     },
