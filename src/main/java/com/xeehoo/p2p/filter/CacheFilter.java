@@ -23,7 +23,7 @@ public class CacheFilter implements Filter, ApplicationContextAware {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        logger.info(((HttpServletRequest)request).getQueryString() + "--------------filter--------------" + ((HttpServletRequest)request).getRequestURL());
+        logger.info("--------------filter--------------" + ((HttpServletRequest)request).getRequestURL());
         chain.doFilter(request, response);
     }
 
