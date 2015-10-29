@@ -28,8 +28,10 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
     public ResponseWrapper(HttpServletResponse response) {
         super(response);
 
-        // 这个是我们保存返回结果的地方
+        // jsp页面渲染
         bufferedWriter = new CharArrayWriter();
+
+        // json页面渲染
         byteArrayServletOutputStream = new ByteArrayServletOutputStream();
 
         // 让所有结果通过这个PrintWriter写入到bufferedWriter
@@ -52,10 +54,10 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
      * @return
      */
     public String getResult() {
-        if (bufferedWriter.size() == 0){
+        if (bufferedWriter.size() == 0){ //json
             return new String(byteArrayServletOutputStream.toByteArray());
         }
-        else{
+        else{ //jsp
             return bufferedWriter.toString();
         }
     }

@@ -29,15 +29,13 @@ public class CacheFilter implements Filter{
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         String uri = ((HttpServletRequest) request).getRequestURI();
-        String flush = request.getParameter("flush");
-        logger.info("----filter: " + uri + " - " + flush);
-
         if (uri.startsWith("/cache")) {
             String value = (String)redisTemplate.opsForValue().get(uri);
-            if (value == null || (flush != null && flush.equalsIgnoreCase("true"))) {
+            String flush = request.getParameter("flush");
+            if (value == null || (flush != null && flush.equalsIgnoreCase("true"))) {//刷新缓存
                 ResponseWrapper wrapper = new ResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, wrapper);
                 value = wrapper.getResult();
@@ -47,7 +45,6 @@ public class CacheFilter implements Filter{
                 logger.info("cache hit: " + value);
             }
             response.getWriter().print(value);
-
         } else{
             chain.doFilter(request, response);
         }

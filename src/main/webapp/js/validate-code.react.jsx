@@ -88,8 +88,8 @@ function react_slides_render(elementName){
         success: function (data) {
             slides = data;
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            alert(textStatus + ": " + XMLHttpRequest.status);
+        error: function(xhr, status, err) {
+            alert(status + ": " + xhr.status);
         }
     });
 
