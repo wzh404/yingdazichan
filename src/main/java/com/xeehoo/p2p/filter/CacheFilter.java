@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,10 @@ public class CacheFilter implements Filter{
                 ResponseWrapper wrapper = new ResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, wrapper);
                 value = wrapper.getResult();
-                redisTemplate.opsForValue().set(uri, value);
+                if (!StringUtils.isEmpty(value)){
+                    redisTemplate.opsForValue().set(uri, value);
+                }
+
                 logger.info("cache miss: " + value);
             } else {
                 logger.info("cache hit: " + value);
