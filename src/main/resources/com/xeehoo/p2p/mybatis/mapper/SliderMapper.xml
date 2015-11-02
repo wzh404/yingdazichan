@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xeehoo.p2p.mybatis.mapper.SliderMapper">
-    <!-- Slide -->
+    <!-- Slider -->
     <resultMap type="com.xeehoo.p2p.po.LoanSlider" id="slider">
         <id property="sliderId" column="slider_id"/>
         <result property="sliderName" column="slider_name"/>
@@ -14,7 +14,7 @@
         <result property="staffId" column="staff_id"/>
     </resultMap>
 
-    <!-- 查询Slide  -->
+    <!-- 查询Slider  -->
     <select id="getSliders" resultMap="slider">
         SELECT slider_uri, slider_img FROM t_loan_admin_slider
         LIMIT 5 OFFSET 0
