@@ -1,13 +1,13 @@
 package com.xeehoo.p2p.service;
 
-import com.xeehoo.p2p.po.LoanBbs;
+import com.xeehoo.p2p.po.LoanBulletin;
 
 import java.util.List;
 
 /**
  * Created by wangzunhui on 2015/10/14.
  */
-public interface LoanBbsService {
+public interface LoanBulletinService {
     /**
      * 查询指定页的公告数据
      *
@@ -15,7 +15,7 @@ public interface LoanBbsService {
      * @param pageSize
      * @return
      */
-    public List<LoanBbs> getBbsPager(int page, int pageSize);
+    public List<LoanBulletin> getBbsPager(int page, int pageSize);
 
     /**
      * 获取公告板记录数

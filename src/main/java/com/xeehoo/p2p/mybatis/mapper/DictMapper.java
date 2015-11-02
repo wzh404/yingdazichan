@@ -1,10 +1,8 @@
 package com.xeehoo.p2p.mybatis.mapper;
 
-import com.xeehoo.p2p.po.LoanBbs;
 import com.xeehoo.p2p.po.LoanDict1;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wangzunhui on 2015/10/24.

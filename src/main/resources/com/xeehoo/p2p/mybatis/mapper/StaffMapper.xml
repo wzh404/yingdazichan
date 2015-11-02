@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.StaffMapper">
+    <!-- 系统管理员 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanStaff" id="staff">
+        <id property="staffId" column="staff_id"/>
+        <result property="staffName" column="staff_name"/>
+        <result property="staffPwd" column="staff_pwd"/>
+        <result property="staffRegisterTime" column="staff_register_time"/>
+        <result property="staffStatus" column="staff_status"/>
+    </resultMap>
+
+    <!-- 根据用户名称查询用户信息  -->
+    <select id="getStaffByName" resultMap="staff">
+        SELECT staff_id, staff_pwd, staff_role
+          FROM t_loan_admin_staff
+         WHERE staff_name = #{staff_name}
+           AND staff_status = 1
+    </select>
+</mapper>

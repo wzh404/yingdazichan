@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.PermissionMapper">
+    <!-- 系统管理员 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanPermission" id="perm">
+        <id property="permissionId" column="perm_id"/>
+        <result property="permissionName" column="perm_name"/>
+        <result property="permissionCode" column="perm_code"/>
+        <result property="permissionPid" column="perm_pid"/>
+        <result property="menuCode" column="menu_code"/>
+    </resultMap>
+
+    <!-- 根据用户角色查询权限  -->
+    <select id="getPermissionByRoleCode" resultMap="perm">
+        SELECT p.perm_code,
+               p.perm_name,
+               p.perm_pid,
+               p.menu_code
+          FROM t_loan_admin_role r,
+               t_loan_admin_permission p ,
+               t_loan_admin_role_permission rp
+         WHERE r.role_code = #{staff_role}
+           AND r.role_id = rp.role_id
+           AND rp.perm_id = p.perm_id
+    </select>
+</mapper>

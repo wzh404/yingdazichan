@@ -1,7 +1,7 @@
 package com.xeehoo.p2p.controller;
 
-import com.xeehoo.p2p.po.LoanBbs;
-import com.xeehoo.p2p.service.LoanBbsService;
+import com.xeehoo.p2p.po.LoanBulletin;
+import com.xeehoo.p2p.service.LoanBulletinService;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wangzunhui on 2015/10/14.
  */
 @Controller
-public class LoanBbsController {
-    private final Logger logger = Logger.getLogger(LoanBbsController.class);
+public class LoanBulletinController {
+    private final Logger logger = Logger.getLogger(LoanBulletinController.class);
 
     @Autowired
-    private LoanBbsService  bbsService;
+    private LoanBulletinService bbsService;
 
-    @RequestMapping(value = "/bbs", method = RequestMethod.GET)
+    @RequestMapping(value = "/bulletin", method = RequestMethod.GET)
     public ModelAndView paging(HttpServletRequest request,
                                @RequestParam(value = "page", required = true) Integer page){
         int totalSize = bbsService.getTotalBbs();
-        List<LoanBbs> items = bbsService.getBbsPager(page, PagedListHolder.DEFAULT_PAGE_SIZE);
+        List<LoanBulletin> items = bbsService.getBbsPager(page, PagedListHolder.DEFAULT_PAGE_SIZE);
         logger.info(totalSize + ", bbs size is " + items.size());
         LoanPagedListHolder pagedListHolder = new LoanPagedListHolder();
         pagedListHolder.setSource(items);
@@ -38,7 +37,7 @@ public class LoanBbsController {
         pagedListHolder.setTotalSize(totalSize);
         pagedListHolder.setMaxLinkedPages(5);
 
-        ModelAndView mav = new ModelAndView("/about/bbs");
+        ModelAndView mav = new ModelAndView("/about/bulletin");
         mav.addObject("pagedListHolder", pagedListHolder);
 
         return mav;

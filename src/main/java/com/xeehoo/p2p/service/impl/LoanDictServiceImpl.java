@@ -1,16 +1,11 @@
 package com.xeehoo.p2p.service.impl;
 
 import com.xeehoo.p2p.mybatis.mapper.DictMapper;
-import com.xeehoo.p2p.po.LoanBbs;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.service.LoanDictService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**

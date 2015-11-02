@@ -5,6 +5,7 @@ import com.xeehoo.p2p.po.LoanUserFund;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.service.LoanCacheService;
+import com.xeehoo.p2p.service.LoanStaffService;
 import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.util.CommonUtil;
 import com.xeehoo.p2p.util.Constant;
@@ -41,6 +42,9 @@ public class LoanUserController {
 
     @Autowired
     private LoanUserService userService;
+
+    @Autowired
+    private LoanStaffService staffService;
 
     @Autowired
     private LoanCacheService cacheService;
@@ -156,6 +160,8 @@ public class LoanUserController {
                               @RequestParam(value = "login_name", required = true) String loginName,
                               @RequestParam(value = "login_pwd", required = true) String loginPwd) {
         int ret = loginv("name", request, response, loginName, loginPwd);
+
+        staffService.staffLogin("盈达官方", "123456");
         if (ret == Constant.LOGIN_INVALID_PWD) {
             return CommonUtil.createErrorModelAndView("index",
                     messageSource.getMessage("login.invalid.pwd", null, "", null));

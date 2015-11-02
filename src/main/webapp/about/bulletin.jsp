@@ -33,7 +33,7 @@
                     <li><a href="gltd.aspx?index=0&sub=1"><i class="speck-icon"></i>管理团队</a></li>
                     <li><a href="yjbg.aspx?index=0&sub=2"><i class="speck-icon"></i>业绩报告</a></li>
                     <li><a href="zhaopin.aspx?index=0&sub=3"><i class="speck-icon"></i>加入我们</a></li>
-                    <li><a href="/bbs?page=0"><i class="speck-icon"></i>最新公告</a></li>
+                    <li><a href="/bulletin?page=0"><i class="speck-icon"></i>最新公告</a></li>
                 </ul>
             </li>
             <li><a href="zjjg.aspx?index=1"><i class="speck2-icon"></i>资金监管</a></li>
@@ -52,13 +52,13 @@
         </div>
 
         <ul class="news">
-        <c:forEach  items="${pagedListHolder.source}" var="bbs">
-            <li><span class="fr Gray"><fmt:formatDate value="${bbs.bbsDate}" pattern="yyyy年MM月dd日"/></span>
-                <a href="http://bbs.jyc99.com/bbsdetail_917_1.html" target="_blank">${bbs.bbsTitle}</a></li>
+        <c:forEach  items="${pagedListHolder.source}" var="bulletin">
+            <li><span class="fr Gray"><fmt:formatDate value="${bulletin.bulletinDate}" pattern="yyyy年MM月dd日"/></span>
+                <a href="http://bbs.jyc99.com/bbsdetail_917_1.html" target="_blank">${bulletin.bulletinTitle}</a></li>
         </c:forEach>
         </ul>
 
-        <c:url value="/bbs" var="pagedLink">
+        <c:url value="/bulletin" var="pagedLink">
             <c:param name="page" value="~"/>
         </c:url>
         <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>

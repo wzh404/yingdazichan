@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.BulletinMapper">
+    <!-- 系统公告 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanBulletin" id="bulletin">
+        <id property="bulletinId" column="bulletin_id"/>
+        <result property="bulletinTitle" column="bulletin_name"/>
+        <result property="bulletinUrl" column="bulletin_url"/>
+        <result property="bulletinType" column="bulletin_type"/>
+        <result property="bulletinDate" column="bulletin_date"/>
+        <result property="bulletinStaff" column="bulletin_staff"/>
+    </resultMap>
+
+    <!-- 分页查询系统公告  -->
+    <select id="getBulletinPager" resultMap="bulletin" parameterType="java.util.Map">
+        SELECT * FROM t_loan_admin_bulletin
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 系统公告记录数  -->
+    <select id="getTotalBulletin" resultType="java.lang.Integer">
+        SELECT count(*) FROM t_loan_admin_bulletin
+    </select>
+</mapper>
