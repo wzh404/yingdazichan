@@ -2,6 +2,7 @@ package com.xeehoo.p2p;
 
 import com.xeehoo.p2p.filter.CacheFilter;
 import com.xeehoo.p2p.interceptor.LoginInterceptor;
+import com.xeehoo.p2p.interceptor.SecurityInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -49,6 +50,7 @@ public class YdzcApplication extends WebMvcConfigurerAdapter {
 //                .excludePathPatterns("/reguser")
 //                .excludePathPatterns("/reg2")
                 .addPathPatterns("/fund");
+        registry.addInterceptor(new SecurityInterceptor());
 //        super.addInterceptors(registry);
     }
 
