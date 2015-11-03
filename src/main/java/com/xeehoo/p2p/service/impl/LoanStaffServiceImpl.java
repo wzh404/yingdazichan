@@ -42,6 +42,7 @@ public class LoanStaffServiceImpl implements LoanStaffService {
             .map((staff) -> {
                 //logger.info("-------check permission----");
                 return permissionMapper.getPermissionByRoleCode(staff.getStaffRole());
+                 //perms;
             })
            .ifPresent((perms) -> {
                List<LoanPermission> rolePerms = perms.stream()
