@@ -10,11 +10,12 @@
         <result property="staffPwd" column="staff_pwd"/>
         <result property="staffRegisterTime" column="staff_register_time"/>
         <result property="staffStatus" column="staff_status"/>
+        <result property="staffRole" column="staff_role"/>
     </resultMap>
 
     <!-- 根据用户名称查询用户信息  -->
     <select id="getStaffByName" resultMap="staff">
-        SELECT staff_id, staff_pwd, staff_role
+        SELECT staff_id, staff_name, staff_pwd, staff_role
           FROM t_loan_admin_staff
          WHERE staff_name = #{staff_name}
            AND staff_status = 1
