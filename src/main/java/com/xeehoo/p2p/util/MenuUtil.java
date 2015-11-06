@@ -13,15 +13,14 @@ public class MenuUtil {
     private static final Logger logger = Logger.getLogger(MenuUtil.class);
 
     public static boolean mainMenu(Map<String, Object> map, String code){
-        logger.info(map + " - " + code);
-        if (map == null || map.get(code) == null)
+        if (map == null || !map.containsKey(code))
             return false;
-        logger.info("--------------");
+
         return true;
     }
 
     public static boolean subMenu(Map<String, Object> map, String menuCode, String subMenuCode){
-        if (map == null || menuCode == null || subMenuCode == null || map.get(menuCode) == null)
+        if (map == null || menuCode == null || subMenuCode == null || !map.containsKey(menuCode))
             return false;
 
         List<LoanPermission> permission = (List<LoanPermission>)map.get(menuCode);

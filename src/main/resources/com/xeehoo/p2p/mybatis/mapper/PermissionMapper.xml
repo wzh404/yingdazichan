@@ -14,15 +14,16 @@
 
     <!-- 根据用户角色查询权限  -->
     <select id="getPermissionByRoleCode" resultMap="perm">
-        SELECT p.perm_code,
-               p.perm_name,
-               p.perm_pid,
-               p.menu_code
-          FROM t_loan_admin_role r,
-               t_loan_admin_permission p ,
-               t_loan_admin_role_permission rp
-         WHERE r.role_code = #{staff_role}
-           AND r.role_id = rp.role_id
-           AND rp.perm_id = p.perm_id
+        SELECT
+            P .perm_code,
+            P .perm_name,
+            P .perm_pid,
+            P .menu_code
+        FROM
+            t_loan_admin_role r
+        INNER JOIN t_loan_admin_role_permission rp ON r.role_id = rp.role_id
+        INNER JOIN t_loan_admin_permission P ON rp.perm_id = P .perm_id
+        WHERE
+            r.role_code = #{staff_role}
     </select>
 </mapper>

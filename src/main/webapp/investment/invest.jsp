@@ -44,7 +44,6 @@
                     <c:forEach  items="${productTypes}" var="p">
                         <a id="p${p.key}" href="${typeUri}&type=${p.key}">${p.value}</a>
                     </c:forEach>
-
                 </td>
             </tr>
             <tr>
@@ -112,7 +111,7 @@
             </ul>
             </c:forEach>
 
-            <c:url value="${link}" var="pagedLink">
+            <c:url value="${pageUri}" var="pagedLink">
                 <c:param name="page" value="~"/>
             </c:url>
             <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>

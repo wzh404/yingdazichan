@@ -14,8 +14,10 @@
     <!-- 根据字典代码查询字典数据  -->
     <select id="getAllDict1" resultMap="dict1">
         SELECT d1.*
-          FROM t_loan_dict d, t_loan_dict_1 d1
-         WHERE d.dict_id = d1.dict_id
-           AND d.dict_code = #{dictCode}
+        FROM
+          t_loan_dict d
+        INNER JOIN t_loan_dict_1 d1 ON d.dict_id = d1.dict_id
+        WHERE
+          d.dict_code = #{dictCode}
     </select>
 </mapper>

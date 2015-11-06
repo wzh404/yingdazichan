@@ -56,13 +56,14 @@
 
     <!-- 获取用户登录信息 -->
     <select id="getUserLoginInfo" resultMap="user">
-        SELECT user_id,
-               login_pwd,
-               id_card,
-               user_status,
-               register_time,
-               register_ip
-         FROM t_loan_userinfo
+        SELECT
+          user_id,
+          login_pwd,
+          id_card,
+          user_status,
+          register_time,
+          register_ip
+        FROM t_loan_userinfo
         <if test="loginType == 'name'">
             WHERE login_name = #{loginName}
         </if>
@@ -74,48 +75,54 @@
     <!-- 修改预留安全信息，防止钓鱼网站 -->
     <update id="updateUserSecurityMessage">
         UPDATE t_loan_userinfo
-           SET security_message = #{securityMessage}
-         WHERE user_id = #{userId}
+        SET security_message = #{securityMessage}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 身份认证 -->
     <update id="updateUserIdCard" parameterType="java.util.Map">
         UPDATE t_loan_userinfo
-           SET real_name = #{realName},
-               id_type = '00',
-               id_card = #{idCard},
-               birth = #{birth, jdbcType=DATE},
-               sex = #{sex}
-         WHERE user_id = #{userId}
+        SET real_name = #{realName},
+            id_type = '00',
+            id_card = #{idCard},
+            birth = #{birth, jdbcType=DATE},
+            sex = #{sex}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 修改用户状态 -->
     <update id="updateUserStatus">
         UPDATE t_loan_userinfo
-           SET user_status = #{userStatus}
-         WHERE user_id = #{userId}
+        SET user_status = #{userStatus}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 修改用户邮寄地址 -->
     <update id="updateUserAddress">
         UPDATE t_loan_userinfo
-           SET city_code = #{city_code},
-               zipcode = #{zipcode}
-         WHERE user_id = #{userId}
+        SET city_code = #{city_code},
+            zipcode = #{zipcode}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 修改用户登录密码 -->
     <update id="updateUserLoginPwd">
         UPDATE t_loan_userinfo
-           SET login_pwd = #{loginPwd}
-         WHERE user_id = #{userId}
+        SET login_pwd = #{loginPwd}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 修改用户支付密码 -->
     <update id="updateUserPayPwd">
         UPDATE t_loan_userinfo
-           SET pay_pwd = #{payPwd}
-         WHERE user_id = #{userId}
+        SET pay_pwd = #{payPwd}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 获取用户资产信息 -->

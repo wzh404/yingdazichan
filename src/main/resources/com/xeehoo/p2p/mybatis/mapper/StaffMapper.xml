@@ -15,9 +15,15 @@
 
     <!-- 根据用户名称查询用户信息  -->
     <select id="getStaffByName" resultMap="staff">
-        SELECT staff_id, staff_name, staff_pwd, staff_role
-          FROM t_loan_admin_staff
-         WHERE staff_name = #{staff_name}
-           AND staff_status = 1
+        SELECT
+          staff_id,
+          staff_name,
+          staff_pwd,
+          staff_role
+        FROM
+          t_loan_admin_staff
+        WHERE
+          staff_name = #{staff_name}
+        AND staff_status = 1
     </select>
 </mapper>

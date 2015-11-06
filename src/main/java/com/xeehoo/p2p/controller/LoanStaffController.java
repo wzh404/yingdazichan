@@ -42,8 +42,8 @@ public class LoanStaffController {
 
         HttpSession session = request.getSession(true);
         session.setAttribute("staff", map.get("staff"));
-        session.setAttribute("permission", map.get("perm"));
-        session.setAttribute("menu", map.get("menu"));
+//        session.setAttribute("permission", map.get("perm"));
+//        session.setAttribute("menu", map.get("menu"));
 
         return new ModelAndView("/admin/home");
     }
