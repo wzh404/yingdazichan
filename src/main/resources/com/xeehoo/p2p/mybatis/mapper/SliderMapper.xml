@@ -16,7 +16,11 @@
 
     <!-- 查询Slider  -->
     <select id="getSliders" resultMap="slider">
-        SELECT slider_uri, slider_img FROM t_loan_admin_slider
+        SELECT
+          slider_uri,
+          slider_img
+        FROM
+          t_loan_admin_slider
         LIMIT 5 OFFSET 0
     </select>
 </mapper>

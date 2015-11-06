@@ -1,6 +1,7 @@
 package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.util.LoanPagedListHolder;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public interface LoanInvestService {
      * @param cont
      * @return
      */
-    public List<LoanProduct> getInvestProductPager(int page, int pageSize, Map<String, Object> cont);
+    public List<LoanProduct> getInvestProductPager(int page, int pageSize, Map<String, Object> cond);
 
     /**
      *
@@ -24,4 +25,7 @@ public interface LoanInvestService {
      * @return
      */
     public int getTotalProduct(Map<String, Object> cont);
+
+    /*  admin service   */
+    public LoanPagedListHolder getProductPager(int page, Map<String, Object> cond);
 }

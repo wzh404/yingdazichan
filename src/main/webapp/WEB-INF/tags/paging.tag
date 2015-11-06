@@ -42,8 +42,8 @@
                 <span class="pagingItem"><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() + 1)) %>">下一页</a></span>
             </c:if>
         </c:if>
-        &nbsp;&nbsp;跳转至：<input type="text" id="gopage" size=2  value="${pagedListHolder.getPage() + 1}"/>
-        <input type="button" value="转到" name="pager$pager" id="pager$pager_btn" class="pagerInput" onclick="javascript:window.location.href ='<%= StringUtils.replace(pagedLink, "~", "")%>' + (document.getElementById('gopage').value - 1);"/>
+        &nbsp;&nbsp;跳转至：<input class="" style="width: 30px" type="text" id="gopage" size=2  value="${pagedListHolder.getPage() + 1}"/>
+        <input class="" type="button" value="转到" name="pager$pager" id="pager$pager_btn" class="pagerInput" onclick="javascript:window.location.href ='${pageUri}&page=' + (document.getElementById('gopage').value - 1);"/>
     </div>
     <div class="paginationText">
         <span class="pagingItem">共${pagedListHolder.totalSize}条</span>

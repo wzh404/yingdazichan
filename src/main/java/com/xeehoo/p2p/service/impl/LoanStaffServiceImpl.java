@@ -4,6 +4,7 @@ import com.xeehoo.p2p.mybatis.mapper.PermissionMapper;
 import com.xeehoo.p2p.mybatis.mapper.StaffMapper;
 import com.xeehoo.p2p.po.LoanPermission;
 import com.xeehoo.p2p.po.LoanStaff;
+import com.xeehoo.p2p.po.StaffSessionObject;
 import com.xeehoo.p2p.service.LoanStaffService;
 import com.xeehoo.p2p.util.Constant;
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ public class LoanStaffServiceImpl implements LoanStaffService {
     @Override
     public Map<String, Object> staffLogin(String staffName, String staffPwd) {
         Map<String, Object> map = new HashMap<String, Object>();
+        StaffSessionObject sso = new StaffSessionObject();
 
         map.put("resultCode", Constant.RESULT_ERROR);
         map.put("resultMsg", "用户不存在");
@@ -47,18 +49,24 @@ public class LoanStaffServiceImpl implements LoanStaffService {
                 })
                 .ifPresent((perms) -> {
                     map.put("resultCode", Constant.RESULT_OK);
-                    map.put("staff", loanStaff);
-                    List<LoanPermission> rolePerms = perms.stream()
+                    sso.setStaffId(loanStaff.getStaffId());
+                    sso.setStaffName(loanStaff.getStaffName());
+
+//                    map.put("staff", loanStaff);
+                    List<LoanPermission> permissions = perms.stream()
                             .filter((perm) -> perm.getPermissionPid() > 0)
                             .collect(Collectors.toList());
-                    for (LoanPermission perm : rolePerms)
+                    for (LoanPermission perm : permissions)
                         logger.info(perm.getPermissionCode() + " - " + perm.getPermissionName());
-                    map.put("perm", rolePerms);
+//                    map.put("perm", rolePerms);
+                    sso.setPermissions(permissions);
 
-                    Map<String, List<LoanPermission>> menu = perms.stream()
+                    Map<String, List<LoanPermission>> menus = perms.stream()
                             .filter((perm) -> perm.getPermissionPid() == 0)
                             .collect(Collectors.groupingBy(LoanPermission::getMenuCode));
-                    map.put("menu", menu);
+//                    map.put("menu", menu);
+                    sso.setMenus(menus);
+                    map.put("staff", sso);
                 });
         return map;
     }

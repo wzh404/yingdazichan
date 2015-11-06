@@ -77,11 +77,167 @@ var Slides = React.createClass({
     }
 });
 
+function createId(params, value, low, high){
+    if (params == 2){
+        var id = '';
+        if (low != null && low != ''){
+            id += low + "L";
+        }
+        if (high != null && high != ''){
+            id += high + "H";
+        }
+        if (id == ''){
+            id = 'all';
+        }
+
+        return id;
+    }
+    else{
+        return value == '' ? 'all' : value;
+    }
+}
+
+var Factor = React.createClass({
+    render: function () {
+        var selectedStyle = {};
+        if (this.getSelected()){
+            selectedStyle = {color: 'white',backgroundColor: 'red'};;
+        }
+        var id = this.getId();
+        var uri = this.getUri()
+        console.log(id + " -> " + uri);
+        return (
+            <span>
+                <a id={id} style={selectedStyle} href={uri} >{this.props.factor.key}</a>
+                &nbsp;&nbsp;
+            </span>
+        );
+    },
+    getUri : function(){
+        if (this.props.params == 2){
+            return this.getLowAndHighUri();
+        }
+        else{
+            return this.getSelectUri();
+        }
+    },
+    getSelectUri: function(){
+        var factor = this.props.factor;
+        var uri = this.props.uri;
+        if (factor.value != 'all') {
+            return uri + "&" + this.props.name + "=" + factor.value;
+        }
+        else{
+            return uri;
+        }
+    },
+    getLowAndHighUri: function(){
+        var factor = this.props.factor;
+        var uri = this.props.uri;
+        if (factor.low != null) {
+            uri += "&low_" + this.props.name + "=" + factor.low;
+        }
+        if (factor.high != null) {
+            uri += "&high_" + this.props.name + "=" + factor.high;;
+        }
+        return uri;
+    },
+    getSelected: function(){
+        if (this.props.params == 2){
+            var id = createId(this.props.params, '', this.props.factor.low, this.props.factor.high);
+            console.log(this.props.value + "---selected id ->" +  id);
+            return this.props.value == id;
+        }
+        else{
+            return this.props.value == this.props.factor.value;
+        }
+    },
+    getId: function(){
+        return this.props.name + "_" + createId(this.props.params, this.props.value, this.props.factor.low, this.props.factor.high);
+   }
+});
+
+var LowAndHighFactor = React.createClass({
+    render: function () {
+        var lowId = this.props.name + "_low_text";
+        var highId = this.props.name + "_high_text";
+        return (
+            <span>
+                <input type="text" id={lowId} style={{width: this.props.width}} defaultValue={this.props.low}/> -
+                <input type="text" id={highId} style={{width: this.props.width}} defaultValue={this.props.high}/>&nbsp;&nbsp;
+                <input type="button" value="确定" onClick={this.submit}/>
+            </span>
+        );
+    },
+
+    submit: function(){
+        var uri = this.props.uri;
+        var name = this.props.name;
+        var l = $('#' + name +"_low_text").val();
+        var h = $('#' + name +"_high_text").val();
+
+        l = $.trim(l);
+        h = $.trim(h);
+
+        if (l == '' && h == ''){
+            alert('不能为空!')
+            return;
+        }
+
+        if (l != ''){
+            uri += '&low_' + name + "=" + l;
+        }
+        if (h != ''){
+            uri += '&high_' + name + "=" + h;
+        }
+
+        console.log("submit -> " + uri);
+        window.location.href=uri;
+    }
+});
+
+var QueryFactor = React.createClass({
+    render: function () {
+        var name = this.props.query.name;
+        var uri = this.props.query.uri;
+        var options = this.props.query.options;
+        var type = this.props.query.type;
+        var input = this.props.query.input;
+        var params = this.props.query.params;
+
+        var value = createId(params, this.props.query.value, this.props.query.low, this.props.query.high);
+        if (input == 'no'){
+            return (
+                <div>{
+                    options.map(function(factor, id) {
+                        return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
+                    })
+                }
+                </div>
+            );
+        }
+        else if (input == 'low_high'){
+            var low = this.props.query.low;
+            var high = this.props.query.high;
+            var width = this.props.query.width;
+            return (
+                <div>{
+                    options.map(function(factor, id) {
+                        return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
+                    })
+                }
+                <LowAndHighFactor width={width} type={type} value={value} name={name} uri={uri} low={low} high={high}/>
+                </div>
+            );
+        }
+    }
+});
+
 function react_slides_render(elementName){
     var slides
     $.ajax({
         url: "/cache/slide",
-        data: {version: "0.1.1"},
+        data: {version: "0.1.3"},
         type: "get",
         dataType: "json",
         async: false,
@@ -100,6 +256,15 @@ function react_slides_render(elementName){
     ReactDOM.render(
         <Slides slides={slides}/>,
         document.getElementById(elementName)
+    );
+}
+
+
+
+function test_factor(el, query){
+    ReactDOM.render(
+        <QueryFactor query={query}/>,
+        document.getElementById(el)
     );
 }
 

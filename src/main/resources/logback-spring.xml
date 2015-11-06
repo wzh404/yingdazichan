@@ -4,6 +4,7 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{35} - %msg%n
             </Pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
