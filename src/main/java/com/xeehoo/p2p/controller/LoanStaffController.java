@@ -37,7 +37,7 @@ public class LoanStaffController {
         Map<String, Object> map = staffService.staffLogin(staffName, staffPwd);
         String resultCode = (String)map.get("resultCode");
         if (Constant.RESULT_ERROR.equalsIgnoreCase(resultCode)){
-            return new ModelAndView("/amdin/index", map);
+            return new ModelAndView("/admin/index", map);
         }
 
         HttpSession session = request.getSession(true);

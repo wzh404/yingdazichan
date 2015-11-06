@@ -77,44 +77,24 @@ var Slides = React.createClass({
     }
 });
 
-function createId(params, value, low, high){
-    if (params == 2){
-        var id = '';
-        if (low != null && low != ''){
-            id += low + "L";
-        }
-        if (high != null && high != ''){
-            id += high + "H";
-        }
-        if (id == ''){
-            id = 'all';
-        }
-
-        return id;
-    }
-    else{
-        return value == '' ? 'all' : value;
-    }
-}
-
-var Factor = React.createClass({
+var Option = React.createClass({
     render: function () {
         var selectedStyle = {};
-        if (this.getSelected()){
-            selectedStyle = {color: 'white',backgroundColor: 'red'};;
+        if (this.props.option.id == this.props.server.id){
+            selectedStyle = {color: 'white', backgroundColor: 'red'};;
         }
-        var id = this.getId();
+        var id = this.props.name+ "_" + this.props.option.id;
         var uri = this.getUri()
         console.log(id + " -> " + uri);
         return (
             <span>
-                <a id={id} style={selectedStyle} href={uri} >{this.props.factor.key}</a>
+                <a id={id} style={selectedStyle} href={uri} >{this.props.option.name}</a>
                 &nbsp;&nbsp;
             </span>
         );
     },
     getUri : function(){
-        if (this.props.params == 2){
+        if (this.props.method == 'low-high'){
             return this.getLowAndHighUri();
         }
         else{
@@ -122,56 +102,43 @@ var Factor = React.createClass({
         }
     },
     getSelectUri: function(){
-        var factor = this.props.factor;
-        var uri = this.props.uri;
-        if (factor.value != 'all') {
-            return uri + "&" + this.props.name + "=" + factor.value;
+        var option = this.props.option;
+        var uri = this.props.server.uri;
+        if (option.value != 'all') {
+            return uri + "&" + this.props.name + "=" + option.value;
         }
         else{
             return uri;
         }
     },
     getLowAndHighUri: function(){
-        var factor = this.props.factor;
-        var uri = this.props.uri;
-        if (factor.low != null) {
-            uri += "&low_" + this.props.name + "=" + factor.low;
+        var option = this.props.option;
+        var uri = this.props.server.uri;
+        if (option.low != null) {
+            uri += "&low_" + this.props.name + "=" + option.low;
         }
-        if (factor.high != null) {
-            uri += "&high_" + this.props.name + "=" + factor.high;;
+        if (option.high != null) {
+            uri += "&high_" + this.props.name + "=" + option.high;
         }
         return uri;
-    },
-    getSelected: function(){
-        if (this.props.params == 2){
-            var id = createId(this.props.params, '', this.props.factor.low, this.props.factor.high);
-            console.log(this.props.value + "---selected id ->" +  id);
-            return this.props.value == id;
-        }
-        else{
-            return this.props.value == this.props.factor.value;
-        }
-    },
-    getId: function(){
-        return this.props.name + "_" + createId(this.props.params, this.props.value, this.props.factor.low, this.props.factor.high);
-   }
+    }
 });
 
-var LowAndHighFactor = React.createClass({
+var LowAndHighInput = React.createClass({
     render: function () {
         var lowId = this.props.name + "_low_text";
         var highId = this.props.name + "_high_text";
         return (
             <span>
-                <input type="text" id={lowId} style={{width: this.props.width}} defaultValue={this.props.low}/> -
-                <input type="text" id={highId} style={{width: this.props.width}} defaultValue={this.props.high}/>&nbsp;&nbsp;
+                <input type="text" id={lowId} style={{width: this.props.input.width}} defaultValue={this.props.server.low}/> -
+                <input type="text" id={highId} style={{width: this.props.input.width}} defaultValue={this.props.server.high}/>&nbsp;&nbsp;
                 <input type="button" value="确定" onClick={this.submit}/>
             </span>
         );
     },
 
     submit: function(){
-        var uri = this.props.uri;
+        var uri = this.props.server.uri;
         var name = this.props.name;
         var l = $('#' + name +"_low_text").val();
         var h = $('#' + name +"_high_text").val();
@@ -180,7 +147,7 @@ var LowAndHighFactor = React.createClass({
         h = $.trim(h);
 
         if (l == '' && h == ''){
-            alert('不能为空!')
+            alert('不能为空!');
             return;
         }
 
@@ -190,43 +157,88 @@ var LowAndHighFactor = React.createClass({
         if (h != ''){
             uri += '&high_' + name + "=" + h;
         }
+        uri += "&" + name + '=other';
 
         console.log("submit -> " + uri);
         window.location.href=uri;
     }
 });
 
+function createServerId(method, server){
+    if (method == 'low-high'){
+        return createLowAndHighId(server);
+    }
+    else{
+        var lowAndHighValue = (server.low == null || server.low == '') && (server.high == null || server.high == '');
+        if (lowAndHighValue){
+            return createDefaultId(server);
+        }
+        else{
+            return 'low-high-value-id';
+        }
+    }
+}
+
+function createDefaultId(opt){
+    return opt.value == '' ? 'all' : opt.value;
+}
+
+function createLowAndHighId(opt){
+    var low = opt.low;
+    var high = opt.high;
+
+    var id = '';
+    if (low != null && low != ''){
+        id += low + "L";
+    }
+    if (high != null && high != ''){
+        id += high + "H";
+    }
+    if (id == ''){
+        id = 'all';
+    }
+
+    return id;
+}
+
+function createOptionId(method, opt){
+    if (method == 'low-high'){
+       return createLowAndHighId(opt);
+    }
+    else{
+        return createDefaultId(opt);
+    }
+}
+
 var QueryFactor = React.createClass({
     render: function () {
         var name = this.props.query.name;
-        var uri = this.props.query.uri;
-        var options = this.props.query.options;
-        var type = this.props.query.type;
+        var server = this.props.query.server;
+        var select = this.props.query.select;
         var input = this.props.query.input;
-        var params = this.props.query.params;
+        var serverId = createServerId(select.method, server);
+        server.id = serverId;
 
-        var value = createId(params, this.props.query.value, this.props.query.low, this.props.query.high);
-        if (input == 'no'){
+        if (input == null){
             return (
                 <div>{
-                    options.map(function(factor, id) {
-                        return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
+                    select.options.map(function(option, id) {
+                        option.id = createOptionId(select.method, option);
+                        return <Option option={option}  method={select.method} server={server}  name={name} key={id}/>
                     })
                 }
                 </div>
             );
         }
-        else if (input == 'low_high'){
-            var low = this.props.query.low;
-            var high = this.props.query.high;
-            var width = this.props.query.width;
+        else if (input.type == 'low-high'){
             return (
                 <div>{
-                    options.map(function(factor, id) {
-                        return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
+                    select.options.map(function(option, id) {
+                        option.id = createOptionId(select.method, option);
+                        return <Option option={option}  method={select.method} server={server} name={name} key={id}/>
                     })
                 }
-                <LowAndHighFactor width={width} type={type} value={value} name={name} uri={uri} low={low} high={high}/>
+                <LowAndHighInput input={input} server={server} name={name}/>
                 </div>
             );
         }

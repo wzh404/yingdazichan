@@ -167,80 +167,94 @@
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
 <script src="/js/a.js?12357"></script>
 <script type="text/javascript">
-    var p_conds = [
-        {"key": "全部", "value": "all"},
+    var type_options = [
+        {"name": "全部", "value": "all"},
     <c:forEach items="${productTypes}" var="p">
-        {"key": "${p.value}", "value": "${p.key}"},
+        {"name": "${p.value}", "value": "${p.key}"},
     </c:forEach>
     ]
 
-    var p_query = {
+    var type_query = {
         "name": 'type',
-        "type": 'select',
-        "params": 1,
-        "value" : '${type}',
-        "uri": '${typeUri}',
-        "input": "no",
-        "options" : p_conds
+        'select': {
+            'method' : 'default',
+            'options': type_options
+        },
+        'server':{
+            'value':'${type}',
+            'uri':'${typeUri}'
+        }
     }
 
-    var query = {
+    var stat_query = {
         "name": 'stat',
-        "type": 'select',
-        "params": 1,
-        "value" : '${stat}',
-        "uri": '${statUri}',
-        "input": "no",
-        "options" : [
-            {"key": "全部", "value": "all"},
-            {"key": "未发布", "value": "0"},
-            {"key": "投标中", "value": "1"},
-            {"key": "已满标", "value": "2"},
-            {"key": "已完成", "value": "9"}
-        ]
+        'select': {
+            'method' : 'default',
+            'options': [
+                {"name": "全部", "value": "all"},
+                {"name": "未发布", "value": "0"},
+                {"name": "投标中", "value": "1"},
+                {"name": "已满标", "value": "2"},
+                {"name": "已完成", "value": "9"}
+            ]
+        },
+        'server':{
+            'value':'${stat}',
+            'uri':'${statUri}'
+        }
     }
 
-    var r_query = {
+    var rate_query = {
         "name": 'rate',
-        "type": 'select',
-        "params": 2,
-        "value" : '${rate}',
-        "low": '${low_rate}',
-        "high": '${high_rate}',
-        "uri": '${rateUri}',
-        "input": "low_high",
-        "width": 40,
-        "options" : [
-            {"key": "全部", "value": "all"},
-            {"key": "8-13%", "low": 8, "high": 13},
-            {"key": "13-14%", "low": 13, "high": 14},
-            {"key": "14以上", "low": 14}
-        ]
+        'select': {
+            'method' : 'low-high',
+            'options': [
+                {"name": "全部", "value": "all"},
+                {"name": "8-13%", "low": 8, "high": 13},
+                {"name": "13-14%", "low": 13, "high": 14},
+                {"name": "14以上", "low": 14}
+            ]
+        },
+        'server':{
+            'value':'${rate}',
+            'uri':'${rateUri}',
+            "low": '${low_rate}',
+            "high": '${high_rate}'
+        },
+        'input':{
+            'width': 40,
+            'type': 'low-high'
+        }
     }
 
-    var d_query = {
+    var date_query = {
         "name": 'date',
-        "type": 'select',
-        "params": 1,
-        "value" : '${date}',
-        "low": '${low_date}',
-        "high": '${high_date}',
-        "uri": '${dateUri}',
-        "input": "low_high",
-        "width": 100,
-        "options" : [
-            {"key": "全部", "value": "all"},
-            {"key": "最近一天", "value": "day"},
-            {"key": "最近一周", "value": "week"},
-            {"key": "最近一月", "value": "month"},
-            {"key": "最近一年", "value": "year"}
-        ]
+        'select': {
+            'method' : 'default',
+            'options': [
+                {"name": "全部", "value": "all"},
+                {"name": "最近一天", "value": "day"},
+                {"name": "最近一周", "value": "week"},
+                {"name": "最近一月", "value": "month"},
+                {"name": "最近一年", "value": "year"}
+            ]
+        },
+        'server':{
+            'value':'${date}',
+            'uri':'${dateUri}',
+            "low": '${low_date}',
+            "high": '${high_date}'
+        },
+        'input':{
+            'width': 100,
+            'type': 'low-high'
+        }
     }
 
-    test_factor('i_product_type', p_query);
-    test_factor('i_product_status', query);
-    test_factor('i_product_rate', r_query);
-    test_factor('i_product_date', d_query);
+    test_factor('i_product_type', type_query);
+    test_factor('i_product_status', stat_query);
+    test_factor('i_product_rate', rate_query);
+    test_factor('i_product_date', date_query);
 </script>
 </body>
 </html>

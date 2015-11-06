@@ -59,7 +59,7 @@
 
             <li><a href="admin-table.html"><span class="am-icon-bookmark"></span> 发布公告</a></li>
 
-            <li><a href="/product"><span class="am-icon-pencil-square-o"></span> 产品管理</a></li>
+            <li><a href="/admin/product"><span class="am-icon-pencil-square-o"></span> 产品管理</a></li>
             <li><a href="#"><span class="am-icon-sign-out"></span> 财务结算</a></li>
         </ul>
 
