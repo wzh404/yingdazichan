@@ -200,7 +200,7 @@ var QueryFactor = React.createClass({
     render: function () {
         var name = this.props.query.name;
         var uri = this.props.query.uri;
-        var conds = this.props.query.conds;
+        var options = this.props.query.options;
         var type = this.props.query.type;
         var input = this.props.query.input;
         var params = this.props.query.params;
@@ -209,7 +209,7 @@ var QueryFactor = React.createClass({
         if (input == 'no'){
             return (
                 <div>{
-                    conds.map(function(factor, id) {
+                    options.map(function(factor, id) {
                         return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
                     })
                 }
@@ -222,7 +222,7 @@ var QueryFactor = React.createClass({
             var width = this.props.query.width;
             return (
                 <div>{
-                    conds.map(function(factor, id) {
+                    options.map(function(factor, id) {
                         return <Factor factor={factor} params={params} uri={uri}  value={value} name={name}  key={id}/>
                     })
                 }

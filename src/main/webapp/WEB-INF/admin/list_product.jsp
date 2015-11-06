@@ -167,82 +167,6 @@
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
 <script src="/js/a.js?12357"></script>
 <script type="text/javascript">
-    function queryOtherLowAndHigh(uri, p){
-        uri += "&" + p + '=other';
-        queryLowAndHigh(uri,p);
-    }
-
-    function queryLowAndHigh(uri, p){
-        var l = $('#' + p +"_low_text").val();
-        var h = $('#' + p +"_high_text").val();
-
-        l = $.trim(l);
-        h = $.trim(h);
-
-        if (l == '' && h == ''){
-            alert('不能为空!')
-            return;
-        }
-
-        if (l != ''){
-            uri += '&low_' + p + "=" + l;
-        }
-        if (h != ''){
-            uri += '&high_' + p + "=" + h;
-        }
-
-        alert(uri);
-        window.location.href=uri;
-    }
-
-    /* p->前缀, k->关键字 */
-    function setCond(p, k) {
-        if (k == '')
-            k = 'all';
-
-        var id = '#' + p + '_' + k;
-        if($(id).length > 0){
-            $(id).attr('class', 'current-cond');
-        }
-    }
-
-    function setOtherLowAndHighCond(p, v, l, h) {
-        setCond(p, v);
-        if (l == '' && h == '')
-            return;
-
-        setLowAndHighCond(p, l, h);
-    }
-
-    /* p->前缀, k->关键字 */
-    function setLowAndHighCond(p, l, h) {
-        var k = '';
-        if (l == '' && h == '')
-            k = 'all';
-        else if (l == '')
-            k = 'min_' + h;
-        else if (h == '')
-            k = l + '_max';
-        else
-            k = l + "_" + h;
-
-        var id = '#' + p + '_' + k;
-        //alert(id);
-        if($(id).length > 0){
-            $(id).attr('class', 'current-cond');
-        }
-        else{
-            $('#' + p + '_low_text').val(l);
-            $('#' + p + '_high_text').val(h);
-        }
-    }
-
-    setCond('type', '${type}');
-    <%--setCond('stat', '${stat}');--%>
-    setOtherLowAndHighCond('date', '${date}', '${low_date}', '${high_date}');
-    setLowAndHighCond('rate', '${low_rate}', '${high_rate}');
-
-
     var p_conds = [
         {"key": "全部", "value": "all"},
     <c:forEach items="${productTypes}" var="p">
@@ -257,7 +181,7 @@
         "value" : '${type}',
         "uri": '${typeUri}',
         "input": "no",
-        "conds" : p_conds
+        "options" : p_conds
     }
 
     var query = {
@@ -267,7 +191,7 @@
         "value" : '${stat}',
         "uri": '${statUri}',
         "input": "no",
-        "conds" : [
+        "options" : [
             {"key": "全部", "value": "all"},
             {"key": "未发布", "value": "0"},
             {"key": "投标中", "value": "1"},
@@ -286,7 +210,7 @@
         "uri": '${rateUri}',
         "input": "low_high",
         "width": 40,
-        "conds" : [
+        "options" : [
             {"key": "全部", "value": "all"},
             {"key": "8-13%", "low": 8, "high": 13},
             {"key": "13-14%", "low": 13, "high": 14},
@@ -304,7 +228,7 @@
         "uri": '${dateUri}',
         "input": "low_high",
         "width": 100,
-        "conds" : [
+        "options" : [
             {"key": "全部", "value": "all"},
             {"key": "最近一天", "value": "day"},
             {"key": "最近一周", "value": "week"},
