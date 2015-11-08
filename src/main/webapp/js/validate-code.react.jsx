@@ -54,6 +54,7 @@ function react_validate_code_render(elementName){
     );
 }
 
+/* Slide class */
 var Slide = React.createClass({
     render: function () {
         var imgUrl = 'url(' + this.props.img + ') no-repeat center top';
@@ -77,6 +78,7 @@ var Slides = React.createClass({
     }
 });
 
+/* query class */
 var Option = React.createClass({
     render: function () {
         var selectedStyle = {};

@@ -50,7 +50,12 @@ public class YdzcApplication extends WebMvcConfigurerAdapter {
 //                .excludePathPatterns("/reguser")
 //                .excludePathPatterns("/reg2")
                 .addPathPatterns("/fund");
-        registry.addInterceptor(new SecurityInterceptor());
+        registry.addInterceptor(new SecurityInterceptor())
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/login")
+                .excludePathPatterns("/staff");
+
+
 //        super.addInterceptors(registry);
     }
 

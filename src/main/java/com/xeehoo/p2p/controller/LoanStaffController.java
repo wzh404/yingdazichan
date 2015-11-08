@@ -25,7 +25,7 @@ public class LoanStaffController {
     @Autowired
     private LoanStaffService staffService;
 
-    @RequestMapping(value="/admin")
+    @RequestMapping(value="/staff")
     public ModelAndView execute(){
         return new ModelAndView("/admin/index");
     }

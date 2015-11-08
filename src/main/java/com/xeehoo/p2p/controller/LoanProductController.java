@@ -1,5 +1,6 @@
 package com.xeehoo.p2p.controller;
 
+import com.xeehoo.p2p.annotation.Permission;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.service.LoanDictService;
@@ -31,6 +32,7 @@ public class LoanProductController {
     private LoanInvestService investService;
 
     @RequestMapping(value="/admin/product")
+    @Permission("0201")
     public ModelAndView execute(HttpServletRequest request,
             @RequestParam(value = "type", required = false) String productType,
             @RequestParam(value = "stat", required = false) Integer productStatus,

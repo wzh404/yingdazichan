@@ -49,7 +49,8 @@ public class CacheFilter implements Filter{
                 logger.info("cache hit: " + value);
             }
             response.getWriter().print(value);
-        } else{
+        }
+        else {
             chain.doFilter(request, response);
         }
     }

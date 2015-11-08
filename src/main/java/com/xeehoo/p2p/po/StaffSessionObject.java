@@ -65,4 +65,16 @@ public class StaffSessionObject {
 
         return false;
     }
+
+    public boolean isAuth(String code){
+        if (code == null) return false;
+
+        for (LoanPermission p : getPermissions()){
+            if (p.getPermissionCode().equalsIgnoreCase(code)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

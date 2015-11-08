@@ -17,12 +17,6 @@
 
     <link rel="stylesheet" href="/css/admin/amazeui.min.css"/>
     <link rel="stylesheet" href="/css/admin/admin.css">
-    <style type="text/css">
-        .current-cond {
-            background: red;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
@@ -127,7 +121,7 @@
                                 <td>${product.productID}</td>
                                 <td><a href="#">${product.productName}</a></td>
                                 <td>${productTypes.get(product.productType)}</td>
-                                <td class="am-hide-sm-only">${product.totalAmount}</td>
+                                <td class="am-hide-sm-only"><fmt:formatNumber value="${product.totalAmount}" type="currency"/></td>
                                 <td class="am-hide-sm-only"><fmt:formatDate value="${product.releaseTime}" pattern="yyyy-MM-dd hh:mm:ss"/></td>
                                 <td>
                                     <div class="am-btn-toolbar">
@@ -152,8 +146,6 @@
                         <c:param name="page" value="~"/>
                     </c:url>
                     <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
-
-
                 </form>
             </div>
 
