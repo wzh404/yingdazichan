@@ -36,7 +36,7 @@ public class CacheFilter implements Filter{
         if (uri.startsWith("/cache")) {
             String value = (String)redisTemplate.opsForValue().get(uri);
             String flush = request.getParameter("flush");
-            if (value == null || (flush != null && flush.equalsIgnoreCase("true"))) {//刷新缓存
+            if (value == null || "true".equalsIgnoreCase(flush)) {//刷新缓存
                 ResponseWrapper wrapper = new ResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, wrapper);
                 value = wrapper.getResult();
