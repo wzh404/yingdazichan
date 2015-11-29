@@ -20,6 +20,8 @@
 <script type="text/javascript" src="${js}/react.js"></script>
 <script type="text/javascript" src="${js}/react-dom.js"></script>
 <script src="/js/validate-code.react.js?v=0.1.5"></script>
+<script src="/js/investment.react.js?v=0.1.5"></script>
+
 <body>
 <!--head  start-->
 <div class="The_total head">
@@ -77,6 +79,7 @@
 <!--bottom  start-->
 <jsp:include page="footer.jsp"/>
 <!--bottom_0  end-->
+
 </body>
 
 <script type="text/javascript">
