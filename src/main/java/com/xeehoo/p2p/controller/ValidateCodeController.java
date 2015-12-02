@@ -1,5 +1,7 @@
 package com.xeehoo.p2p.controller;
 
+import com.xeehoo.p2p.cache.Cache;
+import com.xeehoo.p2p.cache.impl.HttpSessionCache;
 import com.xeehoo.p2p.service.LoanCacheService;
 import com.xeehoo.p2p.util.CommonUtil;
 import com.xeehoo.p2p.util.Constant;
@@ -108,14 +110,14 @@ public class ValidateCodeController {
         cs.setBackgroundFactory(backgroundFactory);
 
         // 取得验证码字符串放入Session
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            session = request.getSession();
-        }
+        HttpSession session = request.getSession();
+        Cache cache = new HttpSessionCache(session);
+
         Captcha captcha = cs.getCaptcha();
         String validationCode = captcha.getChallenge();
-        session.setAttribute(Constant.SESSION_VALIDATE_CODE, validationCode);
-        session.setMaxInactiveInterval(1000);
+//        session.setAttribute(Constant.SESSION_VALIDATE_CODE, validationCode);
+//        session.setMaxInactiveInterval(1000);
+        cache.set(Constant.SESSION_VALIDATE_CODE, validationCode, 1000);
 
         logger.info("当前的SessionID=" + session.getId() + "，验证码=" + validationCode);
         try {

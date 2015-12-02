@@ -14,17 +14,17 @@ public interface LoanInvestService {
      *
      * @param page
      * @param pageSize
-     * @param cont
+     * @param cond
      * @return
      */
     public List<LoanProduct> getInvestProductPager(int page, int pageSize, Map<String, Object> cond);
 
     /**
      *
-     * @param cont
+     * @param cond
      * @return
      */
-    public int getTotalProduct(Map<String, Object> cont);
+    public int getTotalProduct(Map<String, Object> cond);
 
     /*  admin service   */
     public LoanPagedListHolder getProductPager(int page, Map<String, Object> cond);

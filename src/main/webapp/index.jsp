@@ -14,245 +14,50 @@
     <title>首页</title>
     <link rel="stylesheet" type="text/css" href="${css}/style.css"/>
     <link rel="stylesheet" type="text/css" href="${css}/base.css"/>
+
+    <style type="text/css">
+        .banner{height: 330px; background: #ddd; position: relative;}
+        #full-screen-slider{width: 100%; height: 330px; float: left; position: relative;}
+        #slides{display: block; width: 100%; height: 330px; list-style: none; padding: 0; margin: 0; position: relative}
+        #slides li{display: block; width: 100%; height: 100%; list-style: none; padding: 0; margin: 0; position: absolute;}
+        #slides li a{display: block; width: 100%; height: 100%; text-indent: -9999px}
+        #pagination{display: block; list-style: none; position: absolute; right: 50%; top: 300px; z-index: 999; padding: 5px 15px 5px 0; margin: 0}
+        #pagination li{display: block; list-style: none; width: 10px; height: 10px; float: left; margin-left: 15px; border-radius: 5px; background: #fff}
+        #pagination li a{display: block; width: 100%; height: 100%; padding: 0; margin: 0; text-indent: -9999px;}
+        #pagination li.current{background: #0092ce;}
+    </style>
 </head>
 
 <body>
 <!--top start-->
-<div class="The_total top">
-    <div class="The_total1200">
-        <div class="top_0">
-            <ul>
-                <li>您好${sessionScope.user.loginName}，欢迎来到盈时代！</li>
-                <c:if test="${sessionScope.user == null}">
-                    <li><a href="login.jsp" style="color:#eb953a;">登录</a></li>
-                    <li>|</li>
-                    <li><a href="../zc/index.html">注册</a></li>
-                </c:if>
-                <c:if test="${sessionScope.user != null}">
-                    <li><a href="/logout" style="color:#eb953a;">退出</a></li>
-                </c:if>
-            </ul>
-        </div>
-        <div class="top_1">
-            <ul>
-                <li><a href="../bzzx/index.html" target="_blank">帮助中心</a></li>
-                <li><a href="">手机版</a></li>
-                <li><a href="">QQ</a></li>
-                <li><a href="">微信</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-<!--top end-->
-
-<!--head  start-->
-<div class="The_total head">
-    <div class="The_total1200">
-        <div class="logo"></div>
-        <div class="fhsy">
-            <ul>
-                <li class="fhsy0"><a href="#">首页</a></li>
-                <li><a href="../wdtz/index.html" target="_blank">我要投资</a></li>
-                <li><a href="../zhzx/index.html" target="_blank">我的账户</a></li>
-                <li><a href="../hdy/index.html" target="_blank">活动专区</a></li>
-                <li><a href="" target="_blank">关于我们</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
+<jsp:include page="header.jsp?tab=01"/>
 <!--head  end-->
 
 <!--banner  start-->
-<div class="The_total banner_b">
-    <div class="banner"><img src="${img}/banner.png"/></div>
+<div id="full-screen-slider">
+
 </div>
-<!--banner  end-->
+<!--banner  end
 <div class=" The_total">
     <div class=" The_total1200 gg_"></div>
-</div>
+</div>-->
 <!--content  start-->
 <div class=" The_total">
     <div class=" The_total1200">
         <div class="sy_left">
-            <div class="xr_">
-                <h1>新人专享---新手标</h1>
-
-                <div class="xrb_zx">
-                    <div class="xrb_a">
-                        <div class="xrb_a0">
-                            <div class="xrb_a01">
-                                <img src="${img}/xs_1.jpg"/>
-
-                                <p style=" font-weight:bold;">8.1%</p>
-
-                                <p style=" color:#848587;">年化收益率</p>
-                            </div>
-                        </div>
-                        <div class="xrb_a1">
-                            <div class="xrb_a1_0">雪花28号<span style=" margin-left:62px;"><img
-                                    src="${img}/xs0_1.jpg"/></span></div>
-                        </div>
-                        <div class="xrb_a2">
-                            <div class="xrb_a20">
-                                <p style=" font-weight:bold;">1个月</p>
-
-                                <p style=" color:#848587;">投资期限</p>
-                            </div>
-                            <div class="xrb_a20">
-                                <p style=" font-weight:bold;">1000元</p>
-
-                                <p style=" color:#848587;">起投金额</p>
-                            </div>
-                            <div class="xrb_a20"><a href=""><img src="${img}/xs0_2.jpg"/></a></div>
-                        </div>
-                    </div>
-                    <div class="xrb_a">
-                        <div class="xrb_a0">
-                            <div class="xrb_a01">
-                                <img src="${img}/xs_2.jpg"/>
-
-                                <p style=" font-weight:bold;">7.5%</p>
-
-                                <p style=" color:#848587;">年化收益率</p>
-                            </div>
-                        </div>
-                        <div class="xrb_a1">
-                            <div class="xrb_a1_0">雪花28号<span style=" margin-left:62px;"><img
-                                    src="${img}/xs0_1.jpg"/></span></div>
-                        </div>
-                        <div class="xrb_a2">
-                            <div class="xrb_a20">
-                                <p style=" font-weight:bold;">1个月</p>
-
-                                <p style=" color:#848587;">投资期限</p>
-                            </div>
-                            <div class="xrb_a20">
-                                <p style=" font-weight:bold;">1000元</p>
-
-                                <p style=" color:#848587;">起投金额</p>
-                            </div>
-                            <div class="xrb_a20"><a href=""><img src="${img}/xs0_2.jpg"/></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="xh_">
+            <div>
                 <h1>雪花系列</h1>
-
-                <div class="xh_0">
-                    <p class="xh_0_"><img src="${img}/xh.jpg"/></p>
-
-                    <div class="xh_01">
-                        <div class="xh_01a">雪花1号</div>
-                        <div class="xrb_a2">
-                            <div class="xrb_a20_">
-                                <p style="  color:#F00; font-size:18px;">10.2%</p>
-
-                                <p style=" color:#848587; font-size:18px;">年化收益率</p>
-                            </div>
-                            <div class="xrb_a20_">
-                                <p style="  font-size:18px;">365天</p>
-
-                                <p style=" color:#848587; font-size:18px;">投资期限</p>
-                            </div>
-                            <div class="xrb_a20_">
-                                <p style="  font-size:18px;">7,500元</p>
-
-                                <p style=" color:#848587; font-size:18px;">标的总额</p>
-                            </div>
-                            <div class="xrb_a20_">
-                                <p style="  font-size:18px; margin-bottom:10px;"><img src="${img}/xs0_3.jpg"/></p>
-
-                                <p style=" color:#848587; font-size:18px;">投资进度</p>
-                            </div>
-                            <div class="xrb_a20_0"></div>
-                        </div>
-                    </div>
+                <div id="invest_1001">
                 </div>
             </div>
             <div>
                 <h1>基金系列</h1>
-
-                <div>
-                    <div class="xh_0">
-                        <p class="xh_0_"><img src="${img}/zj.jpg"/></p>
-
-                        <div class="xh_01">
-                            <div class="xh_01a_">金算盘-----能源盈</div>
-                            <div class="xrb_a2">
-                                <div class="xrb_a21_">
-                                    <p style="  color:#F00; font-size:18px;">8%</p>
-
-                                    <p style=" color:#848587; font-size:18px;">年化收益率</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px;">1个月</p>
-
-                                    <p style=" color:#848587; font-size:18px;">投资期限</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px;">302,000元</p>
-
-                                    <p style=" color:#848587; font-size:18px;">标的总额</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px; margin-bottom:10px;"><img src="${img}/xs0_3_0.jpg"/></p>
-
-                                    <p style=" color:#848587; font-size:18px;">投资进度</p>
-                                </div>
-                                <div class="xrb_a21">
-                                    <p style=" padding-top:20px; text-indent:2em; color:#292929;">275，000（剩余金额）</p>
-
-                                    <div class="xrb_a20_1">
-                                        <p style=" float:left; color:#848587;">1000元起投</p>
-                                        <a href="">立即抢购</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="xh_0">
-                        <p class="xh_0_"><img src="${img}/zj.jpg"/></p>
-
-                        <div class="xh_01">
-                            <div class="xh_01a_">金算盘-----城建通</div>
-                            <div class="xrb_a2">
-                                <div class="xrb_a21_">
-                                    <p style="  color:#F00; font-size:18px;">10%</p>
-
-                                    <p style=" color:#848587; font-size:18px;">年化收益率</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px;">3个月</p>
-
-                                    <p style=" color:#848587; font-size:18px;">投资期限</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px;">542,000元</p>
-
-                                    <p style=" color:#848587; font-size:18px;">标的总额</p>
-                                </div>
-                                <div class="xrb_a21_">
-                                    <p style="  font-size:18px; margin-bottom:10px;"><img src="${img}/xs0_3_1.jpg"/></p>
-
-                                    <p style=" color:#848587; font-size:18px;">投资进度</p>
-                                </div>
-                                <div class="xrb_a21">
-                                    <p style=" padding-top:20px; text-indent:2em; color:#292929;">333，600（剩余金额）</p>
-
-                                    <div class="xrb_a20_1">
-                                        <p style=" float:left; color:#848587;">1000元起投</p>
-                                        <a href="">立即抢购</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="invest_1002">
                 </div>
             </div>
             <div>
                 <h1>投行系列</h1>
-                <div id="kkk">
+                <div id="invest_1003">
                 </div>
             </div>
         </div>
@@ -370,107 +175,48 @@
     </p>
 </div>
 <!--new  start-->
-<div class="The_total">
-    <div class="The_total1200">
-        <div class="t_l">
-            <div class="wd_0">
-                <h1>关于我们</h1>
-            </div>
-            <div>
-                <dl>
-                    <dt><img src="${img}/gywm_a.jpg"/></dt>
-                    <dd>安全联盟 实名验证</dd>
-                </dl>
-                <dl>
-                    <dt><img src="${img}/gywm_b.jpg"/></dt>
-                    <dd>中国电子金融产业联盟会员单位</dd>
-                </dl>
-                <dl>
-                    <dt><img src="${img}/gywm_c.jpg"/></dt>
-                    <dd>中国互联网协会会员单位</dd>
-                </dl>
-                <dl>
-                    <dt><img src="${img}/gywm_d.jpg"/></dt>
-                    <dd>中国投资协会会员单位</dd>
-                </dl>
-            </div>
-            <div class="clear"></div>
-            <p style="color:#848587;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;盈达资产成立于2014年，注册资本金一亿元，总部设立于北京金融街，依托股东的央企、省国投、国际经合组织、大型产业集团的雄厚背景和实力，定位于为高净值客户提供全面金融解决方案的卓越财富管理机构，致力于成为中国领先的集投资银行、资产管理、综合财富管理为一体的综合金融服务平台。</p>
-        </div>
-        <div class="t_c">
-            <div class="wd_">
-                <h1>媒体报道</h1>
-            </div>
-            <div class="mt_">
-                <img src="${img}/mt_1.jpg" usemap="#Map2" border="0"/>
-                <map name="Map2" id="Map2">
-                    <area shape="rect" coords="-5,31,74,63" href="#"/>
-                    <area shape="rect" coords="0,2,72,27" href="#"/>
-                </map>
-                <img src="${img}/mt_2.jpg" usemap="#Map3" border="0"/>
-                <map name="Map3" id="Map3">
-                    <area shape="rect" coords="1,2,103,33" href="#"/>
-                    <area shape="rect" coords="3,38,105,68" href="#"/>
-                </map>
-                <img src="${img}/mt_3.jpg" usemap="#Map4" border="0"/>
-                <map name="Map4" id="Map4">
-                    <area shape="rect" coords="3,-1,105,24" href="#"/>
-                    <area shape="rect" coords="2,29,103,61" href="#"/>
-                </map>
-                <img src="${img}/mt_4.jpg" usemap="#Map5" border="0"/>
-                <map name="Map5" id="Map5">
-                    <area shape="rect" coords="26,0,125,36" href="#"/>
-                    <area shape="rect" coords="7,46,138,77" href="#"/>
-                </map>
-                <img src="${img}/mt_5.jpg" usemap="#Map6" border="0"/>
-                <map name="Map6" id="Map6">
-                    <area shape="rect" coords="4,3,121,30" href="#"/>
-                    <area shape="rect" coords="16,41,113,71" href="#"/>
-                </map>
-            </div>
-        </div>
-        <div class="t_r">
-            <div class="wd_">
-                <h1>互联网金融研究</h1>
-            </div>
-            <p>近年来，网上借贷成了主流的趋势，
-                P2C网络贷款或称个体对企业信贷。网络贷款中介帮助确定借贷的条款和准备好必需的法律文本。更重要的是，中介网络平台的可以帮助借款人通过和其他借款人一起分担一笔借款额度的方式来分散风险，也帮助借款人在充分比较的信息中选择有吸引力的利率条件。而同时，收取一定的服务费作为中介平台的回报。</p>
-        </div>
-    </div>
-</div>
-
+<jsp:include page="news.jsp"/>
 <div class="clear"></div>
 <br/>
 <jsp:include page="footer.jsp"/>
 
-<script type="text/javascript" src="${js}/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="${js}/react.js"></script>
-<script type="text/javascript" src="${js}/react-dom.js"></script>
+<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery.jslides.js"></script>
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="${js}/es5-shim.js"></script>
+<script type="text/javascript" src="${js}/es5-sham.js"></script>
+<![endif]-->
+
+<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js"></script>
+<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js"></script>
 <script src="/js/investment.react.js?v=0.1.5"></script>
+<script src="/js/validate-code.react.js?1235ed"></script>
+
 
 <script type="text/javascript">
-    var s = [{
-                'img': '${img}/tz.jpg',
-                'title': '土豪金-----农信盈',
-                'rate': '14%',
-                'deadline': '365天',
-                'total': '302,000元',
-                'buy': true,
-                'progress': '53.3%'
-            },
-            {
-                'img': '${img}/tz.jpg',
-                'title': '土豪金-----农信盈',
-                'rate': '12%',
-                'deadline': '3月',
-                'total': '312,000元',
-                'buy': false,
-                'remaining': '27,000',
-                'limit': '1000',
-                'progress': '100%'
-            }];
+    var products = null;
+    $.ajax({
+        url: "/cache/product",
+        data: {version: "0.1.3"},
+        type: "get",
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            products = data;
+        },
+        error: function(xhr, status, err) {
+            alert(status + ": " + xhr.status);
+        }
+    });
+    if (products != null){
+        react_investment_render('invest_1001', products.I1001, 'http://renben.neowave.com.cn:8080/ydzc/img');
+        react_investment_render('invest_1002', products.I1002, 'http://renben.neowave.com.cn:8080/ydzc/img');
+        react_investment_render('invest_1003', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
+    }
 
-    react_investment_render('kkk', s);
+    react_slides_render('full-screen-slider');
 </script>
+
 </body>
 </html>

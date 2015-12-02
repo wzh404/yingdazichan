@@ -3,6 +3,7 @@ package com.xeehoo.p2p.controller;
 import com.sun.jndi.toolkit.url.Uri;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.LoanSlider;
 import com.xeehoo.p2p.service.LoanCacheService;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
@@ -17,9 +18,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.html.parser.Entity;
 import java.util.HashMap;
 import java.util.List;
@@ -89,4 +92,56 @@ public class LoanInvestController {
         UriUtils.createQueryCond(request, mav, cond);
         return mav;
     }
+
+
+    @RequestMapping(value = "/product", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public HashMap<String, Object> getProduct(HttpServletRequest request, HttpServletResponse response,
+                                              @RequestParam(value = "type", required = true) String productType,
+                                              @RequestParam(value = "page", required = false) Integer page){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> cond = new HashMap<String, Object>();
+
+        if (page == null || page <= 0)
+            page = 1;
+
+        cond.put("type", productType);
+        Integer totalSize = investService.getTotalProduct(cond);
+        map.put("totalSize", totalSize);
+        if (totalSize <= 0){
+            return map;
+        }
+        cond.remove("totalSize");
+
+//        cond.put("pageSize", 10);
+//        cond.put("offset", (page - 1) * 10);
+        cond.put("type", productType);
+        List<LoanProduct> products = investService.getInvestProductPager(page - 1, 10, cond);
+        if (products != null && products.size() > 0){
+            map.put("product", products);
+        }
+
+        return map;
+    }
+
+    @RequestMapping(value = "/cache/product", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public HashMap<String, Object> cacheProduct(HttpServletRequest request, HttpServletResponse response){
+        String[] productTypes = {"1001", "1002", "1003"};
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> cond = new HashMap<String, Object>();
+//        cond.put("pageSize", 2);
+//        cond.put("offset", 0);
+        for (String type : productTypes){
+            cond.put("type", type);
+            List<LoanProduct>  products = investService.getInvestProductPager(0, 2, cond);
+            if (products != null && products.size() > 0){
+                map.put("I" + type, products);
+            }
+        }
+
+        return map;
+    }
+
 }

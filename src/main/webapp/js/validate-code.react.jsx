@@ -4,19 +4,19 @@
 
 var ValidateCode = React.createClass({
     render: function() {
-        var show = this.showValidateCode();
-        if (show){
+        //var show = this.showValidateCode();
+        //if (show){
             $("#" + this.props.element).parent().attr('style', 'display:block');
             return(
                 <p>
                 <img id="validate_code" src="/vdcode" width="100" height="37" onClick={this.refreshValidateCode}/>
                 </p>
             );
-        }
-        else{
-            $("#" + this.props.element).parent().attr('style', 'display:none');
-            return <p></p>;
-        }
+        //}
+        //else{
+            //$("#" + this.props.element).parent().attr('style', 'display:none');
+            //return <p></p>;
+        //}
     },
 
     refreshValidateCode: function(event){

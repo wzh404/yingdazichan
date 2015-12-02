@@ -1,5 +1,7 @@
 package com.xeehoo.p2p.controller;
 
+import com.xeehoo.p2p.cache.Cache;
+import com.xeehoo.p2p.cache.impl.HttpSessionCache;
 import com.xeehoo.p2p.mybatis.mapper.UserMapper;
 import com.xeehoo.p2p.po.LoanUserFund;
 import com.xeehoo.p2p.po.SessionObject;
@@ -55,31 +57,71 @@ public class LoanUserController {
     /**
      * 新用户注册第一步
      *
-     * @param loginName 登录名
+     * @param mobile 登录名
      * @param loginPwd  登陆密码
-     * @param inviteCode  邀请码
+     * @param valideCode 验证码
      * @return  登录页
      */
-    @RequestMapping(value = "/reguser", method = RequestMethod.POST)
-    public ModelAndView reguser(HttpServletRequest request,
-                                @RequestParam(value = "txtUserCode", required = true) String loginName,
-                                @RequestParam(value = "txtPassword", required = true) String loginPwd,
-                                @RequestParam(value = "txtInviteCode", required = true) String inviteCode) {
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ModelAndView register(HttpServletRequest request,
+                                @RequestParam(value = "mobile", required = true) String mobile,
+                                @RequestParam(value = "pwd", required = true) String loginPwd,
+                                @RequestParam(value = "vcode", required = true) String valideCode) {
         LoanUser userInfo = new LoanUser();
-        userInfo.setLoginName(loginName);
+        userInfo.setLoginName(mobile);
         userInfo.setLoginPwd(loginPwd);
-        userInfo.setInviteCode(inviteCode);
+        userInfo.setMobile(mobile);
 
-        // 检查邀请手机是否注册手机号
-        if (!userService.checkUser(inviteCode, "MOBILE")) {
-            return CommonUtil.createErrorModelAndView("/user/register",
-                    messageSource.getMessage("register.invalid.invitecode", null, "", null));
+        Cache cache = new HttpSessionCache(request.getSession());
+        if (!checkValideCode(cache, valideCode)){
+            return new ModelAndView("/user/register_step_1");
         }
 
-        // 保存第一步注册信息到session中
-        HttpSession session = request.getSession(true);
-        session.setAttribute(Constant.SESSION_REGISTER_STEP, userInfo);
-        return new ModelAndView("/user/reg2");
+        sendAuthCode(cache, mobile);
+        cache.set(Constant.SESSION_REGISTER_USER, userInfo);
+
+        return new ModelAndView("/user/register_step_2");
+    }
+
+    /**
+     * 新用户注册第二步
+     *
+     * @param request
+     * @param authCode
+     * @return
+     */
+    @RequestMapping(value = "/register2", method = RequestMethod.POST)
+    public ModelAndView register2(HttpServletRequest request,
+                                @RequestParam(value = "authcode", required = true) String authCode) {
+        Cache cache = new HttpSessionCache(request.getSession());
+        LoanUser user = (LoanUser)cache.get(Constant.SESSION_REGISTER_USER);
+        if (user == null){
+            new ModelAndView("/user/register_step_1");
+        }
+
+        String cacheAuthCode = (String)cache.get(user.getMobile());
+        if (cacheAuthCode == null || !cacheAuthCode.equalsIgnoreCase(authCode)){
+            sendAuthCode(cache, user.getMobile());
+            return new ModelAndView("/user/register_step_2");
+        }
+
+        // 用户状态为正常
+        user.setUserStatus(Constant.USER_STATUS_NORMAL);
+
+        // 清除第一步的session数据
+        cache.remove(Constant.SESSION_REGISTER_USER);
+
+        // 注册IP地址
+        String host = CommonUtil.getRemoteHost(request);
+        user.setRegisterIP(host);
+
+        // 保存注册用户
+        Integer userID = userService.save(user);
+        if (userID > 0) {
+            return new ModelAndView("/user/register_step_3");
+        }
+
+        return new ModelAndView("error");
     }
 
     /**
@@ -95,15 +137,15 @@ public class LoanUserController {
                              @RequestParam(value = "txtShouJiMa", required = true) String authCode) {
         HttpSession session = request.getSession();
         // 取出上一步注册的信息。
-        LoanUser userInfo = (LoanUser) session.getAttribute(Constant.SESSION_REGISTER_STEP);
+        LoanUser userInfo = (LoanUser) session.getAttribute(Constant.SESSION_REGISTER_USER);
         if (userInfo == null) {
-            return CommonUtil.createErrorModelAndView("/user/register",
+            return CommonUtil.createErrorModelAndView("/user/register_step_1",
                     messageSource.getMessage("register.invalid.info", null, "", null));
         }
 
         // 检查手机是否已注册
         if (userService.checkUser(mobile, "MOBILE")) {
-            return CommonUtil.createErrorModelAndView("/user/reg2",
+            return CommonUtil.createErrorModelAndView("/user/register_step_2",
                     messageSource.getMessage("register.mobile.exists", null, "", null));
         }
         userInfo.setMobile(mobile);
@@ -119,7 +161,7 @@ public class LoanUserController {
         userInfo.setUserStatus(Constant.USER_STATUS_NORMAL);
 
         // 清除第一步的session数据
-        session.removeAttribute(Constant.SESSION_REGISTER_STEP);
+        session.removeAttribute(Constant.SESSION_REGISTER_USER);
 
         // 注册IP地址
         String host = CommonUtil.getRemoteHost(request);
@@ -159,14 +201,12 @@ public class LoanUserController {
                               HttpServletResponse response,
                               @RequestParam(value = "login_name", required = true) String loginName,
                               @RequestParam(value = "login_pwd", required = true) String loginPwd) {
-        int ret = loginv("name", request, response, loginName, loginPwd);
-
-        staffService.staffLogin("盈达官方", "123456");
+        int ret = login(request, response, "name", loginName, loginPwd);
         if (ret == Constant.LOGIN_INVALID_PWD) {
-            return CommonUtil.createErrorModelAndView("index",
+            return CommonUtil.createErrorModelAndView("login",
                     messageSource.getMessage("login.invalid.pwd", null, "", null));
         } else if (ret == Constant.LOGIN_INVALID_NAME) {
-            return CommonUtil.createErrorModelAndView("index",
+            return CommonUtil.createErrorModelAndView("login",
                     messageSource.getMessage("login.invalid.name", null, "", null));
         }
 
@@ -199,7 +239,16 @@ public class LoanUserController {
      * @param loginPwd
      * @return
      */
-    private int loginv(String loginType, HttpServletRequest request, HttpServletResponse response, String loginName, String loginPwd) {
+    private int login(HttpServletRequest request,
+                      HttpServletResponse response,
+                      String loginType,
+                      String loginName,
+                      String loginPwd) {
+        HttpSession session = request.getSession();
+        Cache cache = new HttpSessionCache(session);
+//        checkValideCode(cache, )
+
+        // client ip address
         String host = CommonUtil.getRemoteHost(request);
         Optional<LoanUser> userInfo = userService.login(loginType, loginName, loginPwd);
         if (!userInfo.isPresent()) {
@@ -207,13 +256,12 @@ public class LoanUserController {
         }
 
         if (userInfo.get().getUserStatus() != Constant.LOGIN_OK) {
-            HttpSession session = request.getSession();
-            if (session != null)
-                session.invalidate();
+            session.invalidate();
 
             return userInfo.get().getUserStatus();
         }
 
+        //生成token
         logger.info(loginName + " - " + host);
         String token = CommonUtil.generateToken(loginName, host);
 
@@ -224,15 +272,39 @@ public class LoanUserController {
         cookie.setMaxAge(2 * 60 * 60);
         response.addCookie(cookie);
 
-        // 保存session对象
+        // 保存登录信息到cache
         SessionObject so = new SessionObject();
         so.setLoginName(loginName);
         so.setToken(token);
         so.setUserID(userInfo.get().getUserId());
-        HttpSession session = request.getSession(true);
-        CommonUtil.setSessionObject(session, token, so);
+        cache.set(Constant.SESSION_USER_LOGIN, so);
 
         return Constant.LOGIN_OK;
+    }
+
+    /**
+     * 发送短信验证码
+     *
+     * @param cache
+     * @param mobile
+     */
+    private void sendAuthCode(Cache cache, String mobile){
+        String authCode = CommonUtil.generateAuthCode();
+        logger.info("**** " + mobile + " - " + authCode);
+        cache.set(mobile, authCode);
+    }
+
+    /**
+     * 检查网站校验码
+     *
+     * @param cache
+     * @param vcode
+     * @return
+     */
+    private boolean checkValideCode(Cache cache, String vcode){
+        String cacheValidecode = (String)cache.get(Constant.SESSION_VALIDATE_CODE);
+
+        return (cacheValidecode != null && cacheValidecode.equalsIgnoreCase(vcode));
     }
 
     /*---------------------------Ajax controller--------------------------------*/
@@ -248,7 +320,7 @@ public class LoanUserController {
                          @RequestParam(value = "login_name", required = true) String loginName,
                          @RequestParam(value = "login_pwd", required = true) String loginPwd) {
         Map map = CommonUtil.generateJsonMap("OK", null);
-        int ret = loginv("name", request, response, loginName, loginPwd);
+        int ret = login(request, response, "name", loginName, loginPwd);
         if (ret == 2) {
             map = CommonUtil.generateJsonMap("ERROR",
                     messageSource.getMessage("login.invalid.pwd", null, "", null));
@@ -261,18 +333,24 @@ public class LoanUserController {
     }
 
     /**
-     * 发送注册授权码
+     * 发送手机注册验证码
      *
      * @param mobile 手机号
      * @return
      */
-    @RequestMapping(value = "/ajax/authcode", method = RequestMethod.GET)
+    @RequestMapping(value = "/ajax/sendauthcode", method = RequestMethod.GET)
     @ResponseBody
-    public Map sendAuthCode(@RequestParam(value = "mobile", required = true) String mobile) {
-        String authCode = CommonUtil.generateAuthCode();
-        cacheService.setMobileAuthCode(mobile, authCode);
+    public Map sendAuthCode(HttpServletRequest request,
+                            @RequestParam(value = "mobile", required = true) String mobile) {
+        HttpSession session = request.getSession();
+        Cache cache = new HttpSessionCache(session);
+        LoanUser user = (LoanUser)cache.get(Constant.SESSION_REGISTER_USER);
+        if (user != null && user.getMobile().equalsIgnoreCase(mobile)){
+            sendAuthCode(cache, mobile);
+            return CommonUtil.generateJsonMap("OK", "send ok");
+        }
 
-        return CommonUtil.generateJsonMap("OK", authCode);
+        return CommonUtil.generateJsonMap("ERROR", "invalid request!");
     }
 
     /**
@@ -299,10 +377,9 @@ public class LoanUserController {
      * @param mobile
      * @return
      */
-    @RequestMapping(value = "/ajax/mobile", method = RequestMethod.GET)
+    @RequestMapping(value = "/ajax/checkMobile", method = RequestMethod.GET)
     @ResponseBody
-    public Map checkUserMobile(@RequestParam(value = "mobile", required = true) String mobile,
-                               @RequestParam(value = "send", required = false) Boolean sendAuthCode) {
+    public Map checkUserMobile(@RequestParam(value = "mobile", required = true) String mobile) {
         boolean exist = userService.checkUser("mobile", mobile);
 
         Map map ;
@@ -313,11 +390,6 @@ public class LoanUserController {
             map = CommonUtil.generateJsonMap("NO", null);
         }
 
-        if (sendAuthCode != null && sendAuthCode) {
-            String authCode = CommonUtil.generateAuthCode();
-            logger.info("mobile authcode is " + authCode);
-            cacheService.setMobileAuthCode(mobile, authCode);
-        }
         return map;
 
     }

@@ -16,18 +16,12 @@
 <link rel="stylesheet" type="text/css" href="${css}/style.css" />
 <link rel="stylesheet" type="text/css" href="${css}/login.css" />
 
-<script type="text/javascript" src="${js}/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="${js}/react.js"></script>
-<script type="text/javascript" src="${js}/react-dom.js"></script>
-<script src="/js/validate-code.react.js?v=0.1.5"></script>
-<script src="/js/investment.react.js?v=0.1.5"></script>
-
 <body>
 <!--head  start-->
 <div class="The_total head">
 	<div class="The_total1200">
         <div class="logo"></div>
-        <p class="fhsy"><a href="index.jsp">返回首页</a></p>
+        <p class="fhsy"><a href="../index.jsp">返回首页</a></p>
     </div>
 </div>
 <div class="banner The_total">
@@ -58,7 +52,7 @@
                </div>
                 <div>
                     <p class=" img1"><img src="${img}/dlk_inp2.jpg" /></p>
-                    <input type="text" name="login_pwd" id="login_pwd" value="请输入密码"
+                    <input type="password" name="login_pwd" id="login_pwd" value="请输入密码"
           onblur="(this.value=='')?this.value='请输入密码':this.value" 
             onfocus="if(this.value=='请输入密码'){this.value='';};this.select();"/>
         		</div>
@@ -77,11 +71,20 @@
 <!--head  end-->
 
 <!--bottom  start-->
-<jsp:include page="footer.jsp"/>
+<jsp:include page="../footer.jsp"/>
 <!--bottom_0  end-->
 
 </body>
+<script type="text/javascript" src="${js}/jquery-1.7.2.min.js"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="${js}/es5-shim.js"></script>
+<script type="text/javascript" src="${js}/es5-sham.js"></script>
+<![endif]-->
 
+<script type="text/javascript" src="${js}/react.js"></script>
+<script type="text/javascript" src="${js}/react-dom.js"></script>
+<script src="/js/validate-code.react.js?v=0.1.5"></script>
+<script src="/js/investment.react.js?v=0.1.5"></script>
 <script type="text/javascript">
     react_validate_code_render('validateCode');
 </script>

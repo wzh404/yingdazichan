@@ -21,7 +21,7 @@ public class Constant {
 
 
     //用户注册按步存储数据
-    public final static String SESSION_REGISTER_STEP = "register_step";
+    public final static String SESSION_REGISTER_USER = "register_user";
 
     // 用户登录后存储的会话数据
     public final static String SESSION_USER_LOGIN = "user";

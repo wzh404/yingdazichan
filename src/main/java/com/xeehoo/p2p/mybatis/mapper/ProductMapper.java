@@ -24,4 +24,13 @@ public interface ProductMapper {
      * @return
      */
     public Integer getTotalProduct(Map<String, Object> map);
+
+
+
+
+    /**
+     *
+     * @return
+
+    public List<LoanProduct> getProductByType(Map<String, Object> map);*/
 }
