@@ -48,7 +48,7 @@ function checkValideCode(id) {
         showErrorMsg(id, "验证码为4位字符");
         return false;
     }
-    else if (!isValideCode($(v).val())) {
+    else if (!isValideCode($('#' + id).val())) {
         showErrorMsg(id, "不正确的验证码");
         return false;
     }
@@ -61,15 +61,16 @@ function checkMobile(id){
     var json = callAjax('/ajax/checkMobile', {mobile: $('#' + id).val()});
     if (json == null){
         showErrorMsg(id, "检查失败！");
-        return;
+        return false;
     }
 
     if (json.resultCode == 'OK'){
         showErrorMsg(id, "手机已注册");
-        return;
+        return false;
     }
 
     hideErrorMsg(id);
+    return true;
 }
 
 function showErrorMsg(id, msg){

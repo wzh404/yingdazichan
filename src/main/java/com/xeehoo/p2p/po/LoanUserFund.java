@@ -7,11 +7,13 @@ import java.math.BigDecimal;
  */
 public class LoanUserFund {
     private Integer userId;
-    private BigDecimal totalAssets; // 总资产
-    private BigDecimal notDueAmount; // 未到期金额
-    private BigDecimal awaitEarnings; // 待分配收益
-    private BigDecimal dynamicEarnings; // 动态净收益
+    private BigDecimal totalFund; // 总资产
+    private BigDecimal totalPrincipal; // 累计本金
     private BigDecimal totalEarnings; // 累计净收益
+    private BigDecimal recoveryPrincipal; // 未到期本金
+    private BigDecimal freezeFund; // 冻结资金
+
+    private BigDecimal availableFund; //可用资金
 
     public Integer getUserId() {
         return userId;
@@ -21,36 +23,20 @@ public class LoanUserFund {
         this.userId = userId;
     }
 
-    public BigDecimal getTotalAssets() {
-        return totalAssets;
+    public BigDecimal getTotalFund() {
+        return totalFund;
     }
 
-    public void setTotalAssets(BigDecimal totalAssets) {
-        this.totalAssets = totalAssets;
+    public void setTotalFund(BigDecimal totalFund) {
+        this.totalFund = totalFund;
     }
 
-    public BigDecimal getNotDueAmount() {
-        return notDueAmount;
+    public BigDecimal getTotalPrincipal() {
+        return totalPrincipal;
     }
 
-    public void setNotDueAmount(BigDecimal notDueAmount) {
-        this.notDueAmount = notDueAmount;
-    }
-
-    public BigDecimal getAwaitEarnings() {
-        return awaitEarnings;
-    }
-
-    public void setAwaitEarnings(BigDecimal awaitEarnings) {
-        this.awaitEarnings = awaitEarnings;
-    }
-
-    public BigDecimal getDynamicEarnings() {
-        return dynamicEarnings;
-    }
-
-    public void setDynamicEarnings(BigDecimal dynamicEarnings) {
-        this.dynamicEarnings = dynamicEarnings;
+    public void setTotalPrincipal(BigDecimal totalPrincipal) {
+        this.totalPrincipal = totalPrincipal;
     }
 
     public BigDecimal getTotalEarnings() {
@@ -59,5 +45,29 @@ public class LoanUserFund {
 
     public void setTotalEarnings(BigDecimal totalEarnings) {
         this.totalEarnings = totalEarnings;
+    }
+
+    public BigDecimal getRecoveryPrincipal() {
+        return recoveryPrincipal;
+    }
+
+    public void setRecoveryPrincipal(BigDecimal recoveryPrincipal) {
+        this.recoveryPrincipal = recoveryPrincipal;
+    }
+
+    public BigDecimal getFreezeFund() {
+        return freezeFund;
+    }
+
+    public void setFreezeFund(BigDecimal freezeFund) {
+        this.freezeFund = freezeFund;
+    }
+
+    /**
+     * 可用资产 = 总资产 - 待收回本金 ( -冻结资金 )
+     * @return
+     */
+    public  BigDecimal getAvailableFund(){
+        return this.totalFund.subtract(this.recoveryPrincipal);
     }
 }

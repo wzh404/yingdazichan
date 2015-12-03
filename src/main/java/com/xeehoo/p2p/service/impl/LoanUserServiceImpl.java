@@ -104,11 +104,11 @@ public class LoanUserServiceImpl implements LoanUserService {
         if (userFund == null){
             userFund = new LoanUserFund();
             userFund.setUserId(userId);
-            userFund.setAwaitEarnings(new BigDecimal(0.00f));
-            userFund.setDynamicEarnings(new BigDecimal(0.00f));
-            userFund.setTotalAssets(new BigDecimal(0.00f));
-            userFund.setNotDueAmount(new BigDecimal(0.00f));
+            userFund.setTotalFund(new BigDecimal(0.00f));
+            userFund.setTotalPrincipal(new BigDecimal(0.00f));
             userFund.setTotalEarnings(new BigDecimal(0.00f));
+            userFund.setRecoveryPrincipal(new BigDecimal(0.00f));
+            userFund.setFreezeFund(new BigDecimal(0.00f));
         }
 
         return userFund;

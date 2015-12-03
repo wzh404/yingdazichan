@@ -25,13 +25,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 取session存取的用户信息
         HttpSession session = request.getSession();
         if (session == null) {
-            response.sendRedirect("/index.jsp");
+            response.sendRedirect("/user/login.jsp");
             return false;
         }
 
         SessionObject so = (SessionObject) session.getAttribute("user");
         if (so == null) {
-            response.sendRedirect("/index.jsp");
+            response.sendRedirect("/user/login.jsp");
             return false;
         }
 

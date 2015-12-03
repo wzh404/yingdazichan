@@ -93,25 +93,38 @@
 <script type="text/javascript">
     react_validate_code_render('validateCode');
 
-    var result = false;
+    function setMask(r, m, v){
+        if (r)
+            return (m | v);
+        else
+            return (m & (0x0F - v));
+    }
+
+    var mask = 0x00;
+
     $("#mobile").blur(function(){
-        result = checkValue('mobile');
+        var r = checkValue('mobile')
+        mask = setMask(r, mask, 0x01);
     });
 
     $("#pwd").blur(function(){
-        result = checkValue('pwd');
+        var r = checkValue('pwd');
+        mask = setMask(r, mask, 0x02);
     });
 
     $("#pwd2").blur(function(){
-        result = comparePassword('pwd', 'pwd2');
+        var r = comparePassword('pwd', 'pwd2');
+        mask = setMask(r, mask, 0x04);
     });
 
     $("#vcode").blur(function(){
-        result = checkValue('vcode');
+        var r = checkValue('vcode');
+        mask = setMask(r, mask, 0x08);
     });
 
     $("#submit_register").click(function(){
-        if (result){
+        console.log(mask);
+        if (mask == 0x0F){
             $("#form1").submit();
         };
     });

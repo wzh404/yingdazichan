@@ -203,10 +203,10 @@ public class LoanUserController {
                               @RequestParam(value = "login_pwd", required = true) String loginPwd) {
         int ret = login(request, response, "name", loginName, loginPwd);
         if (ret == Constant.LOGIN_INVALID_PWD) {
-            return CommonUtil.createErrorModelAndView("login",
+            return CommonUtil.createErrorModelAndView("/user/login",
                     messageSource.getMessage("login.invalid.pwd", null, "", null));
         } else if (ret == Constant.LOGIN_INVALID_NAME) {
-            return CommonUtil.createErrorModelAndView("login",
+            return CommonUtil.createErrorModelAndView("/user/login",
                     messageSource.getMessage("login.invalid.name", null, "", null));
         }
 
@@ -222,12 +222,12 @@ public class LoanUserController {
     public ModelAndView fund(HttpServletRequest request) {
         SessionObject so = CommonUtil.getSessionObject(request, null);
         if (so == null) {
-            return new ModelAndView("/index");
+            return new ModelAndView("/user/login");
         }
         Integer userID = so.getUserID();
         LoanUserFund userFund = userService.getFundByUserID(userID);
 
-        return new ModelAndView("/user/home", "userFund", userFund);
+        return new ModelAndView("/user/user_fund", "userFund", userFund);
     }
 
     /**

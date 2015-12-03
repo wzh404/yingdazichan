@@ -19,11 +19,11 @@
     <!-- 用户资产信息-->
     <resultMap type="com.xeehoo.p2p.po.LoanUserFund" id="userFund">
         <id property="userId" column="user_id"/>
-        <result property="totalAssets" column="total_assets"/>
-        <result property="notDueAmount" column="not_due_amount"/>
-        <result property="awaitEarnings" column="await_earnings"/>
+        <result property="totalFund" column="total_fund"/>
+        <result property="totalPrincipal" column="total_principal"/>
         <result property="totalEarnings" column="total_earnings"/>
-        <result property="dynamicEarnings" column="dynamic_earnings"/>
+        <result property="recoveryPrincipal" column="recovery_principal"/>
+        <result property="freezeFund" column="freeze_fund"/>
     </resultMap>
 
     <insert id="saveUser" parameterType="com.xeehoo.p2p.po.LoanUser">
