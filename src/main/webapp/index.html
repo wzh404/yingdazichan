@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+ <ul>
+     <li><a href="#userReg">1. 个人开户 </a></li>
+     <li><a href="#artifReg">24. 法人开户 </a></li>
+     <li><a href="/query">2. 明细(20151101-)</a></li>
+     <li><a href="/balance">3. 余额</a></li>
+     <li><a href="/quickRecharge">29. 快速充值</a></li>
+     <li><a href="javascript:act('/bankRecharge');">30. 网银充值</a>&nbsp;&nbsp;&nbsp;&nbsp;<input id="amt" value="100000"/>后两位小数点</li>
+     <li><a href="javascript:act('/withdraw');">31. 提现</a></li>
+     <li><a href="javascript:act('/freeze');">12. 冻结 - 投标</a></li>
+     <li><a href="javascript:act('/unfreeze');">15. 解冻 - 流标</a></li>
+     <li><a href="#freeze2freeze">15. 冻结到冻结 - 满标</a></li>
+     <li><a href="#transferBmu">6. 划拨（商户与个人） </a></li>
+     <li><a href="#transferBu">7. 划拨（个人与个人） </a></li>
+     <li><a href="/sign">31. 免登录签约</a></li>
+ </ul>
+
+<script type="text/javascript">
+    function act(url){
+        var amt = document.getElementById("amt").value;
+        alert(url + "?amt=" + amt);
+        window.location.href = url + "?amt=" + amt;
+    }
+</script>
+</body>
+</html>
