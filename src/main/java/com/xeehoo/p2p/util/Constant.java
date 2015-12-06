@@ -17,9 +17,6 @@ public class Constant {
 
     public final static String DICT_PRODUCT_TYPE = "10";
 
-
-
-
     //用户注册按步存储数据
     public final static String SESSION_REGISTER_USER = "register_user";
 

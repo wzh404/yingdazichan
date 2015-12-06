@@ -1,12 +1,8 @@
 package com.xeehoo.p2p.controller;
 
-import com.fuiou.data.CommonRspData;
-import com.fuiou.data.QueryReqData;
-import com.fuiou.data.QueryRspData;
-import com.fuiou.data.RegReqData;
-import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.cache.Cache;
 import com.xeehoo.p2p.cache.impl.HttpSessionCache;
+import com.xeehoo.p2p.fuiou.QuickRechargeReqData;
 import com.xeehoo.p2p.po.LoanUserFund;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.po.LoanUser;
@@ -15,7 +11,6 @@ import com.xeehoo.p2p.service.LoanStaffService;
 import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.util.CommonUtil;
 import com.xeehoo.p2p.util.Constant;
-import com.xeehoo.p2p.util.MD5;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -55,62 +49,8 @@ public class LoanUserController {
     @Autowired
     private Environment environment;
 
-    @RequestMapping(value = "/freg", method = RequestMethod.GET)
-    public ModelAndView freg(HttpServletRequest request){
-        RegReqData data = new RegReqData();
-        data.setMchnt_cd("0002900F0339996"); //商户号
 
-        Long ssn = System.nanoTime();
-        logger.info("txn_ssn is " + ssn);
-        data.setMchnt_txn_ssn(ssn.toString()); //流水号
 
-        data.setCust_nm("王尊会"); //用户名称
-        data.setCertif_id("610425197204042611"); //身份证
-        data.setMobile_no("18611330404"); //手机
-        data.setEmail("wzh404@sina.com");  //邮箱
-        data.setCity_id("1000");  //城市
-        data.setParent_bank_id("0308");  //开户行
-        data.setBank_nm("招商银行股份有限公司上海联洋支行");  //银行名称
-        data.setCapAcntNm(""); //提现账户开户名(留空)
-        data.setCapAcntNo("6225880159846000"); //帐号
-        data.setRem("test"); //备注
-
-        data.setPassword(MD5.MD5Encode("123456")); //登录密码
-        data.setLpassword(MD5.MD5Encode("654321")); //支付密码
-
-        FuiouService fuiouService = new FuiouService();
-        try {
-            CommonRspData rsp = fuiouService.reg(data);
-            logger.info(rsp.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @RequestMapping(value = "/okhttp", method = RequestMethod.GET)
-    public ModelAndView testOkHttp(HttpServletRequest request){
-        QueryReqData data = new QueryReqData();
-        data.setMchnt_cd("0002900F0339996"); //商户号
-        data.setUser_ids("18611330404");  // 用户ID
-        data.setStart_day("20120901"); //开始日期
-        data.setEnd_day("20120901"); //终止日期
-
-        Long ssn = System.nanoTime();
-        logger.info("txn_ssn is " + ssn);
-        data.setMchnt_txn_ssn(ssn.toString()); //流水号
-
-        FuiouService fuiouService = new FuiouService();
-        try {
-            QueryRspData rsp = fuiouService.query(data);
-            logger.info(rsp.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     /**
      * 新用户注册第一步
