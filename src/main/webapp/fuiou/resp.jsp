@@ -17,7 +17,7 @@
           content="网上购物-网上支付-安全支付-安全购物-购物，安全-支付-联通支付,在线-付款,收款-网上,贸易-网上贸易" />
 </head>
 
-<body onload="javascript:doPay();">
+<body >
 <div id="loader_container" style="width:100%">
     <div id="loader" style="width:100%">
         ${data.toString()}

@@ -5,11 +5,11 @@ import com.fuiou.service.FuiouService;
 import com.fuiou.util.SecurityUtils;
 //import com.xeehoo.p2p.fuiou.AppSignCardReqData;
 import com.xeehoo.p2p.util.MD5;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -332,19 +332,24 @@ public class FuiouController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/queryTxn", method = RequestMethod.GET)
+    @RequestMapping(value = "/queryTxn", method = RequestMethod.POST)
     public ModelAndView queryTxn(HttpServletRequest request,
-                                 @RequestParam(value = "mobile", required = false) String custNo,
-                                 @RequestParam(value = "txn_type", required = false) String txnType,
+                                 @RequestParam(value = "cust_no", required = false) String custNo,
+                                 @RequestParam(value = "txn_type", required = true) String txnType,
                                  @RequestParam(value = "txn_ssn", required = false) String txnSsn,
-                                 @RequestParam(value = "start_date", required = false) String startDate,
-                                 @RequestParam(value = "end_date", required = false) String endDate){
+                                 @RequestParam(value = "start_date", required = true) String startDate,
+                                 @RequestParam(value = "end_date", required = true) String endDate){
         QueryTxnReqData data = new QueryTxnReqData();
         data.setMchnt_cd(this.getMchntCd()); // 商户号
         data.setMchnt_txn_ssn(this.getMchntTxnSsn()); //流水号
-        data.setCust_no(custNo);  // 交易账号
-        data.setBusi_tp("PWDJ"); // txnType交易类型
-        //data.setTxn_ssn(txnSsn);   // 交易流水号
+
+        if (!StringUtils.isEmpty(custNo))
+            data.setCust_no(custNo);  // 交易账号
+        data.setBusi_tp(txnType); // txnType交易类型
+
+        if (!StringUtils.isEmpty(txnSsn))
+            data.setTxn_ssn(txnSsn);   // 交易流水号
+
         data.setStart_day("20151201"); //startDate交易起始日期 不能跨月
         data.setEnd_day("20151207"); //交易终止日期
 
