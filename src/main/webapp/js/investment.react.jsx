@@ -1,6 +1,14 @@
 /**
  * Created by wangzunhui on 2015/11/28.
  */
+function formatNum(num, n) {
+    num = String(num.toFixed(n));
+
+    var re = /(-?\d+)(\d{3})/;
+    while (re.test(num)) num = num.replace(re, "$1,$2");
+
+    return num;
+}
 
 var InvestmentIcon = React.createClass({
     render: function() {
@@ -28,7 +36,7 @@ var InvestmentField = React.createClass({
 
         return(
             <div className="xrb_a21_">
-                <p style={c1Style}>{this.props.data}</p>
+                <p style={c1Style}>{this.props.data} {this.props.unit}</p>
                 <p style={c2Style}>{this.props.name}</p>
             </div>
         );
@@ -103,33 +111,42 @@ var InvestmentBuy = React.createClass({
             return (<div className="xrb_a20_0"></div>);
         }
         else {
+            var amount = formatNum(this.props.remain, 0);
             return (
                 <div className="xrb_a21">
-                    <p style={c1Style}>333，600（剩余金额）</p>
+                    <p style={c1Style}>{amount}（剩余金额）</p>
                     <div className="xrb_a20_1">
-                        <input type="text"  style={c2Style}/>
-                        <a style={c3Style} href="">立即抢购</a>
+                        <input type="text"  id="buy_amt"style={c2Style} />
+                        <a style={c3Style} href="javascript: void(0);" onClick={this.buy}>立即抢购</a>
                     </div>
                 </div>
             );
         }
+    },
+    buy: function(){
+        alert(this.props.product +'-'+ $('#buy_amt').val());
     }
 });
 
 var Investment = React.createClass({
     render: function() {
+        var buyed = this.props.invest.totalAmount - this.props.invest.residualAmount;
+        var progress = Math.floor(buyed * 100 / this.props.invest.totalAmount);
+        var buy = progress == 100 ? false : true;
+        var icon = this.props.imgPath + "/" + this.props.invest.productType + ".jpg";
+        var amount = formatNum(this.props.invest.totalAmount, 0);
 
         return (
             <div className="xh_0">
-                <InvestmentIcon  img = {this.props.invest.img}/>
+                <InvestmentIcon  img = {icon}/>
                 <div className="xh_01">
                     <InvestmentTitle title={this.props.invest.title} />
                     <div className="xrb_a2">
-                        <InvestmentField name="年化收益率" data={this.props.invest.rate}/>
-                        <InvestmentField name="投资期限" data={this.props.invest.deadline}/>
-                        <InvestmentField name="标的总额" data={this.props.invest.total}/>
-                        <InvestmentProgress progress={this.props.invest.progress}/>
-                        <InvestmentBuy buy={this.props.invest.buy}/>
+                        <InvestmentField name="年化收益率" data={this.props.invest.loanRate} unit="%"/>
+                        <InvestmentField name="投资期限" data={this.props.invest.investDay} unit="天"/>
+                        <InvestmentField name="标的总额" data={this.props.invest.total} unit="元"/>
+                        <InvestmentProgress progress={progress}/>
+                        <InvestmentBuy buy={buy} min={this.props.invest.minAmount} remain={this.props.invest.residualAmount} product={this.props.invest.productID}/>
                     </div>
                 </div>
             </div>
@@ -140,10 +157,11 @@ var Investment = React.createClass({
 
 var Investments = React.createClass({
     render: function () {
+        var imagePath = this.props.imgPath;
         return (
           <div>
               {this.props.invests.map(function(invest, id) {
-                  return <Investment invest={invest} key={id}/>;
+                  return <Investment invest={invest} imgPath={imagePath} key={id}/>;
               })}
           </div>
         );
@@ -151,9 +169,9 @@ var Investments = React.createClass({
 });
 
 
-function react_investment_render(elementName, data){
+function react_investment_render(elementName, data, imgPath){
     ReactDOM.render(
-        <Investments invests={data}/>,
+        <Investments invests={data} imgPath={imgPath}/>,
         document.getElementById(elementName)
     );
 }

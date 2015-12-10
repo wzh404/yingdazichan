@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.html.parser.Entity;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,35 @@ public class LoanInvestController {
     @Autowired
     private LoanDictService dictService;
 
+
+    /**
+     * 个人投资产品
+     *
+     * @param request
+     * @param amount  投资金额
+     * @param productId  投资产品ID
+     * @param sign 签名数据（未用）
+     * @return
+     */
     @RequestMapping(value = "/invest", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView invest(HttpServletRequest request,
+    @ResponseBody
+    public String invest(HttpServletRequest request,
+                               @RequestParam(value = "amt", required = true) Long amount,
+                               @RequestParam(value = "product", required = true) Integer productId,
+                               @RequestParam(value = "sign", required = false) String sign) {
+        Integer userId = 3;
+        Integer investId = investService.updateProductUserAmount(productId, userId, new BigDecimal(amount / 100.0));
+        if (investId > 0){
+            logger.info("investId is " + investId);
+            return "ok";
+        }
+        else {
+            return "failed";
+        }
+    }
+
+    @RequestMapping(value = "/queryInvestment", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView queryInvestment(HttpServletRequest request,
                                 @RequestParam(value = "type", required = false) String productType,
                                 @RequestParam(value = "rate", required = false) String loanRate,
                                 @RequestParam(value = "stat", required = false) Integer productStatus,

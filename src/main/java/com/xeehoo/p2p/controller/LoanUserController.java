@@ -2,7 +2,6 @@ package com.xeehoo.p2p.controller;
 
 import com.xeehoo.p2p.cache.Cache;
 import com.xeehoo.p2p.cache.impl.HttpSessionCache;
-import com.xeehoo.p2p.fuiou.QuickRechargeReqData;
 import com.xeehoo.p2p.po.LoanUserFund;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.po.LoanUser;
@@ -50,8 +49,6 @@ public class LoanUserController {
     private Environment environment;
 
 
-
-
     /**
      * 新用户注册第一步
      *
@@ -94,7 +91,7 @@ public class LoanUserController {
         Cache cache = new HttpSessionCache(request.getSession());
         LoanUser user = (LoanUser)cache.get(Constant.SESSION_REGISTER_USER);
         if (user == null){
-            new ModelAndView("/user/register_step_1");
+            return new ModelAndView("/user/register_step_1");
         }
 
         String cacheAuthCode = (String)cache.get(user.getMobile());

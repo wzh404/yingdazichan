@@ -1,7 +1,10 @@
 package com.xeehoo.p2p.mybatis.mapper;
 
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.LoanUserInvestment;
+import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +28,28 @@ public interface ProductMapper {
      */
     public Integer getTotalProduct(Map<String, Object> map);
 
+    /**
+     *
+     * @param productId
+     * @return
+     */
+    public LoanProduct getProduct(Integer productId);
 
 
+    /**
+     *
+     * @param productId
+     * @param amount
+     * @return
+     */
+    public Integer updateProductAmount(@Param("productId")Integer productId, @Param("amount")BigDecimal amount);
+
+    /**
+     *
+     * @param investment
+     * @return
+     */
+    public Integer saveUserInvestment(LoanUserInvestment investment);
 
     /**
      *

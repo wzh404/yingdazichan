@@ -2,13 +2,18 @@ package com.xeehoo.p2p.service.impl;
 
 import com.xeehoo.p2p.mybatis.mapper.ProductMapper;
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +41,39 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     public int getTotalProduct(Map<String, Object> cond) {
         Integer total = productMapper.getTotalProduct(cond);
         return total;
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED, readOnly = false)
+    public int updateProductUserAmount(Integer productId, Integer userId, BigDecimal amount) {
+        LoanProduct product = productMapper.getProduct(productId);
+        if (product == null){
+            logger.warn("product " + productId + "is not found!");
+            return 0;
+        }
+
+        int result = productMapper.updateProductAmount(productId, amount);
+        if (result > 0){
+            LoanUserInvestment investment = new LoanUserInvestment();
+
+            investment.setProductId(productId);
+            investment.setProductName(product.getProductName());
+            investment.setUserId(userId);
+            investment.setInvestAmount(amount);
+            investment.setInvestTime(new Date());
+            investment.setInvestStartDate(new Date());
+            investment.setInvestClosingDate(new Date());
+            investment.setInvestIncome(new BigDecimal(0.00));
+            investment.setInvestServiceCharge(new BigDecimal(0.00));
+            investment.setInvestStatus("I"); //投标
+            investment.setPaySeqno("");
+
+            result = productMapper.saveUserInvestment(investment);
+            return result;
+        }
+
+        logger.warn("amount is not enough");
+        return 0;
     }
 
     @Override

@@ -254,7 +254,6 @@ public class FuiouController {
         data.setAmt(v6); //解冻金额
         data.setRem("test"); //备注
 
-
         UnFreezeRspData rsp = null;
         try {
             rsp = FuiouService.unFreeze(data);

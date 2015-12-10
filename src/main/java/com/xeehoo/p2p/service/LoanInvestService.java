@@ -3,6 +3,7 @@ package com.xeehoo.p2p.service;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,14 @@ public interface LoanInvestService {
      * @return
      */
     public int getTotalProduct(Map<String, Object> cond);
+
+    /**
+     *
+     * @param productId
+     * @param amount
+     * @return
+     */
+    public int updateProductUserAmount(Integer productId, Integer userId, BigDecimal amount);
 
     /*  admin service   */
     public LoanPagedListHolder getProductPager(int page, Map<String, Object> cond);

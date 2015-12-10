@@ -16,6 +16,22 @@
         <result property="minAmount" column="min_amount"/>
     </resultMap>
 
+    <!-- 用户投资 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanUserInvestment" id="investment">
+        <id property="investId" column="invest_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="investStartDate" column="invest_start_date"/>
+        <result property="investClosingDate" column="invest_closing_date"/>
+        <result property="investAmount" column="invest_amount"/>
+        <result property="investIncome" column="invest_income"/>
+        <result property="investServiceCharge" column="invest_service_charge"/>
+        <result property="investStatus" column="invest_status"/>
+        <result property="investTime" column="invest_time"/>
+        <result property="paySeqno" column="pay_seqno"/>
+    </resultMap>
+
     <sql id="product_pager_where">
         <where>
             <if test="low_rate != null">
@@ -33,6 +49,11 @@
         </where>
     </sql>
 
+    <!-- 根据产品ID获取产品信息 -->
+    <select id="getProduct" resultMap="product" parameterType="int">
+        SELECT * FROM t_loan_product WHERE product_id = #{productId}
+    </select>
+
     <!-- 分页查询产品信息  -->
     <select id="getProductPager" resultMap="product" parameterType="java.util.Map">
         SELECT * FROM t_loan_product
@@ -46,10 +67,45 @@
         <include refid="product_pager_where"/>
     </select>
 
-    <!-- 首页推荐产品
-    <select id="getProductByType" resultMap="product" parameterType="java.util.Map">
-        SELECT * FROM t_loan_product
-        WHERE product_type = #{productType}
-        LIMIT #{pageSize} OFFSET #{offset}
-    </select>-->
+    <!-- 投标 -->
+    <update id="updateProductAmount">
+        UPDATE t_loan_product SET residual_amount = residual_amount - #{amount}
+        WHERE product_status = 0
+          AND residual_amount > #{amount}
+          AND product_id = #{productId}
+    </update>
+
+    <!-- 用户投资 -->
+    <insert id="saveUserInvestment" parameterType="com.xeehoo.p2p.po.LoanUserInvestment">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="investId" >
+            SELECT currval('t_loan_user_investment_invest_id_seq') AS investId
+        </selectKey>
+
+        INSERT INTO t_loan_user_investment (
+        product_id,
+        product_name,
+        user_id,
+        invest_start_date,
+        invest_closing_date,
+        invest_amount,
+        invest_income,
+        invest_service_charge,
+        invest_status,
+        invest_time,
+        pay_seqno
+        )
+        VALUES (
+        #{productId},
+        #{productName},
+        #{userId},
+        #{investStartDate},
+        #{investClosingDate},
+        #{investAmount},
+        #{investIncome},
+        #{investServiceCharge},
+        #{investStatus},
+        #{investTime},
+        #{paySeqno}
+        )
+    </insert>
 </mapper>
