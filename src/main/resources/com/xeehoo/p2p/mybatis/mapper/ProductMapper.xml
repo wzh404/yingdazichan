@@ -108,4 +108,17 @@
         #{paySeqno}
         )
     </insert>
+
+
+    <!-- 查询产品投资人  -->
+    <select id="getProductInvestments" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT ui.user_id as userId,
+                u.real_name as userName,
+               ui.invest_amount as amount,
+               ui.invest_time as investTime
+          FROM t_loan_user_investment ui INNER JOIN t_loan_userinfo u
+            ON ui.user_id = u.user_id
+         WHERE ui.product_id = #{productId}
+           AND ui.invest_status = 'Y'
+    </select>
 </mapper>
