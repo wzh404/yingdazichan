@@ -328,6 +328,28 @@ public class FuiouController {
     }
 
     /**
+     * 10. 页面注册
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/webReg", method = RequestMethod.GET)
+    public ModelAndView webReg(HttpServletRequest request,
+                                   @RequestParam(value = "mobile", required = true) String mobile){
+        WebRegReqData data = new WebRegReqData();
+        data.setMchnt_cd(this.getMchntCd()); // 商户号
+        data.setMchnt_txn_ssn(this.getMchntTxnSsn()); //流水号
+        data.setMobile_no(mobile);  // 账号
+        data.setPage_notify_url(environment.getProperty("webreg_back_url")); //回掉地址
+        data.setSignature(SecurityUtils.sign(data.getSignature()));
+
+        ModelAndView mav = new ModelAndView("/fuiou/web_reg");
+        mav.addObject("data", data);
+        mav.addObject("action", "webReg");
+        return mav;
+    }
+
+    /**
      * 20.	交易查询接口
      *
      * @param request
