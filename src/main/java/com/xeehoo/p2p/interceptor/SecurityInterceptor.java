@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  * Created by wzh404@hotmail.com on 2015/10/31.
  */
 public class SecurityInterceptor implements HandlerInterceptor {
-    private final Logger logger = Logger.getLogger(LoginInterceptor.class);
+    private final Logger logger = Logger.getLogger(SecurityInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -41,7 +41,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
             }
 
             if (!sso.isAuth(perm.value())){
-                logger.error("no authorize to request");
+                logger.error("no authorize to request - [" + perm.value() + "]");
                 response.sendRedirect("/error");
                 return false;
             }

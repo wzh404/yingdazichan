@@ -53,8 +53,25 @@ public interface ProductMapper {
 
     /**
      *
+     * @param investId
+     * @param contractNo
+     * @param respCode
+     * @return
+
+    public Integer updateUserInvestmentResponse(@Param("investId")Integer investId, @Param("contractNo")String contractNo, @Param("respCode")String respCode);
+     */
+
+    /**
+     *
      * @param productId
      * @return
      */
     public List<Map<String, Object>> getProductInvestments(@Param("productId")Integer productId);
+
+    /**
+     *
+     * @param loanProduct
+     * @return
+     */
+    public Integer saveProduct(LoanProduct loanProduct);
 }

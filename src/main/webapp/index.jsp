@@ -190,6 +190,7 @@
 
 <script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js"></script>
 <script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js"></script>
+<script src="/js/ydzc.js?v=0.1.5"></script>
 <script src="/js/investment.react.js?v=0.1.5"></script>
 <script src="/js/validate-code.react.js?1235ed"></script>
 
@@ -198,7 +199,7 @@
     var products = null;
     $.ajax({
         url: "/cache/product",
-        data: {version: "0.1.3"},
+        data: {version: "0.1.3", flush: "true"},
         type: "get",
         dataType: "json",
         async: false,
@@ -209,13 +210,13 @@
             alert(status + ": " + xhr.status);
         }
     });
+
+    react_slides_render('full-screen-slider');
     if (products != null){
         react_investment_render('invest_1001', products.I1001, 'http://renben.neowave.com.cn:8080/ydzc/img');
         react_investment_render('invest_1002', products.I1002, 'http://renben.neowave.com.cn:8080/ydzc/img');
-        react_investment_render('invest_1003', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
+        react_investment_render('invest_1007', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
     }
-
-    react_slides_render('full-screen-slider');
 </script>
 
 </body>

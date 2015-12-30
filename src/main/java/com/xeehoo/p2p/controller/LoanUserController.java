@@ -1,5 +1,11 @@
 package com.xeehoo.p2p.controller;
 
+import com.fuiou.data.AppTransReqData;
+import com.fuiou.data.QueryBalanceReqData;
+import com.fuiou.data.QueryBalanceResultData;
+import com.fuiou.data.QueryBalanceRspData;
+import com.fuiou.service.FuiouService;
+import com.fuiou.util.SecurityUtils;
 import com.xeehoo.p2p.cache.Cache;
 import com.xeehoo.p2p.cache.impl.HttpSessionCache;
 import com.xeehoo.p2p.po.LoanUserFund;
@@ -24,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -221,8 +228,148 @@ public class LoanUserController {
         }
         Integer userID = so.getUserID();
         LoanUserFund userFund = userService.getFundByUserID(userID);
+        Map<String, BigDecimal> map = queryBalance(so.getLoginName());
+        ModelAndView mav = new ModelAndView("/user/user_fund");
+        mav.addObject("balance", map);
+        mav.addObject("userFund", userFund);
 
-        return new ModelAndView("/user/user_fund", "userFund", userFund);
+        return mav;
+    }
+
+    private Map<String, BigDecimal> queryBalance(String mobile){
+        QueryBalanceReqData data = new QueryBalanceReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setCust_no(mobile);  // 用户ID
+        data.setMchnt_txn_dt(CommonUtil.getCurrentDate()); //交易日期
+
+        ModelAndView mav = new ModelAndView("/user/user_recharge");
+        Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+        try {
+            QueryBalanceRspData rsp = FuiouService.balanceAction(data);
+            logger.info(rsp.toString());
+
+            QueryBalanceResultData resultData = rsp.getResults().get(0);
+            long ct = Long.parseLong(resultData.getCt_balance());
+            long ca = Long.parseLong(resultData.getCa_balance());
+            long cf = Long.parseLong(resultData.getCf_balance());
+            long cu = Long.parseLong(resultData.getCu_balance());
+
+            map.put("ct", new BigDecimal(ct / 100.0));
+            map.put("ca", new BigDecimal(ca / 100.0));
+            map.put("cf", new BigDecimal(cf / 100.0));
+            map.put("cu", new BigDecimal(cu / 100.0));
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 异常，金额为0.0;
+            map.put("ct", new BigDecimal(0.0));
+            map.put("ca", new BigDecimal(0.0));
+            map.put("cf", new BigDecimal(0.0));
+            map.put("cu", new BigDecimal(0.0));
+        }
+
+        return map;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/enterUserWithdraw", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView enterUserWithdraw(HttpServletRequest request){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        ModelAndView mav = new ModelAndView("/user/user_withdraw");
+        Map<String, BigDecimal> map = queryBalance(so.getLoginName());
+
+        mav.addObject("balance", map);
+        return mav;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/enterUserRecharge", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView enterUserRecharge(HttpServletRequest request){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        ModelAndView mav = new ModelAndView("/user/user_recharge");
+        Map<String, BigDecimal> map = queryBalance(so.getLoginName());
+
+        mav.addObject("balance", map);
+        return mav;
+    }
+
+    /**
+     * 商户P2P网站免登录网银充值接口
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/bankRecharge", method = RequestMethod.GET)
+    public ModelAndView bankRecharge(HttpServletRequest request,
+                                     @RequestParam(value = "amt", required = true) BigDecimal amt){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        AppTransReqData data = new AppTransReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setLogin_id(so.getLoginName());  // 账号
+
+        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
+        data.setAmt(longAmt.toString());   // 金额
+        data.setPage_notify_url(environment.getProperty("recharge_back_url")); //回掉地址
+
+        data.setSignature(SecurityUtils.sign(data.getSignature()));
+        ModelAndView mav = new ModelAndView("/fuiou/quick_recharge");
+        mav.addObject("data", data);
+        mav.addObject("action", environment.getProperty("bank_recharge_url"));
+
+        return mav;
+    }
+
+    /**
+     * 31.商户P2P网站免登录提现接口
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/withdraw", method = RequestMethod.GET)
+    public ModelAndView withdraw(HttpServletRequest request,
+                                 @RequestParam(value = "amt", required = true) BigDecimal amt){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        AppTransReqData data = new AppTransReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setLogin_id(so.getLoginName());  // 账号
+
+        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
+        data.setAmt(longAmt.toString());   // 金额
+
+        data.setPage_notify_url(environment.getProperty("withdraw_back_url")); //回掉地址
+        data.setSignature(SecurityUtils.sign(data.getSignature()));
+
+        ModelAndView mav = new ModelAndView("/fuiou/quick_recharge");
+        mav.addObject("data", data);
+        mav.addObject("action", environment.getProperty("withdraw_url"));
+
+        return mav;
     }
 
     /**
@@ -276,6 +423,7 @@ public class LoanUserController {
 
         return Constant.LOGIN_OK;
     }
+
 
     /**
      * 发送短信验证码
@@ -390,7 +538,7 @@ public class LoanUserController {
     }
 
     /**
-     * 检查用户手机号是否被注册
+     *
      *
      * @param files
      * @return

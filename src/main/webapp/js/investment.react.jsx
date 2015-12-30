@@ -80,7 +80,7 @@ var InvestmentProgress = React.createClass({
         return (
             <div className="xrb_a21_">
                 <p style={c1Style}><span style={outStyle}><span style={inStyle}></span></span></p>
-                <p style={c2Style}>已投{this.props.progress}</p>
+                <p style={c2Style}>已投{this.props.progress}%</p>
             </div>
         );
     }
@@ -116,7 +116,7 @@ var InvestmentBuy = React.createClass({
                 <div className="xrb_a21">
                     <p style={c1Style}>{amount}（剩余金额）</p>
                     <div className="xrb_a20_1">
-                        <input type="text"  id="buy_amt"style={c2Style} />
+                        <input type="text"  id="buy_amt" style={c2Style} />
                         <a style={c3Style} href="javascript: void(0);" onClick={this.buy}>立即抢购</a>
                     </div>
                 </div>
@@ -124,7 +124,24 @@ var InvestmentBuy = React.createClass({
         }
     },
     buy: function(){
-        alert(this.props.product +'-'+ $('#buy_amt').val());
+        var amt = $('#buy_amt').val();
+        var isValidMoney = /^\d{2,8}(\.\d{0,2})?$/.test(amt);
+        if (isValidMoney){
+            var r = confirm("投资金额：" + formatNum(parseFloat(amt), 2) + "元, 确定？");
+            if (r){
+                var num = parseFloat(amt).toFixed(2) * 100;
+                var resp = callAjax('/invest', {'amt' : num , 'product': this.props.product});
+                if (resp.resultCode == 'login'){
+                    windows.location.href="/usr/login.jsp";
+                }
+                else{
+                    alert(resp.resultCode);
+                }
+            }
+        }
+        else{
+            alert('请输入正确的投资金额');
+        }
     }
 });
 
@@ -140,13 +157,13 @@ var Investment = React.createClass({
             <div className="xh_0">
                 <InvestmentIcon  img = {icon}/>
                 <div className="xh_01">
-                    <InvestmentTitle title={this.props.invest.title} />
+                    <InvestmentTitle title={this.props.invest.productName} />
                     <div className="xrb_a2">
                         <InvestmentField name="年化收益率" data={this.props.invest.loanRate} unit="%"/>
                         <InvestmentField name="投资期限" data={this.props.invest.investDay} unit="天"/>
-                        <InvestmentField name="标的总额" data={this.props.invest.total} unit="元"/>
-                        <InvestmentProgress progress={progress}/>
-                        <InvestmentBuy buy={buy} min={this.props.invest.minAmount} remain={this.props.invest.residualAmount} product={this.props.invest.productID}/>
+                        <InvestmentField name="标的总额" data={amount} unit="元"/>
+                        <InvestmentProgress progress={progress} />
+                        <InvestmentBuy buy={buy} min={this.props.invest.minAmount} remain={this.props.invest.residualAmount} product={this.props.invest.productId}/>
                     </div>
                 </div>
             </div>

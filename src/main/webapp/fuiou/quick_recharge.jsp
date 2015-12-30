@@ -64,6 +64,7 @@
 //            if('https://epay.10010.com/pay/servlet/MerOrderPayReqServlte.htm?reqCharSet=UTF-8'!=''&&'https://epay.10010.com/pay/servlet/MerOrderPayReqServlte.htm?reqCharSet=UTF-8'!='null'){
 //                document.payR.payBtn.click();
 //            }
+            document.payR.payBtn.click();
         }
     </script>
 </head>

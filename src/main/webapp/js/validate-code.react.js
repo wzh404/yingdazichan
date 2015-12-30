@@ -92,9 +92,9 @@ var Option = React.createClass({
     displayName: 'Option',
 
     render: function render() {
-        var selectedStyle = {};
+        var selectedStyle = { color: 'black', padding: "5px 10px 5px 10px" };
         if (this.props.option.id == this.props.server.id) {
-            selectedStyle = { color: 'white', backgroundColor: 'red' };;
+            selectedStyle = { color: 'white', backgroundColor: '#0e90d2', padding: "5px 10px 5px 10px" };
         }
         var id = this.props.name + "_" + this.props.option.id;
         var uri = this.getUri();

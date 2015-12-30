@@ -1,11 +1,21 @@
 function trim(_s) { return _s.replace(/^\s+|\s+$/, ""); }
 function isMobile(v) { var reg = /^1[3|4|5|7|8][\d]{9}$/; return (v.match(reg) == null) ? false : true; }
+function isYearRate(v) { var reg = /(^\d{1,2}|(\.\d)){1}$/; return (v.match(reg) == null) ? false : true; }
 function isValideCode(v) { var reg = /\W/; return (v.match(reg) == null) ? true : false; }
+function isNotNull(v) { return trim(v) == "" ? false : true; }
 
 var validate = [
     {
         name : 'isMobile',
         errorMsg: '手机号码不正确'
+    },
+    {
+        name : 'isNotNull',
+        errorMsg: '不能为空'
+    },
+    {
+        name : 'isYearRate',
+        errorMsg: '非法年化利率'
     }
 ];
 
@@ -99,6 +109,7 @@ function check(k, v, id){
                 return false;
             }
 
+            hideErrorMsg(id);
             return true;
         }
     }
@@ -122,6 +133,7 @@ function checkValue(id){
 
         var k = trim(kv[0]);
         var v = trim(kv[1]);
+
         if (k == 'function'){
             r = eval(v + "('" + id + "')");
         }

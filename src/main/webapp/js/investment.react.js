@@ -1,11 +1,6 @@
 /**
  * Created by wangzunhui on 2015/11/28.
  */
-
-/*
- * 参数说明：num 要格式化的数字 n 保留小数位
- *
- * */
 "use strict";
 
 function formatNum(num, n) {
@@ -47,12 +42,12 @@ var InvestmentField = React.createClass({
 
     render: function render() {
         var c1Style = {
-            fontSize: 16
+            fontSize: 18
         };
 
         var c2Style = {
             color: '#848587',
-            fontSize: 16
+            fontSize: 18
         };
 
         return React.createElement(
@@ -102,13 +97,13 @@ var InvestmentProgress = React.createClass({
         var c1Style = {
             marginTop: '12px',
             height: '24px',
-            fontSize: 16
+            fontSize: 18
         };
 
         var c2Style = {
             color: '#848587',
             marginTop: '3px',
-            fontSize: 16
+            fontSize: 18
         };
         return React.createElement(
             "div",
@@ -172,14 +167,32 @@ var InvestmentBuy = React.createClass({
                 React.createElement(
                     "div",
                     { className: "xrb_a20_1" },
-                    React.createElement("input", { type: "text", style: c2Style }),
+                    React.createElement("input", { type: "text", id: "buy_amt", style: c2Style }),
                     React.createElement(
                         "a",
-                        { style: c3Style, href: "" },
+                        { style: c3Style, href: "javascript: void(0);", onClick: this.buy },
                         "立即抢购"
                     )
                 )
             );
+        }
+    },
+    buy: function buy() {
+        var amt = $('#buy_amt').val();
+        var isValidMoney = /^\d{2,8}(\.\d{0,2})?$/.test(amt);
+        if (isValidMoney) {
+            var r = confirm("投资金额：" + formatNum(parseFloat(amt), 2) + "元, 确定？");
+            if (r) {
+                var num = parseFloat(amt).toFixed(2) * 100;
+                var resp = callAjax('/invest', { 'amt': num, 'product': this.props.product });
+                if (resp.resultCode == 'login') {
+                    windows.location.href = "/usr/login.jsp";
+                } else {
+                    alert(resp.resultCode);
+                }
+            }
+        } else {
+            alert('请输入正确的投资金额');
         }
     }
 });
@@ -209,7 +222,7 @@ var Investment = React.createClass({
                     React.createElement(InvestmentField, { name: "投资期限", data: this.props.invest.investDay, unit: "天" }),
                     React.createElement(InvestmentField, { name: "标的总额", data: amount, unit: "元" }),
                     React.createElement(InvestmentProgress, { progress: progress }),
-                    React.createElement(InvestmentBuy, { buy: buy, min: this.props.invest.minAmount, remain: this.props.invest.residualAmount })
+                    React.createElement(InvestmentBuy, { buy: buy, min: this.props.invest.minAmount, remain: this.props.invest.residualAmount, product: this.props.invest.productId })
                 )
             )
         );

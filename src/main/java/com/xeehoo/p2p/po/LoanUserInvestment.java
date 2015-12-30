@@ -19,6 +19,24 @@ public class LoanUserInvestment {
     private String investStatus;
     private Date investTime;
     private String paySeqno;
+    private String payContractNo;
+    private String payResponseCode;
+
+    public String getPayResponseCode() {
+        return payResponseCode;
+    }
+
+    public void setPayResponseCode(String payResponseCode) {
+        this.payResponseCode = payResponseCode;
+    }
+
+    public String getPayContractNo() {
+        return payContractNo;
+    }
+
+    public void setPayContractNo(String payContractNo) {
+        this.payContractNo = payContractNo;
+    }
 
     public Integer getInvestId() {
         return investId;

@@ -46,7 +46,7 @@
      <li><a href="javascript:act('/bankRecharge');">30. 网银充值</a>
          &nbsp;&nbsp;&nbsp;&nbsp;<input id="amt" value="100000"/>后两位小数点
          <div class="amtChineseShow bitamt"></div>
-         <input type="hidden"  name="amt"  id="hid_amt"  />
+         <input type="hidden"  id="hid_amt"  value="100000"/>
      </li>
      <li><a href="javascript:act('/withdraw');">31. 提现</a></li>
      <li><a href="javascript:act('/freeze');">12. 冻结 - 投标</a></li>
@@ -54,6 +54,10 @@
      <li><a href="javascript:act('/freeze2freeze');">15. 冻结到冻结 - 满标</a></li>
      <li><a href="javascript:act('/transferBmu');">6. 划拨（商户与个人） </a></li>
      <li><a href="javascript:act('/transferBu');">7. 划拨（个人与个人） </a></li>
+     <li><a href="javascript:act('/preAuth');">4. 预授权接口 </a></li>
+     <li><a href="javascript:act('/preAuthCancel');">5.预授权撤销接口 </a>
+         <input  name="contractc_no"  id="contractc_no"  value="000008113235"/>
+     </li>
  </ul>
 
  <ul>
@@ -101,8 +105,9 @@
         var mobile = document.getElementById("mobile").value;
         var mobile2 = document.getElementById("mobile2").value;
         var amt = document.getElementById("hid_amt").value;
+        var contractc_no = document.getElementById("contractc_no").value;
 
-        var act = url + "?mobile=" + mobile + "&mobile2=" + mobile2 + "&amt=" + amt;
+        var act = url + "?mobile=" + mobile + "&mobile2=" + mobile2 + "&amt=" + amt + "&contractc_no=" + contractc_no;
         alert(act);
         window.location.href = act;
     }
@@ -122,7 +127,7 @@
              resetShowChinese();
          }
 
-         $("input[type='reset'").click(function(){
+         $("input[type='reset']").click(function(){
              curReset();
          });
 

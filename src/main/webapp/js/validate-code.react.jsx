@@ -81,16 +81,16 @@ var Slides = React.createClass({
 /* query class */
 var Option = React.createClass({
     render: function () {
-        var selectedStyle = {};
+        var selectedStyle = {color: 'black', padding: "5px 10px 5px 10px"};
         if (this.props.option.id == this.props.server.id){
-            selectedStyle = {color: 'white', backgroundColor: 'red'};;
+            selectedStyle = {color: 'white', backgroundColor: '#0e90d2', padding: "5px 10px 5px 10px"};
         }
         var id = this.props.name+ "_" + this.props.option.id;
         var uri = this.getUri()
         console.log(id + " -> " + uri);
         return (
             <span>
-                <a id={id} style={selectedStyle} href={uri} >{this.props.option.name}</a>
+                <a id={id} style={selectedStyle}  href={uri} >{this.props.option.name}</a>
                 &nbsp;&nbsp;
             </span>
         );

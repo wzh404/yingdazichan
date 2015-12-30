@@ -7,6 +7,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -169,4 +171,26 @@ public class CommonUtil {
             session.setMaxInactiveInterval(20 * 60); // 20分钟未交互
         }
     }
+
+    /**
+     * 获取当前交易流水号
+     *
+     * @return
+     */
+    public static String getMchntTxnSsn(){
+        Long ssn = System.nanoTime();
+        return ssn.toString();
+    }
+
+    /**
+     * 获取当前日期yyyymmdd
+     *
+     * @return
+     */
+    public static String getCurrentDate(){
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(dt);
+    }
+
 }

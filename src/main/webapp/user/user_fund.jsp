@@ -26,7 +26,7 @@
 <!--nr  start-->
 <div class="The_total">
     <div class="The_total1200">
-        <jsp:include page="user_left.jsp?menu=0101"/>
+        <jsp:include page="user_left.jsp?menu=0106"/>
 
         <div class="nr_right">
             <div class="nr_right_">
@@ -102,14 +102,14 @@
                     <div style="float:left;" class="nr_b">
                         <p>可用金额</p>
 
-                        <p><fmt:formatNumber value="${userFund.availableFund}" type="CURRENCY" currencySymbol=""/>元</p>
+                        <p><fmt:formatNumber value="${balance.ca}" type="CURRENCY" currencySymbol=""/>元</p>
                     </div>
                     <div class="nr_c">
                         <br/>
 
-                        <p><a href=""><img src="${img}/nr_a.jpg"/></a></p>
+                        <p><a href="/investment/index.jsp"><img src="${img}/nr_a.jpg"/></a></p>
 
-                        <p><a href=""><img src="${img}/nr_b.jpg"/></a></p>
+                        <p><a href="/user/enterUserWithdraw"><img src="${img}/nr_b.jpg"/></a></p>
                     </div>
 
                 </div>

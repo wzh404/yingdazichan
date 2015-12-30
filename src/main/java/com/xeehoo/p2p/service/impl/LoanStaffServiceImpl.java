@@ -54,7 +54,7 @@ public class LoanStaffServiceImpl implements LoanStaffService {
 
 //                    map.put("staff", loanStaff);
                     List<LoanPermission> permissions = perms.stream()
-                            .filter((perm) -> perm.getPermissionPid() > 0)
+//                            .filter((perm) -> perm.getPermissionPid() > 0)
                             .collect(Collectors.toList());
                     for (LoanPermission perm : permissions)
                         logger.info(perm.getPermissionCode() + " - " + perm.getPermissionName());

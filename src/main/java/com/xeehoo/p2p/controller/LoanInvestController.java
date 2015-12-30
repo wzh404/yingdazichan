@@ -4,10 +4,12 @@ import com.sun.jndi.toolkit.url.Uri;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanSlider;
+import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.service.LoanCacheService;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanUserService;
+import com.xeehoo.p2p.util.CommonUtil;
 import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import com.xeehoo.p2p.util.UriUtils;
@@ -57,18 +59,25 @@ public class LoanInvestController {
      */
     @RequestMapping(value = "/invest", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public String invest(HttpServletRequest request,
+    public Map<String, Object> invest(HttpServletRequest request,
                                @RequestParam(value = "amt", required = true) Long amount,
                                @RequestParam(value = "product", required = true) Integer productId,
                                @RequestParam(value = "sign", required = false) String sign) {
-        Integer userId = 3;
-        Integer investId = investService.updateProductUserAmount(productId, userId, new BigDecimal(amount / 100.0));
-        if (investId > 0){
-            logger.info("investId is " + investId);
-            return "ok";
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return CommonUtil.generateJsonMap("login", "没有登录");
         }
-        else {
-            return "failed";
+
+        try {
+            Integer investId = investService.updateProductUserAmount(productId, so.getUserID(), so.getLoginName(), amount);
+            if (investId > 0) {
+                logger.info("investId is " + investId);
+                return CommonUtil.generateJsonMap("OK", null);
+            } else {
+                return CommonUtil.generateJsonMap("failed", "投资失败");
+            }
+        } catch (Exception e){
+            return CommonUtil.generateJsonMap("exception", "系统例外");
         }
     }
 

@@ -44,7 +44,7 @@ public class YdzcApplication extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
-//                .excludePathPatterns("/error")
+//                .excludePathPatterns("/admin/product")
 //                .excludePathPatterns("/login")
 //                .excludePathPatterns("/ajax/login")
 //                .excludePathPatterns("/ajax/upload")

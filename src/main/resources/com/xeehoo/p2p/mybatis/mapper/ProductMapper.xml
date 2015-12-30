@@ -5,7 +5,7 @@
 <mapper namespace="com.xeehoo.p2p.mybatis.mapper.ProductMapper">
     <!-- 产品信息 -->
     <resultMap type="com.xeehoo.p2p.po.LoanProduct" id="product">
-        <id property="productID" column="product_id"/>
+        <id property="productId" column="product_id"/>
         <result property="productName" column="product_name"/>
         <result property="productType" column="product_type"/>
         <result property="loanRate" column="loan_rate"/>
@@ -13,7 +13,14 @@
         <result property="totalAmount" column="total_amount"/>
         <result property="residualAmount" column="residual_amount"/>
         <result property="incomeMode" column="income_mode"/>
+        <result property="loanPurpose" column="loan_purpose"/>
+        <result property="raiseDays" column="raise_days"/>
+        <result property="interestWay" column="interest_way"/>
         <result property="minAmount" column="min_amount"/>
+        <result property="minAddAmount" column="min_add_amount"/>
+        <result property="maxAmount" column="max_amount"/>
+        <result property="releaseTime" column="release_time"/>
+        <result property="productStatus" column="product_status"/>
     </resultMap>
 
     <!-- 用户投资 -->
@@ -70,10 +77,65 @@
     <!-- 投标 -->
     <update id="updateProductAmount">
         UPDATE t_loan_product SET residual_amount = residual_amount - #{amount}
-        WHERE product_status = 0
+        WHERE product_status = 1
+          AND check_status = 1
           AND residual_amount > #{amount}
           AND product_id = #{productId}
     </update>
+
+    <!-- 预授权成功后修改支付信息
+    <update id="updateUserInvestmentResponse">
+        UPDATE t_loan_user_investment
+           SET pay_resp_code = #{respCode},
+               pay_contract_no = #{contractNo}
+         WHERE invest_id = #{investId}
+    </update>-->
+
+    <!-- 产品发布 -->
+    <insert id="saveProduct" parameterType="com.xeehoo.p2p.po.LoanProduct">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="productId" >
+            SELECT currval('t_loan_product_product_id_seq') AS productId
+        </selectKey>
+
+        INSERT INTO t_loan_product (
+            product_name,
+            product_type,
+            loan_rate,
+            invest_day,
+            total_amount,
+            residual_amount,
+            product_desc,
+            income_mode,
+            min_amount,
+            min_add_amount,
+            max_amount,
+            loan_purpose,
+            raise_days,
+            interest_way,
+            product_status,
+            release_time,
+            staff_id
+        )
+        VALUES (
+            #{productName},
+            #{productType},
+            #{loanRate},
+            #{investDay},
+            #{totalAmount},
+            #{residualAmount},
+            #{productDesc},
+            #{incomeMode},
+            #{minAmount},
+            #{minAddAmount},
+            #{maxAmount},
+            #{loanPurpose},
+            #{raiseDays},
+            #{interestWay},
+            #{productStatus},
+            #{releaseTime},
+            #{staffId}
+        )
+    </insert>
 
     <!-- 用户投资 -->
     <insert id="saveUserInvestment" parameterType="com.xeehoo.p2p.po.LoanUserInvestment">
@@ -82,43 +144,47 @@
         </selectKey>
 
         INSERT INTO t_loan_user_investment (
-        product_id,
-        product_name,
-        user_id,
-        invest_start_date,
-        invest_closing_date,
-        invest_amount,
-        invest_income,
-        invest_service_charge,
-        invest_status,
-        invest_time,
-        pay_seqno
+            product_id,
+            product_name,
+            user_id,
+            invest_start_date,
+            invest_closing_date,
+            invest_amount,
+            invest_income,
+            invest_service_charge,
+            invest_status,
+            invest_time,
+            pay_seqno,
+            pay_contract_no,
+            pay_resp_code
         )
         VALUES (
-        #{productId},
-        #{productName},
-        #{userId},
-        #{investStartDate},
-        #{investClosingDate},
-        #{investAmount},
-        #{investIncome},
-        #{investServiceCharge},
-        #{investStatus},
-        #{investTime},
-        #{paySeqno}
+            #{productId},
+            #{productName},
+            #{userId},
+            #{investStartDate},
+            #{investClosingDate},
+            #{investAmount},
+            #{investIncome},
+            #{investServiceCharge},
+            #{investStatus},
+            #{investTime},
+            #{paySeqno},
+            #{payContractNo},
+            #{payResponseCode}
         )
     </insert>
 
 
-    <!-- 查询产品投资人  -->
-    <select id="getProductInvestments" resultType="java.lang.Integer" parameterType="java.util.Map">
+    <!-- 查询产品所有投资记录  -->
+    <select id="getProductInvestments" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT ui.user_id as userId,
-                u.real_name as userName,
+                u.login_name as userName,
                ui.invest_amount as amount,
                ui.invest_time as investTime
           FROM t_loan_user_investment ui INNER JOIN t_loan_userinfo u
             ON ui.user_id = u.user_id
          WHERE ui.product_id = #{productId}
-           AND ui.invest_status = 'Y'
+           AND ui.invest_status = 'I'
     </select>
 </mapper>

@@ -31,12 +31,17 @@
             <div class="nr_right">
 
                 <div class="nr_at">
-                    <p>选择银行卡：<input type="submit" value="添加银行卡" style=" color:#FFF; background:#eb953a; cursor: pointer;"  class="submit" /></p>
-                    <p>可用金额：<a href="">0.00元</a></p>
-                    <p>提现金额：<input type="text" style=" color:#dadadb;" value="请输入提现金额"onblur="(this.value=='')?this.value='请输入提现金额':this.value"
-                                   onfocus="if(this.value=='请输入提现金额'){this.value='';};this.select();" />元</p>
-                    <p><input type="submit" value="提&nbsp;&nbsp;现" style=" color:#FFF; background:#e60012; cursor: pointer;"  class="submit" /></p>
-                    <p>备注：支付密码默认为手机号后6位，若忘记密码请点击<a href="">找回密码</a></p>
+                    <p>提现方式：<span style="color:#eb953a; font-size:18px;">网银提现</span></p>
+                    <p>账面总余额：<fmt:formatNumber value="${balance.ct}" type="currency"/></p>
+                    <p>可用余额：<fmt:formatNumber value="${balance.ca}" type="currency"/></p>
+                    <p>冻结余额：<fmt:formatNumber value="${balance.cf}" type="currency"/></p>
+                    <p>未转结余额：<fmt:formatNumber value="${balance.cu}" type="currency"/></p>
+                    <p>充值金额：
+                        <input type="text" style=" color:#dadadb;" value="请输入提现金额" id="amount"
+                               onblur="(this.value=='')?this.value='请输入提现金额':this.value"
+                               onfocus="if(this.value=='请输入提现金额'){this.value='';};this.select();"/>元
+                    </p>
+                    <p><input type="button" value="提&nbsp;&nbsp;现" style="color:#FFF; background:#e60012; cursor: pointer;"  class="submit" onclick="submitWithdraw();"/></p>
                     <div class="nr_a0">
                         <p style="font-size:16px;">温馨提示</p>
                         <br />
@@ -58,6 +63,18 @@
 <!--bottom  start-->
 <jsp:include page="/footer.jsp"/>
 <!--bottom_0  end-->
+<script type="text/javascript">
+    function submitWithdraw(){
+        var amt = $('#amount').val();
+        var isValidMoney = /^\d{2,8}(\.\d{0,2})?$/.test(amt);
+        if (isValidMoney){
+            window.location.href="/user/withdraw?amt=" + amt;
+        }
+        else{
+            alert('请输入正确的提现金额');
+        }
+    }
 
+</script>
 </body>
 </html>
