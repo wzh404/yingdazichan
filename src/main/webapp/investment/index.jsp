@@ -95,6 +95,8 @@
 <![endif]-->
 <script type="text/javascript" src="${js}/react.js"></script>
 <script type="text/javascript" src="${js}/react-dom.js"></script>
+<script src="/js/ydzc.js?v=0.1.5"></script>
+
 <script src="/js/investment.react.js?v=0.1.5"></script>
 <script src="/js/validate-code.react.js?1235ed"></script>
 <script src="/js/paging.js?1235ed"></script>

@@ -9,8 +9,17 @@ import java.io.Serializable;
 public class SessionObject implements Serializable {
     private Integer userID;
     private String loginName;
+    private String escrowAccount;
     private String host;
     private String token;
+
+    public String getEscrowAccount() {
+        return escrowAccount;
+    }
+
+    public void setEscrowAccount(String escrowAccount) {
+        this.escrowAccount = escrowAccount;
+    }
 
     public Integer getUserID() {
         return userID;

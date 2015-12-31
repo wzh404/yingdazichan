@@ -1,7 +1,10 @@
 package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
+import com.xeehoo.p2p.util.QueryCondition;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -65,5 +68,14 @@ public interface LoanInvestService {
      * @return
      */
     public List<Map<String, Object>> getProductInvestments(Integer productId);
+
+
+    /**
+     *
+     * @param page
+     * @param cond
+     * @return
+     */
+    public LoanPagedListHolder getUserInvestments(int page, QueryCondition cond);
 
 }

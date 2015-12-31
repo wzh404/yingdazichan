@@ -3,6 +3,8 @@ function isMobile(v) { var reg = /^1[3|4|5|7|8][\d]{9}$/; return (v.match(reg) =
 function isYearRate(v) { var reg = /(^\d{1,2}|(\.\d)){1}$/; return (v.match(reg) == null) ? false : true; }
 function isValideCode(v) { var reg = /\W/; return (v.match(reg) == null) ? true : false; }
 function isNotNull(v) { return trim(v) == "" ? false : true; }
+function isMoney(v) {return /^\d{1,8}(\.\d{0,2})?$/.test(v);}
+function isNumber3(v) {return /^\d{1,3}$/.test(v);}
 
 var validate = [
     {
@@ -16,6 +18,14 @@ var validate = [
     {
         name : 'isYearRate',
         errorMsg: '非法年化利率'
+    },
+    {
+        name : 'isMoney',
+        errorMsg: '请输入正确的金额'
+    },
+    {
+        name : 'isNumber3',
+        errorMsg: '请输入正确的数字'
     }
 ];
 

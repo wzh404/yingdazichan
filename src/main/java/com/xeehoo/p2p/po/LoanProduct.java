@@ -12,7 +12,7 @@ public class LoanProduct {
     private String productType; // 产品类型
     private BigDecimal loanRate; // 年化收益率
 //    private Date valueDate;  //起息日期
-    private String investDay;  //投资期限
+    private String investDay;  //投资期限 1M
     private BigDecimal totalAmount;  //总额度
     private BigDecimal residualAmount; //剩余金额
     private String incomeMode;  //还款方式（到期分配，按月付息）

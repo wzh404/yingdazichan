@@ -187,4 +187,27 @@
          WHERE ui.product_id = #{productId}
            AND ui.invest_status = 'I'
     </select>
+
+    <sql id="user_invest_where">
+        <where>
+            <if test="_userId != null">
+                AND ui.user_id = #{_userId}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 查询用户所有投资记录  -->
+    <select id="getUserInvestments" resultMap="investment" parameterType="java.util.Map">
+        SELECT *
+          FROM t_loan_user_investment ui
+        <include refid="user_invest_where"/>
+         LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <!-- 产品记录数  -->
+    <select id="getTotalUserInvestment" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT COUNT(*)
+        FROM t_loan_user_investment ui
+        <include refid="user_invest_where"/>
+    </select>
 </mapper>

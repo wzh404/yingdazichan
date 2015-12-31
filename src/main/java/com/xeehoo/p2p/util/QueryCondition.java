@@ -86,8 +86,7 @@ public class QueryCondition {
      * @param uri
      * @param mav
      */
-    public void setModelAndView( String uri,/*HttpServletRequest request,*/ ModelAndView mav){
-//        String uri = request.getRequestURI();
+    public void setModelAndView( String uri, ModelAndView mav){
         String pageUri = getQueryParams("page");
         pageUri = uri + (pageUri == null ? "" : "?" + pageUri);
         mav.addObject("pageUri", pageUri);

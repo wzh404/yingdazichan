@@ -8,9 +8,7 @@ import com.xeehoo.p2p.mybatis.mapper.ProductMapper;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.service.LoanInvestService;
-import com.xeehoo.p2p.util.CommonUtil;
-import com.xeehoo.p2p.util.Constant;
-import com.xeehoo.p2p.util.LoanPagedListHolder;
+import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -107,7 +105,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
                 return productMapper.saveUserInvestment(investment);
             }
             else{
-                throw new Exception("error");// rollback
+                throw new Exception("error");// database rollback
             }
         }
 
@@ -142,5 +140,20 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     @Override
     public List<Map<String, Object>> getProductInvestments(Integer productId) {
         return productMapper.getProductInvestments(productId);
+    }
+
+    @Override
+    public LoanPagedListHolder getUserInvestments(int page, QueryCondition cond) {
+        return new QueryPager<LoanUserInvestment>(page, cond){
+            @Override
+            public Integer total(QueryCondition cond) {
+                return productMapper.getTotalUserInvestment(cond.getCond());
+            }
+
+            @Override
+            public List<LoanUserInvestment> elements(int page, QueryCondition cond) {
+                return productMapper.getUserInvestments(cond.getCond());
+            }
+        }.query();
     }
 }

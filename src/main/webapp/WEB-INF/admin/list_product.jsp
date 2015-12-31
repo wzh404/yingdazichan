@@ -157,7 +157,7 @@
 <jsp:include page="footer.jsp"/>
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
-<script src="/js/a.js?12357"></script>
+<script src="/js/validate-code.react.js?12357"></script>
 <script type="text/javascript">
     var type_options = [
         {"name": "全部", "value": "all"},

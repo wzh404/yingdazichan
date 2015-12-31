@@ -68,6 +68,21 @@ public interface ProductMapper {
      */
     public List<Map<String, Object>> getProductInvestments(@Param("productId")Integer productId);
 
+
+    /**
+     *
+     * @param map
+     * @return
+     */
+    public List<LoanUserInvestment> getUserInvestments(Map<String, Object> map);
+
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    public Integer getTotalUserInvestment(Map<String, Object> cond);
+
     /**
      *
      * @param loanProduct

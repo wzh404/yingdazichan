@@ -60,7 +60,7 @@
             <li><a href="admin-table.html"><span class="am-icon-bookmark"></span> 发布公告</a></li>
             <li><a href="/admin/product"><span class="am-icon-bookmark"></span> 项目管理</a></li>
 
-            <li><a href="#"><span class="am-icon-sign-out"></span> 财务结算</a></li>
+            <li><a href="/admin/settleAccount"><span class="am-icon-sign-out"></span> 财务结算</a></li>
         </ul>
 
         <div class="am-panel am-panel-default admin-sidebar-panel">

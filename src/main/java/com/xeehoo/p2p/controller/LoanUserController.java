@@ -1,26 +1,25 @@
 package com.xeehoo.p2p.controller;
 
-import com.fuiou.data.AppTransReqData;
-import com.fuiou.data.QueryBalanceReqData;
-import com.fuiou.data.QueryBalanceResultData;
-import com.fuiou.data.QueryBalanceRspData;
+import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
 import com.fuiou.util.SecurityUtils;
 import com.xeehoo.p2p.cache.Cache;
 import com.xeehoo.p2p.cache.impl.HttpSessionCache;
 import com.xeehoo.p2p.po.LoanUserFund;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.service.LoanCacheService;
+import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanStaffService;
 import com.xeehoo.p2p.service.LoanUserService;
-import com.xeehoo.p2p.util.CommonUtil;
-import com.xeehoo.p2p.util.Constant;
+import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,7 +46,7 @@ public class LoanUserController {
     private LoanUserService userService;
 
     @Autowired
-    private LoanStaffService staffService;
+    private LoanInvestService investService;
 
     @Autowired
     private LoanCacheService cacheService;
@@ -220,7 +219,7 @@ public class LoanUserController {
      *
      * @return
      */
-    @RequestMapping(value = "/fund", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/user/fund", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView fund(HttpServletRequest request) {
         SessionObject so = CommonUtil.getSessionObject(request, null);
         if (so == null) {
@@ -236,6 +235,12 @@ public class LoanUserController {
         return mav;
     }
 
+    /**
+     * 查询用户账户余额
+     *
+     * @param mobile
+     * @return
+     */
     private Map<String, BigDecimal> queryBalance(String mobile){
         QueryBalanceReqData data = new QueryBalanceReqData();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
@@ -243,7 +248,6 @@ public class LoanUserController {
         data.setCust_no(mobile);  // 用户ID
         data.setMchnt_txn_dt(CommonUtil.getCurrentDate()); //交易日期
 
-        ModelAndView mav = new ModelAndView("/user/user_recharge");
         Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
         try {
             QueryBalanceRspData rsp = FuiouService.balanceAction(data);
@@ -295,6 +299,27 @@ public class LoanUserController {
      * @param request
      * @return
      */
+    @RequestMapping(value = "/user/enterUserSecurity", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView enterUserSecurity(HttpServletRequest request){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        ModelAndView mav = new ModelAndView("/user/user_security");
+        Map<String, BigDecimal> map = queryBalance(so.getLoginName());
+
+        mav.addObject("balance", map);
+        mav.addObject("account", StringUtils.isEmpty(so.getEscrowAccount()));
+
+        return mav;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/user/enterUserRecharge", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView enterUserRecharge(HttpServletRequest request){
         SessionObject so = CommonUtil.getSessionObject(request, null);
@@ -306,6 +331,32 @@ public class LoanUserController {
         Map<String, BigDecimal> map = queryBalance(so.getLoginName());
 
         mav.addObject("balance", map);
+        return mav;
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/invest", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView userInvest(HttpServletRequest request,
+                                   @RequestParam(value = "page", required = false) Integer page){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        if (page == null) page = 0;
+
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.put("_userId", so.getUserID());
+        LoanPagedListHolder pagedListHolder = investService.getUserInvestments(page, queryCondition);
+
+        ModelAndView mav = new ModelAndView("/user/user_investment");
+        queryCondition.setModelAndView(request.getRequestURI(), mav);
+        mav.addObject("pagedListHolder", pagedListHolder);
+
         return mav;
     }
 
@@ -373,6 +424,33 @@ public class LoanUserController {
     }
 
     /**
+     * 富友页面注册
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/webReg", method = RequestMethod.GET)
+    public ModelAndView webReg(HttpServletRequest request){
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        WebRegReqData data = new WebRegReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setMobile_no(so.getLoginName());  // 账号
+        data.setPage_notify_url(environment.getProperty("webreg_back_url")); //回调地址
+        data.setSignature(SecurityUtils.sign(data.getSignature()));
+
+        ModelAndView mav = new ModelAndView("/fuiou/web_reg");
+        mav.addObject("data", data);
+        mav.addObject("action", "webReg");
+
+        return mav;
+    }
+
+    /**
      * 用户登录业务逻辑
      *
      * @param request
@@ -390,7 +468,7 @@ public class LoanUserController {
         Cache cache = new HttpSessionCache(session);
 //        checkValideCode(cache, )
 
-        // client ip address
+        // get client ip address
         String host = CommonUtil.getRemoteHost(request);
         Optional<LoanUser> userInfo = userService.login(loginType, loginName, loginPwd);
         if (!userInfo.isPresent()) {
@@ -399,7 +477,6 @@ public class LoanUserController {
 
         if (userInfo.get().getUserStatus() != Constant.LOGIN_OK) {
             session.invalidate();
-
             return userInfo.get().getUserStatus();
         }
 
@@ -417,6 +494,7 @@ public class LoanUserController {
         // 保存登录信息到cache
         SessionObject so = new SessionObject();
         so.setLoginName(loginName);
+        so.setEscrowAccount(userInfo.get().getEscrowAccount());
         so.setToken(token);
         so.setUserID(userInfo.get().getUserId());
         cache.set(Constant.SESSION_USER_LOGIN, so);

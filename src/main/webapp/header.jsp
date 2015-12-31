@@ -40,7 +40,7 @@
             <ul>
                 <li id="tab_01" class="fhsy0"><a href="/index.jsp">首页</a></li>
                 <li id="tab_02"><a href="/investment/index.jsp">我要投资</a></li>
-                <li id="tab_03"><a href="/fund" >我的账户</a></li>
+                <li id="tab_03"><a href="/user/fund" >我的账户</a></li>
                 <li id="tab_04"><a href="../hdy/index.html" target="_blank">活动专区</a></li>
                 <li id="tab_05"><a href="" target="_blank">关于我们</a></li>
             </ul>

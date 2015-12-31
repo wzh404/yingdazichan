@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="pg" tagdir="/WEB-INF/tags" %>
 
 <c:set var="css" value="http://renben.neowave.com.cn:8080/ydzc/css"/>
 <c:set var="img" value="http://renben.neowave.com.cn:8080/ydzc/img"/>
@@ -14,6 +15,8 @@
     <title>账户中心-投资记录</title>
     <link rel="stylesheet" type="text/css" href="${css}/style.css"/>
     <link rel="stylesheet" type="text/css" href="${css}/user.css"/>
+    <link rel="stylesheet" href="/css/admin/amazeui.min.css"/>
+    <link rel="stylesheet" href="/css/admin/admin.css">
 </head>
 
 <body>
@@ -28,25 +31,43 @@
 
         <div class="nr">
             <div class="nr_right">
-                <div class="np_">
-                    <p class="np">持有中</p>
-
-                    <p class="np">已结清</p>
-
-                    <p class="np">投标中</p>
+                <div style="margin-top: 10px;margin-left: 30px">
+                    <p>产品状态:
+                        <span style="color: white; background: #0e90d2; padding: 5px 10px 5px 10px">全部</span>
+                        <span style="padding: 5px 10px 5px 10px">未到期</span>
+                        <span style="padding: 5px 10px 5px 10px">已到期</span>
+                        <span style="padding: 5px 10px 5px 10px">逾期中</span>
+                    </p>
                 </div>
-                <div class="nt">
-                    <ul>
-                        <li><a href="">项目名称</a></li>
-                        <li><a href="">投资本金</a></li>
-                        <li><a href="">待收本息</a></li>
-                        <li><a href="">投资时间</a></li>
-                        <li><a href="">起息日期</a></li>
-                        <li><a href="">结息日期</a></li>
-                        <li><a href="">电子合同</a></li>
-                    </ul>
+                <div class="nt" style="margin-top: 30px">
+                    <table style="width:100%">
+                    <tr>
+                        <td style="width: 30%"><span>项目名称</span></td>
+                        <td style="width: 20%"><span >投资本金</span></td>
+                        <td style="width: 20%"><span >待收本息</span></td>
+                        <td style="width: 20%"><span >投资时间</span></td>
+                        <td style="width: 10%"><span >项目状态</span></td>
+                    </tr>
+                    <c:forEach items="${pagedListHolder.source}" var="invest">
+                    <tr>
+                        <td><a href="">${invest.productName}</a></td>
+                        <td><fmt:formatNumber value="${invest.investAmount}" type="currency"/></td>
+                        <td><fmt:formatNumber value="${invest.investIncome}" type="currency"/></td>
+                        <td><fmt:formatDate value="${invest.investTime}" pattern="yyyy-MM-dd HH:mm"/></td>
+                        <td><c:if test="${invest.investStatus.equals(\"C\")}">已完成</c:if>
+                            <c:if test="${invest.investStatus.equals(\"I\")}">投资中</c:if>
+                        </td>
+                    </tr>
+                    </c:forEach>
+                    </table>
+
+                    <c:url value="${pageUri}" var="pagedLink">
+                        <c:param name="page" value="~"/>
+                    </c:url>
+                    <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
                 </div>
-                <div style="font-size:16px; text-align:center; margin-top:30px;">您没有投资中的债权！</div>
+
+
             </div>
         </div>
     </div>

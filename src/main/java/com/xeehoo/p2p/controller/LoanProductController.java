@@ -1,16 +1,19 @@
 package com.xeehoo.p2p.controller;
 
+import com.fuiou.data.QueryBalanceReqData;
+import com.fuiou.data.QueryBalanceResultData;
+import com.fuiou.data.QueryBalanceRspData;
+import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.annotation.Permission;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.StaffSessionObject;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
-import com.xeehoo.p2p.util.Constant;
-import com.xeehoo.p2p.util.LoanPagedListHolder;
-import com.xeehoo.p2p.util.QueryCondition;
-import com.xeehoo.p2p.util.UriUtils;
+import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -35,6 +38,9 @@ public class LoanProductController {
 
     @Autowired
     private LoanInvestService investService;
+
+    @Autowired
+    private Environment environment;
 
     @RequestMapping(value="/admin/product")
     @Permission("0201")
@@ -84,7 +90,9 @@ public class LoanProductController {
         }
         else{
             LoanProduct product  = new LoanProduct();
+            product.setRaiseDays(10);
             product.setMinAmount(new BigDecimal(100));
+            product.setMinAddAmount(new BigDecimal(100));
             product.setMaxAmount(new BigDecimal(0));
             mav.addObject("product", product);
         }
@@ -94,14 +102,64 @@ public class LoanProductController {
 
     @RequestMapping(value="/admin/saveProduct")
     @Permission("0201")
-    public ModelAndView saveProduct(@ModelAttribute("product")LoanProduct product){
+    public ModelAndView saveProduct(HttpServletRequest request, @ModelAttribute("product")LoanProduct product){
         logger.info("product.name is " + product.getProductType());
-        product.setStaffId(1);
+        StaffSessionObject sso = (StaffSessionObject)request.getSession().getAttribute("staff");
+        product.setStaffId(sso.getStaffId());
         product.setReleaseTime(new Date());
         product.setProductStatus(1);
         product.setResidualAmount(product.getTotalAmount());
         investService.saveProduct(product);
 
         return new ModelAndView("redirect:/admin/product");
+    }
+
+    @RequestMapping(value="/admin/settleAccount")
+    @Permission("0201")
+    public ModelAndView settleAccount(HttpServletRequest request){
+        ModelAndView mav = new ModelAndView("/admin/settle_accounts");
+        mav.addObject("balance", queryBalance("user114"));
+
+        return mav;
+    }
+
+    /**
+     * 查询用户账户余额
+     *
+     * @param mobile
+     * @return
+     */
+    private Map<String, BigDecimal> queryBalance(String mobile){
+        QueryBalanceReqData data = new QueryBalanceReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setCust_no(mobile);  // 用户ID
+        data.setMchnt_txn_dt(CommonUtil.getCurrentDate()); //交易日期
+
+        Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+        try {
+            QueryBalanceRspData rsp = FuiouService.balanceAction(data);
+            logger.info(rsp.toString());
+
+            QueryBalanceResultData resultData = rsp.getResults().get(0);
+            long ct = Long.parseLong(resultData.getCt_balance());
+            long ca = Long.parseLong(resultData.getCa_balance());
+            long cf = Long.parseLong(resultData.getCf_balance());
+            long cu = Long.parseLong(resultData.getCu_balance());
+
+            map.put("ct", new BigDecimal(ct / 100.0).setScale(2, BigDecimal.ROUND_HALF_UP));
+            map.put("ca", new BigDecimal(ca / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
+            map.put("cf", new BigDecimal(cf / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
+            map.put("cu", new BigDecimal(cu / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 异常，金额为0.0;
+            map.put("ct", new BigDecimal(0.0));
+            map.put("ca", new BigDecimal(0.0));
+            map.put("cf", new BigDecimal(0.0));
+            map.put("cu", new BigDecimal(0.0));
+        }
+
+        return map;
     }
 }

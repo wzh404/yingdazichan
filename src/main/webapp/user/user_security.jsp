@@ -30,10 +30,12 @@
             <h1>个人信息</h1>
             <div class="nr_right">
                 <div class="nr_a">
-                    <p>昵称：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13xxxxxxxxx</p>
-                    <p>实名认证：<a href="">未认证</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="">修改</a></p>
-                    <p>第三方账户：</p>
-                    <p>登录密码：安全等级：中级&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="">修改</a></p>
+                    <p>昵称： ${sessionScope.user.loginName}</p>
+                    <p>第三方账户：
+                        <c:if test="${account}"><a href="/user/webReg">注册</a></c:if>
+                        <c:if test="${!account}"><span style="color:#eb953a; font-size:18px;">已注册</span></c:if>
+                    </p>
+                    <p>登录密码：  安全等级：中级&nbsp;<a href="">修改</a></p>
                 </div>
             </div>
         </div>

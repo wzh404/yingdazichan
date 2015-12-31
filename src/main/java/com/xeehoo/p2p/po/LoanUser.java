@@ -2,6 +2,7 @@ package com.xeehoo.p2p.po;
 
 import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.EncryptUtil;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,8 +16,8 @@ public class LoanUser implements Serializable {
     private Integer userId;
     private String realName;
     private String loginName;
-    private String payPwd;  //支付密码
-    private String loginPwd;
+    private String payPwd;    // 支付密码
+    private String loginPwd;  // 登录密码
 
     private String sex;
     private String birth;
@@ -45,6 +46,15 @@ public class LoanUser implements Serializable {
     private String registerIP;
     private Integer userStatus;
     private String inviteCode;
+    private String escrowAccount;
+
+    public String getEscrowAccount() {
+        return escrowAccount;
+    }
+
+    public void setEscrowAccount(String escrowAccount) {
+        this.escrowAccount = escrowAccount;
+    }
 
     public String getRegisterIP() {
         return registerIP;

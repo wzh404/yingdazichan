@@ -13,9 +13,8 @@
         <div class="vtitle" id="menu_01"><em class="v v02"></em>我的投资</div>
         <div class="vcon">
             <ul class="vconlist clearfix">
-                <li id="menu_0106"><a href="/fund">我的资产</a></li>
-                <li id="menu_0101"><a href="/user/user_investment.jsp">投资记录</a></li>
-                <li id="menu_0102"><a href="#">交易记录</a></li>
+                <li id="menu_0106"><a href="/user/fund">我的资产</a></li>
+                <li id="menu_0101"><a href="/user/invest">投资记录</a></li>
                 <li id="menu_0103"><a href="/user/enterUserRecharge">充值</a></li>
                 <li id="menu_0104"><a href="/user/enterUserWithdraw">提现</a></li>
                 <li id="menu_0105"><a href="#">债权转让</a></li>
@@ -24,9 +23,9 @@
         <div class="vtitle" id="menu_02"><em class="v"></em>我的账户</div>
         <div class="vcon" style="display: none;">
             <ul class="vconlist clearfix">
-                <li id="menu_0201"><a href="/user/user_welfare.jsp">我的福利</a></li>
                 <li id="menu_0202"><a href="/user/user_info.jsp">个人信息</a></li>
-                <li id="menu_0203"><a href="/user/user_security.jsp">安全信息</a></li>
+                <li id="menu_0203"><a href="/user/enterUserSecurity">安全信息</a></li>
+                <li id="menu_0201"><a href="/user/user_welfare.jsp">我的福利</a></li>
                 <li><a href="#">银行卡</a></li>
             </ul>
         </div>
