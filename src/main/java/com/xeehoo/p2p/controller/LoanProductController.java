@@ -1,8 +1,6 @@
 package com.xeehoo.p2p.controller;
 
-import com.fuiou.data.QueryBalanceReqData;
-import com.fuiou.data.QueryBalanceResultData;
-import com.fuiou.data.QueryBalanceRspData;
+import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.annotation.Permission;
 import com.xeehoo.p2p.po.LoanDict1;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -114,14 +113,67 @@ public class LoanProductController {
         return new ModelAndView("redirect:/admin/product");
     }
 
-    @RequestMapping(value="/admin/settleAccount")
+    @RequestMapping(value="/admin/settleProduct")
     @Permission("0201")
-    public ModelAndView settleAccount(HttpServletRequest request){
+    public ModelAndView settleProduct(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("/admin/settle_accounts");
         mav.addObject("balance", queryBalance("user114"));
 
         return mav;
     }
+
+    @RequestMapping(value="/admin/settleAccount")
+    @Permission("0201")
+    public ModelAndView settleAccount(HttpServletRequest request,
+                                      @RequestParam(value = "product_id", required = false) Integer productId){
+        ModelAndView mav = new ModelAndView("redirect:/admin/product");
+        List<Map<String, Object>> userInvestments = investService.getProductInvestments(productId);
+        for (Map<String, Object> map : userInvestments){
+            String investStatus = (String)map.get("investstatus");
+            if (investStatus.equalsIgnoreCase("I")){
+                Integer investId = (Integer)map.get("investid");
+                String contractNo = (String)map.get("contractno");
+                String mobile = (String)map.get("mobile");
+                BigDecimal amt = (BigDecimal)map.get("amount");
+                String amount = (new Long(amt.longValue() * 100)).toString();
+                logger.info(contractNo + " - " + mobile + " - " + amount);
+                String respCode = transferBmu(mobile, "user114", contractNo, amount);
+                if (respCode.equalsIgnoreCase("0000")){
+                    // 状态为还款中 I -> W
+                }
+            }
+        }
+        return mav;
+    }
+
+    /**
+     * 6.转账(商户与个人之间)
+     *
+     * @param outCustNo
+     * @return
+     */
+    private String transferBmu(String outCustNo, String inCustNo, String contractNo, String amt){
+        TransferBmuReqData data = new TransferBmuReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setOut_cust_no(outCustNo);  // 转出账号
+        data.setIn_cust_no(inCustNo);   // 转入账号
+        data.setContract_no(contractNo); //预授权号
+        data.setAmt(amt); //划拨金额
+        data.setRem("test"); //备注
+
+        CommonRspData rsp = null;
+        try {
+            rsp = FuiouService.transferBmu(data);
+            logger.info(rsp.toString());
+
+            return rsp.getResp_code();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "9999";
+        }
+    }
+
 
     /**
      * 查询用户账户余额

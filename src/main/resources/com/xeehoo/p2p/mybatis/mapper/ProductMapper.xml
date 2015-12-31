@@ -83,13 +83,26 @@
           AND product_id = #{productId}
     </update>
 
-    <!-- 预授权成功后修改支付信息
-    <update id="updateUserInvestmentResponse">
+    <!-- 修改用户投资状态 -->
+    <update id="updateUserInvestmentStatus">
         UPDATE t_loan_user_investment
-           SET pay_resp_code = #{respCode},
-               pay_contract_no = #{contractNo}
+           SET invest_status = #{investStatus}
          WHERE invest_id = #{investId}
-    </update>-->
+    </update>
+
+    <!-- 修改产品状态 -->
+    <update id="updateProductStatus">
+        UPDATE t_loan_product
+        SET product_status = #{productStatus}
+        WHERE invest_id = #{productId}
+    </update>
+
+    <!-- 修改产品审核状态 -->
+    <update id="updateProductCheckStatus">
+        UPDATE t_loan_product
+        SET check_status = 'C'
+        WHERE invest_id = #{productId}
+    </update>
 
     <!-- 产品发布 -->
     <insert id="saveProduct" parameterType="com.xeehoo.p2p.po.LoanProduct">
@@ -178,10 +191,15 @@
 
     <!-- 查询产品所有投资记录  -->
     <select id="getProductInvestments" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT ui.user_id as userId,
-                u.login_name as userName,
-               ui.invest_amount as amount,
-               ui.invest_time as investTime
+        SELECT
+            ui.invest_id as investid,
+            ui.user_id as userId,
+             u.login_name as userName,
+             u.mobile as mobile,
+            ui.invest_amount as amount,
+            ui.invest_time as investTime,
+            ui.pay_contract_no as contractNo,
+            ui.invest_status as investStatus
           FROM t_loan_user_investment ui INNER JOIN t_loan_userinfo u
             ON ui.user_id = u.user_id
          WHERE ui.product_id = #{productId}

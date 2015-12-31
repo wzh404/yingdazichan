@@ -52,7 +52,6 @@
             <div class="am-tabs-bd">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
                     <form class="am-form" action="" id="form_product" method="post">
-
                         <div class="am-g am-margin-top">
                             <div class="am-u-sm-4 am-u-md-2 am-text-right">产品名称</div>
                             <div class="am-u-sm-8 am-u-md-4">
@@ -175,6 +174,7 @@
                                 <textarea rows="6" placeholder="请输入借款用途" name="loanPurpose">${product.loanPurpose}</textarea>
                             </div>
                         </div>
+                        <input type="hidden" id="product_id" name="product_id" value="${product.productId}"/>
                     </form>
                 </div>
 
@@ -197,6 +197,7 @@
                                 <textarea rows="8"></textarea>
                             </div>
                         </div>
+
                     </form>
                 </div>
                 <div class="am-tab-panel am-fade" id="tab3">
@@ -245,8 +246,9 @@
             </div>
 
             <div class="am-margin">
-                <input type="hidden" id="productId" value="${product.productId}"/>
+
                 <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="submitProduct();">提交保存</button>
+                <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="submitSettleProduct();">满标</button>
             </div>
         </div>
         <!-- content end -->
@@ -343,6 +345,13 @@
                 $('#form_product').attr("action", '/admin/updateProduct');
             }
             v.submit('#form_product');
+        }
+
+        function submitSettleProduct(){
+            if ($('#productId').val() != ''){
+                $('#form_product').attr("action", '/admin/settleAccount');
+                $('#form_product').submit();
+            }
         }
     </script>
 </body>
