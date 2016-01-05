@@ -1,7 +1,11 @@
 package com.xeehoo.p2p.po;
 
+import com.xeehoo.p2p.util.Constant;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wangzunhui on 2015/10/16.
@@ -29,7 +33,68 @@ public class LoanProduct {
     private BigDecimal maxAmount; //最大投资额度
     private Date releaseTime; //发布时间
     private Integer staffId;  //发布人
-    private Integer productStatus;  //产品状态 0 已完成  1 已满标  2 进行中
+    private Integer productStatus;  //产品状态 1 录入  2 发布  3 满标结算
+
+
+    public String getInvestDayName(){
+        if (this.investDay == null)
+            return "-";
+        Map<String, String> map = new HashMap<String, String>(4);
+        map.put("D", "天");
+        map.put("W", "周");
+        map.put("M", "个月");
+        map.put("Y", "年");
+
+        String oper = this.investDay.substring(this.investDay.length() - 1);
+        String num = this.investDay.substring(0, this.investDay.length() - 1);
+
+        return num + map.get(oper);
+    }
+    /**
+     * 检查产品状态是否为s
+     *
+     * @param s
+     * @return
+     */
+    public boolean checkStatus(int s){
+        return (this.productStatus != null && this.productStatus.intValue() == s);
+    }
+
+    /**
+     * 检查产品状态是否不为s
+     *
+     * @param s
+     * @return
+     */
+    public boolean checkNotStatus(int s){
+        return (this.productStatus != null && !(this.productStatus.intValue() == s));
+    }
+
+    /**
+     * 产品状态不是发布状态
+     * @return
+     */
+    public boolean isNotReleaseStatus(){
+        return checkNotStatus(Constant.PRODUCT_STATUS_RELEASE);
+    }
+
+    /**
+     * 产品为录入状态
+     *
+     * @return
+     */
+    public boolean isInputStatus(){
+        return checkStatus(Constant.PRODUCT_STATUS_INPUT);
+    }
+
+    /**
+     * 是否可以结算
+     *
+     * @return
+     */
+    public boolean isSettle(){
+        return (checkStatus(Constant.PRODUCT_STATUS_RELEASE) && this.residualAmount.longValue() == 0L);
+    }
 
     public String getInterestWay() {
         return interestWay;

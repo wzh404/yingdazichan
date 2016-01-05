@@ -54,8 +54,9 @@
                         <td><fmt:formatNumber value="${invest.investAmount}" type="currency"/></td>
                         <td><fmt:formatNumber value="${invest.investIncome}" type="currency"/></td>
                         <td><fmt:formatDate value="${invest.investTime}" pattern="yyyy-MM-dd HH:mm"/></td>
-                        <td><c:if test="${invest.investStatus.equals(\"C\")}">已完成</c:if>
-                            <c:if test="${invest.investStatus.equals(\"I\")}">投资中</c:if>
+                        <td><c:if test="${invest.investStatus.equals(\"U\")}">未到期</c:if>
+                            <c:if test="${invest.investStatus.equals(\"D\")}">已到期</c:if>
+                            <c:if test="${invest.investStatus.equals(\"O\")}">逾期中</c:if>
                         </td>
                     </tr>
                     </c:forEach>

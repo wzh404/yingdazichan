@@ -9,10 +9,7 @@ import com.xeehoo.p2p.service.LoanCacheService;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanUserService;
-import com.xeehoo.p2p.util.CommonUtil;
-import com.xeehoo.p2p.util.Constant;
-import com.xeehoo.p2p.util.LoanPagedListHolder;
-import com.xeehoo.p2p.util.UriUtils;
+import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -134,27 +131,33 @@ public class LoanInvestController {
     @RequestMapping(value = "/product", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public HashMap<String, Object> getProduct(HttpServletRequest request, HttpServletResponse response,
-                                              @RequestParam(value = "type", required = true) String productType,
+                                              @RequestParam(value = "type", required = false) String productType,
                                               @RequestParam(value = "page", required = false) Integer page){
         HashMap<String, Object> map = new HashMap<String, Object>();
-        HashMap<String, Object> cond = new HashMap<String, Object>();
+//        HashMap<String, Object> cond = new HashMap<String, Object>();
+        QueryCondition queryCondition = new QueryCondition();
 
         if (page == null || page <= 0)
             page = 1;
 
-        cond.put("type", productType);
-        Integer totalSize = investService.getTotalProduct(cond);
-        map.put("totalSize", totalSize);
+        queryCondition.put("type", productType);
+        queryCondition.put("stat", Constant.PRODUCT_STATUS_RELEASE);
+//        if (productType != null) {
+//            cond.put("type", productType);
+//        }
+        Integer totalSize = investService.getTotalProduct(queryCondition.getCond());
         if (totalSize <= 0){
+            map.put("totalSize", totalSize);
             return map;
         }
-        cond.remove("totalSize");
+//        cond.remove("totalSize");
 
 //        cond.put("pageSize", 10);
 //        cond.put("offset", (page - 1) * 10);
-        cond.put("type", productType);
-        List<LoanProduct> products = investService.getInvestProductPager(page - 1, 10, cond);
+//        cond.put("type", productType);
+        List<LoanProduct> products = investService.getInvestProductPager(page - 1, 5, queryCondition.getCond());
         if (products != null && products.size() > 0){
+            map.put("totalSize", totalSize);
             map.put("product", products);
         }
 
@@ -163,22 +166,22 @@ public class LoanInvestController {
 
     @RequestMapping(value = "/cache/product", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public HashMap<String, Object> cacheProduct(HttpServletRequest request, HttpServletResponse response){
-        String[] productTypes = {"1001", "1002", "1003"};
+    public List<LoanProduct> cacheProduct(HttpServletRequest request, HttpServletResponse response){
+//        String[] productTypes = {"1001", "1002", "1003"};
 
-        HashMap<String, Object> map = new HashMap<String, Object>();
+//        HashMap<String, Object> map = new HashMap<String, Object>();
         HashMap<String, Object> cond = new HashMap<String, Object>();
-//        cond.put("pageSize", 2);
+//        cond.put("pageSize", 6);
 //        cond.put("offset", 0);
-        for (String type : productTypes){
-            cond.put("type", type);
-            List<LoanProduct>  products = investService.getInvestProductPager(0, 2, cond);
-            if (products != null && products.size() > 0){
-                map.put("I" + type, products);
-            }
-        }
+//        for (String type : productTypes){
+//            cond.put("type", type);
+            List<LoanProduct>  products = investService.getInvestProductPager(0, 6, cond);
+//            if (products != null && products.size() > 0){
+//                map.put("I" + type, products);
+//            }
+//        }
 
-        return map;
+        return products;
     }
 
 }

@@ -205,8 +205,9 @@
                         <thead>
                         <tr>
                             <th class="table-id" style="width: 30%;">投标时间</th>
-                            <th class="table-title" style="width: 40%;">投标人</th>
-                            <th class="table-type" style="width: 30%;">投标金额</th>
+                            <th class="table-title" style="width: 20%;">投标人</th>
+                            <th class="table-type" style="width: 20%;">投标金额</th>
+                            <th class="table-type" style="width: 20%;">划拨状态</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -215,6 +216,15 @@
                                 <td><fmt:formatDate value="${invest.investtime}" pattern="yyyy-MM-dd HH:mm"/></td>
                                 <td>${invest.username}</td>
                                 <td><fmt:formatNumber value="${invest.amount}" type="currency"/></td>
+                                <td>
+                                    <c:if test="${invest.tranrespcode.equals(\"0000\")}">
+                                        已划拨
+                                    </c:if>
+                                    <c:if test="${!invest.tranrespcode.equals(\"0000\")}">
+                                        划拨失败<span style="color:red">(${invest.tranrespcode})</span>
+                                    </c:if>
+                                </td>
+
                             </tr>
                             </c:forEach>
                         </tbody>
@@ -255,7 +265,6 @@
     </div>
 </div>
     <jsp:include page="footer.jsp"/>
-
 
     <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
     <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>

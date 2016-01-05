@@ -21,6 +21,15 @@ public class LoanUserInvestment {
     private String paySeqno;
     private String payContractNo;
     private String payResponseCode;
+    private String transferResponseCode;
+
+    public String getTransferResponseCode() {
+        return transferResponseCode;
+    }
+
+    public void setTransferResponseCode(String transferResponseCode) {
+        this.transferResponseCode = transferResponseCode;
+    }
 
     public String getPayResponseCode() {
         return payResponseCode;

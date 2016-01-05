@@ -186,9 +186,11 @@ var InvestmentBuy = React.createClass({
                 var num = parseFloat(amt).toFixed(2) * 100;
                 var resp = callAjax('/invest', { 'amt': num, 'product': this.props.product });
                 if (resp.resultCode == 'login') {
-                    windows.location.href = "/usr/login.jsp";
+                    location.href = "/user/login.jsp";
+                } else if (resp.resultCode == 'OK') {
+                    alert('投资成功');
                 } else {
-                    alert(resp.resultCode);
+                    alert('投资失败');
                 }
             }
         } else {

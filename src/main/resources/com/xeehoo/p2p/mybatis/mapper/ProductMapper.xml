@@ -37,6 +37,8 @@
         <result property="investStatus" column="invest_status"/>
         <result property="investTime" column="invest_time"/>
         <result property="paySeqno" column="pay_seqno"/>
+        <result property="payResponseCode" column="pay_resp_code"/>
+        <result property="transferResponseCode" column="transfer_resp_code"/>
     </resultMap>
 
     <sql id="product_pager_where">
@@ -94,7 +96,7 @@
     <update id="updateProductStatus">
         UPDATE t_loan_product
         SET product_status = #{productStatus}
-        WHERE invest_id = #{productId}
+        WHERE product_id = #{productId}
     </update>
 
     <!-- 修改产品审核状态 -->
@@ -102,6 +104,19 @@
         UPDATE t_loan_product
         SET check_status = 'C'
         WHERE invest_id = #{productId}
+    </update>
+
+    <!-- 修改用户投资满标转账状态-->
+    <update id="updateUserInvestmentTransferCode">
+        <foreach collection="investments" item="invest" separator=";">
+          UPDATE t_loan_user_investment
+            <set>
+              transfer_resp_code = #{invest.transferRespCode}
+            </set>
+            <where>
+                invest_id = #{invest.investId}
+            </where>
+        </foreach>
     </update>
 
     <!-- 产品发布 -->
@@ -169,7 +184,8 @@
             invest_time,
             pay_seqno,
             pay_contract_no,
-            pay_resp_code
+            pay_resp_code,
+            transfer_resp_code
         )
         VALUES (
             #{productId},
@@ -184,10 +200,10 @@
             #{investTime},
             #{paySeqno},
             #{payContractNo},
-            #{payResponseCode}
+            #{payResponseCode},
+            #{transferResponseCode}
         )
     </insert>
-
 
     <!-- 查询产品所有投资记录  -->
     <select id="getProductInvestments" resultType="java.util.Map" parameterType="java.util.Map">
@@ -198,12 +214,13 @@
              u.mobile as mobile,
             ui.invest_amount as amount,
             ui.invest_time as investTime,
+            ui.pay_resp_code as payrespcode,
             ui.pay_contract_no as contractNo,
+            ui.transfer_resp_code as tranrespcode,
             ui.invest_status as investStatus
           FROM t_loan_user_investment ui INNER JOIN t_loan_userinfo u
             ON ui.user_id = u.user_id
          WHERE ui.product_id = #{productId}
-           AND ui.invest_status = 'I'
     </select>
 
     <sql id="user_invest_where">

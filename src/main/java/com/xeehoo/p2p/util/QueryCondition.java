@@ -86,7 +86,7 @@ public class QueryCondition {
      * @param uri
      * @param mav
      */
-    public void setModelAndView( String uri, ModelAndView mav){
+    public void setModelAndView(String uri, ModelAndView mav){
         String pageUri = getQueryParams("page");
         pageUri = uri + (pageUri == null ? "" : "?" + pageUri);
         mav.addObject("pageUri", pageUri);
@@ -111,7 +111,7 @@ public class QueryCondition {
      * @param key
      * @return
      */
-    private String getQueryParams(String key){
+    public String getQueryParams(String key){
         StringBuilder query = new StringBuilder("");
         for (Condition c : conds){
             if (c.getKey().equalsIgnoreCase(key))

@@ -93,7 +93,7 @@
 
         <div class="am-g">
             <div class="am-u-sm-12">
-                <form class="am-form">
+
                     <table class="am-table am-table-striped am-table-hover table-main">
                         <thead>
                         <tr>
@@ -106,6 +106,7 @@
                             <th class="table-author am-hide-sm-only">年化收益率</th>
                             <th class="table-author am-hide-sm-only">投资期限</th>
                             <th class="table-author am-hide-sm-only">剩余金额</th>
+                            <th class="table-author am-hide-sm-only">状态</th>
                             <th class="table-set">操作</th>
                         </tr>
                         </thead>
@@ -119,21 +120,55 @@
                                 <td class="am-hide-sm-only"><fmt:formatNumber value="${product.totalAmount}" type="currency"/></td>
                                 <td class="am-hide-sm-only"><fmt:formatDate value="${product.releaseTime}" pattern="yyyy-MM-dd"/></td>
                                 <td class="am-hide-sm-only">${product.loanRate}%</td>
-                                <td class="am-hide-sm-only">${product.investDay}</td>
+                                <td class="am-hide-sm-only">${product.investDayName}</td>
                                 <td class="am-hide-sm-only"><fmt:formatNumber value="${product.residualAmount}" type="currency"/></td>
-
                                 <td>
                                     <div class="am-btn-toolbar">
                                         <div class="am-btn-group am-btn-group-xs">
-                                            <%--<button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span--%>
-                                                    <%--class="am-icon-pencil-square-o"></span> 编辑--%>
-                                            <%--</button>--%>
-                                            <%--<button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span--%>
-                                                    <%--class="am-icon-copy"></span> 复制--%>
-                                            <%--</button>--%>
-                                            <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only">
-                                                <span class="am-icon-trash-o"></span> 撤销
-                                            </button>
+                                            <c:if test="${product.checkStatus(1)}">
+                                            待发布
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(2)}">
+                                            投标中
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(3)}">
+                                            已满标
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(4)}">
+                                            流标
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(5)}">
+                                            已完成
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(6)}">
+                                            逾期
+                                            </c:if>
+                                            <c:if test="${product.checkStatus(9)}">
+                                            <span style="color:red">划拨异常</span>
+                                            </c:if>
+                                                </div>
+                                        </div>
+                                </td>
+                                <td>
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+
+                                            <c:if test="${product.isSettle()}">
+                                                <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span
+                                                        class="am-icon-pencil-square-o"></span> 满标
+                                                </button>
+                                            </c:if>
+                                            <c:if test="${product.isInputStatus()}">
+                                                <button class="am-btn  am-btn-xs am-text-danger am-hide-sm-only" onclick="settle(${product.productId});">
+                                                    <span class="am-icon-pencil-square-o"></span> 发布
+                                                </button>
+                                            </c:if>
+
+                                            <c:if test="${product.checkStatus(9)}">
+                                                <button class="am-btn  am-btn-xs am-text-danger am-hide-sm-only" onclick="settle(${product.productId});">
+                                                    <span class="am-icon-pencil-square-o"></span> 处理
+                                                </button>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </td>
@@ -156,7 +191,7 @@
                         <c:param name="page" value="~"/>
                     </c:url>
                     <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
-                </form>
+
             </div>
         </div>
     </div>
@@ -167,6 +202,7 @@
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
 <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
 <script src="/js/validate-code.react.js?12357"></script>
+<script src="/js/ydzc.js?12357"></script>
 <script type="text/javascript">
     var type_options = [
         {"name": "全部", "value": "all"},
@@ -256,6 +292,17 @@
     test_factor('i_product_status', stat_query);
     test_factor('i_product_rate', rate_query);
     test_factor('i_product_date', date_query);
+
+    function settle(pid){
+        var json = callAjax('/admin/changeProductToRelease', {'product_id': pid})
+        if (json.resultCode == 'OK'){
+            alert('发布成功');
+            location.reload();
+        }
+        else{
+            alert('发布失败');
+        }
+    }
 </script>
 </body>
 </html>

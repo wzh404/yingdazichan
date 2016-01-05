@@ -78,4 +78,18 @@ public interface LoanInvestService {
      */
     public LoanPagedListHolder getUserInvestments(int page, QueryCondition cond);
 
+    /**
+     *
+     * @param productId
+     */
+    public void settleProductById(Integer productId);
+
+    /**
+     *
+     * @param productId
+     * @param productStatus
+     * @return
+     */
+    public Integer updateProductStatus(Integer productId, Integer productStatus);
+
 }

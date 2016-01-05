@@ -15,10 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,7 +103,7 @@ public class LoanProductController {
         StaffSessionObject sso = (StaffSessionObject)request.getSession().getAttribute("staff");
         product.setStaffId(sso.getStaffId());
         product.setReleaseTime(new Date());
-        product.setProductStatus(1);
+        product.setProductStatus(Constant.PRODUCT_STATUS_INPUT);
         product.setResidualAmount(product.getTotalAmount());
         investService.saveProduct(product);
 
@@ -122,58 +119,35 @@ public class LoanProductController {
         return mav;
     }
 
+    @RequestMapping(value="/admin/changeProductToRelease")
+    @Permission("0201")
+    @ResponseBody
+    public Map<String, Object> changeProductToRelease(@RequestParam(value = "product_id", required = true) Integer productId){
+        Integer updateRows = investService.updateProductStatus(productId, Constant.PRODUCT_STATUS_RELEASE);
+        if (updateRows > 0) {
+            return CommonUtil.generateJsonMap("OK", null);
+        }
+        else{
+            return CommonUtil.generateJsonMap("ERROR", "发布失败");
+        }
+    }
+
+
+    /**
+     * 满标转账
+     *
+     * @param request
+     * @param productId
+     * @return
+     */
     @RequestMapping(value="/admin/settleAccount")
     @Permission("0201")
     public ModelAndView settleAccount(HttpServletRequest request,
                                       @RequestParam(value = "product_id", required = false) Integer productId){
         ModelAndView mav = new ModelAndView("redirect:/admin/product");
-        List<Map<String, Object>> userInvestments = investService.getProductInvestments(productId);
-        for (Map<String, Object> map : userInvestments){
-            String investStatus = (String)map.get("investstatus");
-            if (investStatus.equalsIgnoreCase("I")){
-                Integer investId = (Integer)map.get("investid");
-                String contractNo = (String)map.get("contractno");
-                String mobile = (String)map.get("mobile");
-                BigDecimal amt = (BigDecimal)map.get("amount");
-                String amount = (new Long(amt.longValue() * 100)).toString();
-                logger.info(contractNo + " - " + mobile + " - " + amount);
-                String respCode = transferBmu(mobile, "user114", contractNo, amount);
-                if (respCode.equalsIgnoreCase("0000")){
-                    // 状态为还款中 I -> W
-                }
-            }
-        }
+        investService.settleProductById(productId);
         return mav;
     }
-
-    /**
-     * 6.转账(商户与个人之间)
-     *
-     * @param outCustNo
-     * @return
-     */
-    private String transferBmu(String outCustNo, String inCustNo, String contractNo, String amt){
-        TransferBmuReqData data = new TransferBmuReqData();
-        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
-        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
-        data.setOut_cust_no(outCustNo);  // 转出账号
-        data.setIn_cust_no(inCustNo);   // 转入账号
-        data.setContract_no(contractNo); //预授权号
-        data.setAmt(amt); //划拨金额
-        data.setRem("test"); //备注
-
-        CommonRspData rsp = null;
-        try {
-            rsp = FuiouService.transferBmu(data);
-            logger.info(rsp.toString());
-
-            return rsp.getResp_code();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "9999";
-        }
-    }
-
 
     /**
      * 查询用户账户余额

@@ -46,20 +46,11 @@
     <div class=" The_total1200">
         <div class="sy_left">
             <div>
-                <h1>雪花系列</h1>
+                <h1>投资推荐</h1>
                 <div id="invest_1001">
                 </div>
             </div>
-            <div>
-                <h1>基金系列</h1>
-                <div id="invest_1002">
-                </div>
-            </div>
-            <div>
-                <h1>投行系列</h1>
-                <div id="invest_1003">
-                </div>
-            </div>
+
         </div>
         <div class="sy_right">
             <div class="wd_zx">
@@ -213,9 +204,9 @@
 
     react_slides_render('full-screen-slider');
     if (products != null){
-        react_investment_render('invest_1001', products.I1001, 'http://renben.neowave.com.cn:8080/ydzc/img');
-        react_investment_render('invest_1002', products.I1002, 'http://renben.neowave.com.cn:8080/ydzc/img');
-        react_investment_render('invest_1007', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
+        react_investment_render('invest_1001', products, 'http://renben.neowave.com.cn:8080/ydzc/img');
+//        react_investment_render('invest_1002', products.I1002, 'http://renben.neowave.com.cn:8080/ydzc/img');
+//        react_investment_render('invest_1007', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
     }
 </script>
 

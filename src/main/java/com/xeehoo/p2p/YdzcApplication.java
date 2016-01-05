@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -35,6 +36,7 @@ import javax.sql.DataSource;
 @PropertySources(value = {@PropertySource("classpath:application.properties")})
 @EnableTransactionManagement(proxyTargetClass=true)
 @MapperScan(basePackages= "com.xeehoo.p2p.mybatis.mapper")
+@EnableAsync
 public class YdzcApplication extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {

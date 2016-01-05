@@ -48,9 +48,10 @@
 <div class="The_total1200 cl" style="clear:both">
     <div class="nav">
         <ul id="tab_product">
-            <li class="nav_1" id="tab_product_1001"><a href="javascript: product('1001', 1)">基金系列</a></li>
-            <li id="tab_product_1002"><a href="javascript: product('1002', 1)" >投行系列</a></li>
-            <li id="tab_product_1003"><a href="javascript: product('1003', 1)" >雪花系列</a></li>
+            <li class="nav_1" id="tab_product_all"><a href="javascript: product('all', 1)">全部</a></li>
+            <li class="nav_1" id="tab_product_1001"><a href="javascript: product('1001', 1)">国建标</a></li>
+            <li id="tab_product_1002"><a href="javascript: product('1002', 1)" >能源标</a></li>
+            <li id="tab_product_1003"><a href="javascript: product('1003', 1)" >文化标</a></li>
             <li>债权转让</li>
         </ul>
         <div class="nav_" style=" float:right;">
@@ -103,8 +104,8 @@
 
 <script type="text/javascript">
     function setCurrentProduct(type){
-        var tabs = ['1001', '1002', '2003'];
-        for (var i = 0; i<tabs.length;i++){
+        var tabs = ['all', '1001', '1002', '2003'];
+        for (var i = 0; i<tabs.length; i++){
             var tab = tabs[i];
 //            console.log(tab + ' - ' + type);
             if (tab == type){
@@ -118,13 +119,18 @@
         }
     }
 
-    function product(type,page){
+    function product(type, page){
         var products = null;
         var totalSize = 0;
+        var jsonData = {version: "0.1.3", page: page};
+
+        if (type != 'all'){
+            jsonData = {version: "0.1.3", type : type, page: page};
+        }
 
         $.ajax({
             url: "/product",
-            data: {version: "0.1.3", type : type, page: page},
+            data: jsonData,
             type: "get",
             dataType: "json",
             async: false,
@@ -140,10 +146,14 @@
         setCurrentProduct(type);
         if (products != null){
             react_investment_render('investment', products, '${img}');
-            test_paging('pager_pager_1', totalSize, 2);
+            render_paging('pager_pager_1', totalSize, page, type);
+        }
+        else{
+            $('#investment').html("<span style='color: red'>没有产品信息</span>");
+            $('#pager_pager_1').html("");
         }
     }
-    product('1001', 1);
+    product('all', 1);
 </script>
 
 </body>
