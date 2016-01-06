@@ -67,4 +67,11 @@ public interface UserMapper {
      * @return
      */
     public LoanUserFund getUserFund(Integer userId);
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public Integer updateUserAuthentication(LoanUser user);
 }

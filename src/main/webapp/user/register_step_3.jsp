@@ -39,7 +39,7 @@
                     <p style=" color:#fd4750;">${sessionScope.register_user.mobile}</p>
                     <p>恭喜您注册成功，请实名认证享用<strong style="color:#fd4750; font-size:24px;">5000</strong>元体验金</p>
                 </div>
-                <p style="margin-left:122px;"><a href=""><img src="${img}/ra.jpg" /></a></p>
+                <p style="margin-left:122px;"><a href="/user/webReg"><img src="${img}/ra.jpg" /></a></p>
                 <br />
                 <p style="margin-left:122px;"><a href="/index.jsp"><img src="${img}/ra_0.jpg" /></a></p>
             </div>

@@ -2,6 +2,7 @@ package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.po.LoanUserFund;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -54,4 +55,21 @@ public interface LoanUserService {
      * @return
      */
     public LoanUserFund getFundByUserID(Integer userID);
+
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public Integer updateUserAuthentication(LoanUser user);
+
+
+    /**
+     * 根据用户名或手机号查询用户信息
+     *
+     * @param loginName
+     * @return
+     */
+    public LoanUser getUser(String loginName);
 }

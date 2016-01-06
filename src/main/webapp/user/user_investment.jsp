@@ -15,8 +15,6 @@
     <title>账户中心-投资记录</title>
     <link rel="stylesheet" type="text/css" href="${css}/style.css"/>
     <link rel="stylesheet" type="text/css" href="${css}/user.css"/>
-    <link rel="stylesheet" href="/css/admin/amazeui.min.css"/>
-    <link rel="stylesheet" href="/css/admin/admin.css">
 </head>
 
 <body>
@@ -33,10 +31,14 @@
             <div class="nr_right">
                 <div style="margin-top: 10px;margin-left: 30px">
                     <p>产品状态:
-                        <span style="color: white; background: #0e90d2; padding: 5px 10px 5px 10px">全部</span>
-                        <span style="padding: 5px 10px 5px 10px">未到期</span>
-                        <span style="padding: 5px 10px 5px 10px">已到期</span>
-                        <span style="padding: 5px 10px 5px 10px">逾期中</span>
+                        <span style="color: white; background: #0e90d2; padding: 5px 10px 5px 10px">
+                            <a href="${pageUri}">全部</a></span>
+                        <span style="padding: 5px 10px 5px 10px">
+                            <a href="${pageUri}">未到期</a></span>
+                        <span style="padding: 5px 10px 5px 10px">
+                            <a href="${pageUri}">已到期</a></span>
+                        <span style="padding: 5px 10px 5px 10px">
+                            <a href="${pageUri}">逾期中</a></span>
                     </p>
                 </div>
                 <div class="nt" style="margin-top: 30px">
@@ -49,16 +51,16 @@
                         <td style="width: 10%"><span >项目状态</span></td>
                     </tr>
                     <c:forEach items="${pagedListHolder.source}" var="invest">
-                    <tr>
-                        <td><a href="">${invest.productName}</a></td>
-                        <td><fmt:formatNumber value="${invest.investAmount}" type="currency"/></td>
-                        <td><fmt:formatNumber value="${invest.investIncome}" type="currency"/></td>
-                        <td><fmt:formatDate value="${invest.investTime}" pattern="yyyy-MM-dd HH:mm"/></td>
-                        <td><c:if test="${invest.investStatus.equals(\"U\")}">未到期</c:if>
-                            <c:if test="${invest.investStatus.equals(\"D\")}">已到期</c:if>
-                            <c:if test="${invest.investStatus.equals(\"O\")}">逾期中</c:if>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td><a href="">${invest.productName}</a></td>
+                            <td><fmt:formatNumber value="${invest.investAmount}" type="currency"/></td>
+                            <td><fmt:formatNumber value="${invest.investIncome}" type="currency"/></td>
+                            <td><fmt:formatDate value="${invest.investTime}" pattern="yyyy-MM-dd HH:mm"/></td>
+                            <td><c:if test="${invest.investStatus=='U'}">未到期</c:if>
+                                <c:if test="${invest.investStatus=='D'}">已到期</c:if>
+                                <c:if test="${invest.investStatus=='O'}">逾期中</c:if>
+                            </td>
+                        </tr>
                     </c:forEach>
                     </table>
 
@@ -67,8 +69,6 @@
                     </c:url>
                     <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
                 </div>
-
-
             </div>
         </div>
     </div>

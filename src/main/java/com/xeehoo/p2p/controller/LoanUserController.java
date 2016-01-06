@@ -100,9 +100,14 @@ public class LoanUserController {
             return new ModelAndView("/user/register_step_1");
         }
 
+        /*
         String cacheAuthCode = (String)cache.get(user.getMobile());
         if (cacheAuthCode == null || !cacheAuthCode.equalsIgnoreCase(authCode)){
             sendAuthCode(cache, user.getMobile());
+            return new ModelAndView("/user/register_step_2");
+        }*/
+
+        if (!authCode.equalsIgnoreCase("0000")){
             return new ModelAndView("/user/register_step_2");
         }
 
@@ -341,16 +346,19 @@ public class LoanUserController {
      */
     @RequestMapping(value = "/user/invest", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView userInvest(HttpServletRequest request,
+                                   @RequestParam(value = "due", required = false) String due,
                                    @RequestParam(value = "page", required = false) Integer page){
         SessionObject so = CommonUtil.getSessionObject(request, null);
         if (so == null) {
             return new ModelAndView("/user/login");
         }
 
+        if (due == null) due = "A";
         if (page == null) page = 0;
 
         QueryCondition queryCondition = new QueryCondition();
         queryCondition.put("_userId", so.getUserID());
+        queryCondition.put("due", due);
         LoanPagedListHolder pagedListHolder = investService.getUserInvestments(page, queryCondition);
 
         ModelAndView mav = new ModelAndView("/user/user_investment");

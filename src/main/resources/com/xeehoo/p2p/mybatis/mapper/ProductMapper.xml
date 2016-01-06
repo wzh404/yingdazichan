@@ -236,7 +236,7 @@
         SELECT *
           FROM t_loan_user_investment ui
         <include refid="user_invest_where"/>
-         LIMIT #{pageSize} OFFSET #{offset}
+         LIMIT #{_pageSize} OFFSET #{_offset}
     </select>
 
     <!-- 产品记录数  -->

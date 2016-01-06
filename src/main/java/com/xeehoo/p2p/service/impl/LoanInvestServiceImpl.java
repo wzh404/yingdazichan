@@ -152,6 +152,16 @@ public class LoanInvestServiceImpl implements LoanInvestService{
         }
     }
 
+    /**
+     *  投资
+     *
+     * @param productId
+     * @param userId
+     * @param mobile
+     * @param amount
+     * @return
+     * @throws Exception
+     */
     @Override
     @Transactional(propagation= Propagation.REQUIRED, readOnly = false, rollbackFor=Exception.class)
     public int updateProductUserAmount(Integer productId, Integer userId, String mobile, Long amount)

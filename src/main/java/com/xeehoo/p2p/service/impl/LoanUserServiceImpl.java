@@ -113,4 +113,14 @@ public class LoanUserServiceImpl implements LoanUserService {
 
         return userFund;
     }
+
+    @Override
+    public Integer updateUserAuthentication(LoanUser user) {
+        return userMapper.updateUserAuthentication(user);
+    }
+
+    @Override
+    public LoanUser getUser(String loginName) {
+        return userMapper.getUserLoginInfo("name", loginName);
+    }
 }

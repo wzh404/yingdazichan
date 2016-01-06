@@ -277,8 +277,8 @@
             ]
         },
         'server':{
-            'value':'${date}',
-            'uri':'${dateUri}',
+            'value': '${date}',
+            'uri': '${dateUri}',
             "low": '${low_date}',
             "high": '${high_date}'
         },

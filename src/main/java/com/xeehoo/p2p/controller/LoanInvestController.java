@@ -134,7 +134,6 @@ public class LoanInvestController {
                                               @RequestParam(value = "type", required = false) String productType,
                                               @RequestParam(value = "page", required = false) Integer page){
         HashMap<String, Object> map = new HashMap<String, Object>();
-//        HashMap<String, Object> cond = new HashMap<String, Object>();
         QueryCondition queryCondition = new QueryCondition();
 
         if (page == null || page <= 0)
@@ -142,19 +141,13 @@ public class LoanInvestController {
 
         queryCondition.put("type", productType);
         queryCondition.put("stat", Constant.PRODUCT_STATUS_RELEASE);
-//        if (productType != null) {
-//            cond.put("type", productType);
-//        }
+
         Integer totalSize = investService.getTotalProduct(queryCondition.getCond());
         if (totalSize <= 0){
             map.put("totalSize", totalSize);
             return map;
         }
-//        cond.remove("totalSize");
 
-//        cond.put("pageSize", 10);
-//        cond.put("offset", (page - 1) * 10);
-//        cond.put("type", productType);
         List<LoanProduct> products = investService.getInvestProductPager(page - 1, 5, queryCondition.getCond());
         if (products != null && products.size() > 0){
             map.put("totalSize", totalSize);
@@ -167,21 +160,9 @@ public class LoanInvestController {
     @RequestMapping(value = "/cache/product", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public List<LoanProduct> cacheProduct(HttpServletRequest request, HttpServletResponse response){
-//        String[] productTypes = {"1001", "1002", "1003"};
-
-//        HashMap<String, Object> map = new HashMap<String, Object>();
         HashMap<String, Object> cond = new HashMap<String, Object>();
-//        cond.put("pageSize", 6);
-//        cond.put("offset", 0);
-//        for (String type : productTypes){
-//            cond.put("type", type);
-            List<LoanProduct>  products = investService.getInvestProductPager(0, 6, cond);
-//            if (products != null && products.size() > 0){
-//                map.put("I" + type, products);
-//            }
-//        }
+        List<LoanProduct>  products = investService.getInvestProductPager(0, 6, cond);
 
         return products;
     }
-
 }

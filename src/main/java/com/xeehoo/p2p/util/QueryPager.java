@@ -15,8 +15,8 @@ public abstract class QueryPager<E> {
     public abstract List<E> elements(int page, QueryCondition cond);
 
     public void init(QueryCondition cond){
-        cond.put("pageSize", Constant.PAGE_DEFAULT_SIZE);
-        cond.put("offset", Constant.PAGE_DEFAULT_SIZE * page);
+        cond.put("_pageSize", Constant.PAGE_DEFAULT_SIZE);
+        cond.put("_offset", Constant.PAGE_DEFAULT_SIZE * page);
     }
 
     public QueryPager(int page){

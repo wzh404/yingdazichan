@@ -125,6 +125,15 @@
           user_id = #{userId}
     </update>
 
+    <!-- 修改第三方用户认证信息 -->
+    <update id="updateUserAuthentication" parameterType="com.xeehoo.p2p.po.LoanUser">
+        UPDATE t_loan_userinfo
+           SET escrow_account = #{escrowAccount},
+               real_name = #{realName},
+               id_card = #{idCard}
+         WHERE user_id = #{userId}
+    </update>
+
     <!-- 获取用户资产信息 -->
     <select id="getUserFund" resultMap="userFund" parameterType="int">
         SELECT * FROM t_loan_user_fund WHERE user_id = #{userId}
