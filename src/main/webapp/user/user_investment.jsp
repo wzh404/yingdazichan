@@ -31,14 +31,14 @@
             <div class="nr_right">
                 <div style="margin-top: 10px;margin-left: 30px">
                     <p>产品状态:
-                        <span style="color: white; background: #0e90d2; padding: 5px 10px 5px 10px">
-                            <a href="${pageUri}">全部</a></span>
-                        <span style="padding: 5px 10px 5px 10px">
-                            <a href="${pageUri}">未到期</a></span>
-                        <span style="padding: 5px 10px 5px 10px">
-                            <a href="${pageUri}">已到期</a></span>
-                        <span style="padding: 5px 10px 5px 10px">
-                            <a href="${pageUri}">逾期中</a></span>
+                        <span id="due_A" style="padding: 5px 10px 5px 10px">
+                            <a href="${dueUri}&due=A">全部</a></span>
+                        <span id="due_U" style="padding: 5px 10px 5px 10px">
+                            <a href="${dueUri}&due=U">未到期</a></span>
+                        <span id="due_D" style="padding: 5px 10px 5px 10px">
+                            <a href="${dueUri}&due=D">已到期</a></span>
+                        <span id="due_O" style="padding: 5px 10px 5px 10px">
+                            <a href="${dueUri}&due=O">逾期中</a></span>
                     </p>
                 </div>
                 <div class="nt" style="margin-top: 30px">
@@ -56,14 +56,13 @@
                             <td><fmt:formatNumber value="${invest.investAmount}" type="currency"/></td>
                             <td><fmt:formatNumber value="${invest.investIncome}" type="currency"/></td>
                             <td><fmt:formatDate value="${invest.investTime}" pattern="yyyy-MM-dd HH:mm"/></td>
-                            <td><c:if test="${invest.investStatus=='U'}">未到期</c:if>
-                                <c:if test="${invest.investStatus=='D'}">已到期</c:if>
-                                <c:if test="${invest.investStatus=='O'}">逾期中</c:if>
+                            <td><c:if test="${invest.isUnDue()}">未到期</c:if>
+                                <c:if test="${invest.isDue()}">已到期</c:if>
+                                <c:if test="${invest.isOverDue()}">逾期中</c:if>
                             </td>
                         </tr>
                     </c:forEach>
                     </table>
-
                     <c:url value="${pageUri}" var="pagedLink">
                         <c:param name="page" value="~"/>
                     </c:url>
@@ -78,6 +77,8 @@
 <!--bottom  start-->
 <jsp:include page="/footer.jsp"/>
 <!--bottom_0  end-->
-
+<script type="text/javascript">
+    $("#due_${due}").attr('style', 'color: white; background: #eb953a; padding: 5px 10px 5px 10px');
+</script>
 </body>
 </html>

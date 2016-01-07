@@ -1,6 +1,7 @@
 package com.xeehoo.p2p.po;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -22,6 +23,36 @@ public class LoanUserInvestment {
     private String payContractNo;
     private String payResponseCode;
     private String transferResponseCode;
+    private String transferSeqno;
+    private Date transferTime;
+
+    public boolean isDue(){
+        return this.investStatus.equalsIgnoreCase("D");
+    }
+
+    public boolean isUnDue(){
+        return this.investStatus.equalsIgnoreCase("U") && this.investClosingDate.after(new Date());
+    }
+
+    public boolean isOverDue(){
+        return this.investStatus.equalsIgnoreCase("U") && this.investClosingDate.before(new Date());
+    }
+
+    public Date getTransferTime() {
+        return transferTime;
+    }
+
+    public void setTransferTime(Date transferTime) {
+        this.transferTime = transferTime;
+    }
+
+    public String getTransferSeqno() {
+        return transferSeqno;
+    }
+
+    public void setTransferSeqno(String transferSeqno) {
+        this.transferSeqno = transferSeqno;
+    }
 
     public String getTransferResponseCode() {
         return transferResponseCode;

@@ -39,6 +39,8 @@
         <result property="paySeqno" column="pay_seqno"/>
         <result property="payResponseCode" column="pay_resp_code"/>
         <result property="transferResponseCode" column="transfer_resp_code"/>
+        <result property="transferSeqno" column="transfer_seqno"/>
+        <result property="transferTime" column="transfer_time"/>
     </resultMap>
 
     <sql id="product_pager_where">
@@ -109,13 +111,15 @@
     <!-- 修改用户投资满标转账状态-->
     <update id="updateUserInvestmentTransferCode">
         <foreach collection="investments" item="invest" separator=";">
-          UPDATE t_loan_user_investment
-            <set>
-              transfer_resp_code = #{invest.transferRespCode}
-            </set>
-            <where>
-                invest_id = #{invest.investId}
-            </where>
+            UPDATE t_loan_user_investment
+                <set>
+                    transfer_resp_code = #{invest.transferRespCode},
+                    transfer_seqno = #{invest.transferSeqno},
+                    transfer_time = now()
+                </set>
+                <where>
+                    invest_id = #{invest.investId}
+                </where>
         </foreach>
     </update>
 
@@ -185,6 +189,7 @@
             pay_seqno,
             pay_contract_no,
             pay_resp_code,
+            transfer_seqno,
             transfer_resp_code
         )
         VALUES (
@@ -201,6 +206,7 @@
             #{paySeqno},
             #{payContractNo},
             #{payResponseCode},
+            #{transferSeqno},
             #{transferResponseCode}
         )
     </insert>
@@ -227,6 +233,17 @@
         <where>
             <if test="_userId != null">
                 AND ui.user_id = #{_userId}
+            </if>
+            <if test='due == "U"'> <!-- 未到期 -->
+                AND invest_closing_date &gt; now()
+                AND invest_status = 'U'
+            </if>
+            <if test='due == "D"'> <!-- 已到期 -->
+                AND invest_status = 'D'
+            </if>
+            <if test='due == "O"'> <!-- 逾期中 -->
+                AND invest_closing_date &lt; now()
+                AND invest_status = 'U'
             </if>
         </where>
     </sql>

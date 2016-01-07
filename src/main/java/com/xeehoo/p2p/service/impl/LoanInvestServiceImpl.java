@@ -38,25 +38,28 @@ public class LoanInvestServiceImpl implements LoanInvestService{
      * @param outCustNo
      * @return
      */
-    private String transferBmu(String outCustNo, String inCustNo, String contractNo, String amt){
+    private CommonRspData transferBmu(String outCustNo, String inCustNo, String contractNo, String amt){
         TransferBmuReqData data = new TransferBmuReqData();
+        String seqno = CommonUtil.getMchntTxnSsn();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
-        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setMchnt_txn_ssn(seqno); //流水号
         data.setOut_cust_no(outCustNo);  // 转出账号
         data.setIn_cust_no(inCustNo);   // 转入账号
         data.setContract_no(contractNo); //预授权号
-        data.setAmt(amt); //划拨金额
-        data.setRem("test"); //备注
+        data.setAmt(amt); // 划拨金额
+        data.setRem("test"); // 备注
 
-        CommonRspData rsp = null;
         try {
-            rsp = FuiouService.transferBmu(data);
+            CommonRspData rsp = FuiouService.transferBmu(data);
             logger.info(rsp.toString());
 
-            return rsp.getResp_code();
+            return rsp;
         } catch (Exception e) {
             e.printStackTrace();
-            return "9999";
+            CommonRspData rsp = new CommonRspData();
+            rsp.setResp_code("9999");
+            rsp.setMchnt_txn_ssn(seqno);
+            return rsp;
         }
     }
 
@@ -90,11 +93,13 @@ public class LoanInvestServiceImpl implements LoanInvestService{
                 BigDecimal amt = (BigDecimal)map.get("amount");
                 String amount = (new Long(amt.longValue() * 100)).toString();
                 logger.info(contractNo + " - " + mobile + " - " + amount);
-                String respCode = transferBmu(mobile, "user114", contractNo, amount);
+                CommonRspData rsp = transferBmu(mobile, "user114", contractNo, amount);
 
                 Map<String, Object> settleMap = new HashMap<>();
+                String respCode = rsp.getResp_code();
                 settleMap.put("transferRespCode", respCode);
                 settleMap.put("investId", investId);
+                settleMap.put("transferSeqno", rsp.getMchnt_txn_ssn());
 
                 if (!respCode.equalsIgnoreCase("0000")){
                     productStatus = Constant.PRODUCT_STATUS_EXCEPTION;  // 产品未能全部转账成功，产品状态设置为异常，需人为干预。
@@ -136,11 +141,11 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     private PreAuthRspData preAuth(String outCustNo, String inCustNo, String seqno, String amt){
         PreAuthReqData data = new PreAuthReqData();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
-        data.setMchnt_txn_ssn(seqno); //流水号
+        data.setMchnt_txn_ssn(seqno); // 流水号
         data.setOut_cust_no(outCustNo);  // 出账账号
-        data.setIn_cust_no(inCustNo); //入账账户
-        data.setAmt(amt); //冻结金额
-        data.setRem("test"); //备注
+        data.setIn_cust_no(inCustNo); // 入账账户
+        data.setAmt(amt); // 冻结金额
+        data.setRem("test"); // 备注
 
         try {
             PreAuthRspData rsp = FuiouService.preAuth(data);
@@ -153,7 +158,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     }
 
     /**
-     *  投资
+     *  投资人投标
      *
      * @param productId
      * @param userId
@@ -177,11 +182,14 @@ public class LoanInvestServiceImpl implements LoanInvestService{
             return 0;
         }
 
+        // 减少产品融资金额
         BigDecimal amt = new BigDecimal(amount / 100.0);
         int result = productMapper.updateProductAmount(productId, amt);
         if (result > 0) {
             String seqno = CommonUtil.getMchntTxnSsn();
             logger.info(mobile + " - user114 " + " - " + amount);
+
+            // 投资人投资预授权
             PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
             if (resp != null && resp.getResp_code().equalsIgnoreCase("0000")){
                 LoanUserInvestment investment = new LoanUserInvestment();
@@ -204,7 +212,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
                 return productMapper.saveUserInvestment(investment);
             }
             else{
-                throw new Exception("error");// database rollback
+                throw new Exception("error");// database rollback product amount
             }
         }
 

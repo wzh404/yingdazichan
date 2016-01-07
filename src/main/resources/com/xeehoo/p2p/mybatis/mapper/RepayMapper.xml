@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.RepayMapper">
+    <!-- 用户还款情况 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanUserRepay" id="userRepay">
+        <id property="repayId" column="repay_id"/>
+        <result property="investId" column="invest_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="amount" column="repay_amount"/>
+        <result property="interest" column="repay_interest"/>
+        <result property="repayTime" column="repay_time"/>
+        <result property="repaySeqno" column="repay_seqno"/>
+        <result property="repayResponseCode" column="repay_resp_code"/>
+    </resultMap>
+
+    <!-- 产品还款情况 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanProductRepay" id="productRepay">
+        <id property="repayId" column="repay_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="amount" column="repay_amount"/>
+        <result property="interest" column="repay_interest"/>
+        <result property="repayTime" column="repay_time"/>
+    </resultMap>
+
+    <!-- 插入用户还款情况 -->
+    <insert id="saveUserRepays">
+        <foreach collection="userRepays" item="repay" separator=";">
+            INSERT INTO t_loan_user_repay (
+              invest_id,
+              user_id,
+              repay_amount,
+              repay_interest,
+              repay_time,
+              repay_seqno,
+              repay_resp_code)
+            VALUES (
+              #{repay.investId},
+              #{repay.userId},
+              #{repay.amount},
+              #{repay.interest},
+              #{repay.repayTime},
+              #{repay.repaySeqno},
+              #{repay.repayResponseCode},
+            )
+        </foreach>
+    </insert>
+
+    <!-- 插入产品还款情况 -->
+    <insert id="saveProductRepay" parameterType="com.xeehoo.p2p.po.LoanProductRepay">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="repayId" >
+            SELECT currval('t_loan_product_repay_repay_id_seq') AS repayId
+        </selectKey>
+
+        INSERT INTO t_loan_user_repay (
+          product_id,
+          repay_amount,
+          repay_interest,
+          repay_time)
+        VALUES (
+          #{productId},
+          #{amount},
+          #{interest},
+          #{repayTime}
+        )
+    </insert>
+
+    <!-- 根据投资记录查询还款情况  -->
+    <select id="getUserRepay" resultType="userRepay">
+        SELECT *
+        FROM
+          t_loan_user_repay
+        WHERE
+          invest_id = #{investId}
+    </select>
+
+    <!-- 根据产品查询还款情况  -->
+    <select id="getProductRepay" resultType="userRepay">
+        SELECT *
+        FROM
+          t_loan_product_repay
+        WHERE
+          product_id = #{productId}
+    </select>
+</mapper>

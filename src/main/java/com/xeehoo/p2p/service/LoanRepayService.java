@@ -1,0 +1,34 @@
+package com.xeehoo.p2p.service;
+
+import com.xeehoo.p2p.po.LoanProductRepay;
+import com.xeehoo.p2p.po.LoanUserRepay;
+
+import java.util.List;
+
+/**
+ * Created by wangzunhui on 2016/1/7.
+ */
+public interface LoanRepayService {
+    /**
+     * 产品按月还款
+     *
+     * @param productId
+     */
+    public void repay(Integer productId);
+
+    /**
+     * 查询用户投资产品的还款情况
+     *
+     * @param investId
+     * @return
+     */
+    public List<LoanUserRepay> getUserRepays(Integer investId);
+
+    /**
+     * 查询产品的还款情况
+     *
+     * @param productId
+     * @return
+     */
+    public List<LoanProductRepay> getProductRepay(Integer productId);
+}

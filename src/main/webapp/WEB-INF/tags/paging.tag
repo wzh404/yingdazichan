@@ -12,13 +12,13 @@
                     <li ><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(0)) %>">首页</a></li>
                 </c:if>
                 <c:if test="${!pagedListHolder.firstPage}">
-                    <li class="am-disabled"><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() - 1)) %>">上一页</a></li>
+                    <li><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() - 1)) %>">上一页</a></li>
                 </c:if>
 
                 <c:forEach begin="${pagedListHolder.firstLinkedPage}" end="${pagedListHolder.lastLinkedPage}" var="i">
                     <c:choose>
                         <c:when test="${pagedListHolder.page == i}">
-                            <li class="am-active">${i+1}</li>
+                            <li class="am-active"><a href="javascript:void(0);">${i+1}</a></li>
                         </c:when>
                         <c:otherwise>
                             <li ><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(jspContext.getAttribute("i"))) %>">${i+1}</a></li>
@@ -30,7 +30,7 @@
                     <li><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() + 1)) %>">下一页</a></li>
                 </c:if>
                 <c:if test="${!pagedListHolder.lastPage}">
-                    <li class="am-disabled"><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPageCount() - 1)) %>">尾页</a></li>
+                    <li><a href="<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPageCount() - 1)) %>">尾页</a></li>
                 </c:if>
             </c:if>
         </ul>
