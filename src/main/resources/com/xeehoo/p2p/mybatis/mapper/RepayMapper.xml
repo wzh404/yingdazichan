@@ -67,7 +67,7 @@
     </insert>
 
     <!-- 根据投资记录查询还款情况  -->
-    <select id="getUserRepay" resultType="userRepay">
+    <select id="getUserRepay" resultMap="userRepay">
         SELECT *
         FROM
           t_loan_user_repay
@@ -76,7 +76,7 @@
     </select>
 
     <!-- 根据产品查询还款情况  -->
-    <select id="getProductRepay" resultType="userRepay">
+    <select id="getProductRepay" resultMap="productRepay">
         SELECT *
         FROM
           t_loan_product_repay
