@@ -3,7 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:set var="js" value="http://renben.neowave.com.cn:8080/xeehoo/js"/>
+<c:set var="css" value="http://119.254.84.18:8080/ydzc/css"/>
+<c:set var="img" value="http://119.254.84.18:8080/ydzc/img"/>
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
 
 <div class="nr_left">
     <h1>我的盈达</h1>

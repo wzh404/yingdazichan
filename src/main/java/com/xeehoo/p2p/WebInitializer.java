@@ -16,7 +16,7 @@ import javax.servlet.ServletRegistration;
 /**
  * Created by wangzunhui on 2015/12/4.
  */
-//@SpringBootApplication
+@SpringBootApplication
 public class WebInitializer extends SpringBootServletInitializer  {
     private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
 

@@ -12,9 +12,9 @@ public interface LoanRepayService {
     /**
      * 产品按月还款
      *
-     * @param productId
+     * @param repayId
      */
-    public void repay(Integer productId);
+    public void repay(Integer repayId);
 
     /**
      * 查询用户投资产品的还款情况
@@ -31,4 +31,12 @@ public interface LoanRepayService {
      * @return
      */
     public List<LoanProductRepay> getProductRepay(Integer productId);
+
+    /**
+     * 生成还款计划
+     *
+     * @param productId
+     * @return
+     */
+    public Integer createRepayPlan(Integer productId);
 }

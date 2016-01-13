@@ -2,8 +2,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="css" value="http://renben.neowave.com.cn:8080/ydzc/css"/>
-<c:set var="img" value="http://renben.neowave.com.cn:8080/ydzc/img"/>
+<c:set var="css" value="http://119.254.84.18:8080/ydzc/css"/>
+<c:set var="img" value="http://119.254.84.18:8080/ydzc/img"/>
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
 
 <div class="The_total b_one">
     <div class="bottom_a The_total1200 clear">

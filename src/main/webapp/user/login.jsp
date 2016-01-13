@@ -3,9 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<c:set var="css" value="http://renben.neowave.com.cn:8080/ydzc/css"/>
-<c:set var="img" value="http://renben.neowave.com.cn:8080/ydzc/img"/>
-<c:set var="js" value="http://renben.neowave.com.cn:8080/xeehoo/js"/>
+<c:set var="css" value="http://119.254.84.18:8080/ydzc/css"/>
+<c:set var="img" value="http://119.254.84.18:8080/ydzc/img"/>
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

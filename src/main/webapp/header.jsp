@@ -2,14 +2,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="css" value="http://renben.neowave.com.cn:8080/ydzc/css"/>
-<c:set var="img" value="http://renben.neowave.com.cn:8080/ydzc/img"/>
+<c:set var="css" value="http://119.254.84.18:8080/ydzc/css"/>
+<c:set var="img" value="http://119.254.84.18:8080/ydzc/img"/>
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
 
 <div class="The_total top">
     <div class="The_total1200">
         <div class="top_0">
             <ul>
-                <li>您好${sessionScope.user.loginName}，欢迎来到盈时代！</li>
+                <li>您好${sessionScope.user.loginName}！</li>
                 <c:if test="${sessionScope.user == null}">
                     <li><a href="/user/login.jsp" style="color:#eb953a;">登录</a></li>
                     <li>|</li>
@@ -48,7 +49,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="${js}/jquery-1.7.2.min.js"></script>
 <script type="text/javascript">
     var currentTab = '<%=request.getParameter("tab")%>'
     function setCurrentTab(type){

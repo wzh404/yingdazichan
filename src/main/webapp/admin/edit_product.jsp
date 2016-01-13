@@ -217,10 +217,10 @@
                                 <td>${invest.username}</td>
                                 <td><fmt:formatNumber value="${invest.amount}" type="currency"/></td>
                                 <td>
-                                    <c:if test="${invest.tranrespcode.equals(\"0000\")}">
+                                    <c:if test="${invest.tranrespcode == '0000'}">
                                         已划拨
                                     </c:if>
-                                    <c:if test="${!invest.tranrespcode.equals(\"0000\")}">
+                                    <c:if test="${!invest.tranrespcode == '0000'}">
                                         划拨失败<span style="color:red">(${invest.tranrespcode})</span>
                                     </c:if>
                                 </td>
@@ -266,8 +266,8 @@
 </div>
     <jsp:include page="footer.jsp"/>
 
-    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
-    <script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
+    <script src="${js}/react.js" type="text/javascript"></script>
+    <script src="${js}/react-dom.js" type="text/javascript"></script>
     <script type="text/javascript" src="/js/ydzc-validate.js?v=0.1.6"></script>
 
     <script type="text/javascript">

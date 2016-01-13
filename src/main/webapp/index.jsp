@@ -3,9 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:set var="css" value="http://renben.neowave.com.cn:8080/ydzc/css"/>
-<c:set var="img" value="http://renben.neowave.com.cn:8080/ydzc/img"/>
-<c:set var="js" value="http://renben.neowave.com.cn:8080/xeehoo/js"/>
+<c:set var="css" value="http://119.254.84.18:8080/ydzc/css"/>
+<c:set var="img" value="http://119.254.84.18:8080/ydzc/img"/>
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -171,16 +171,16 @@
 <br/>
 <jsp:include page="footer.jsp"/>
 
-<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/jquery.jslides.js"></script>
+<script type="text/javascript" src="${js}/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="${js}/jquery.jslides.js"></script>
 
 <!--[if lt IE 9]>
 <script type="text/javascript" src="${js}/es5-shim.js"></script>
 <script type="text/javascript" src="${js}/es5-sham.js"></script>
 <![endif]-->
 
-<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js"></script>
-<script type="text/javascript" src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js"></script>
+<script type="text/javascript" src="${js}/react.js"></script>
+<script type="text/javascript" src="${js}/react-dom.js"></script>
 <script src="/js/ydzc.js?v=0.1.5"></script>
 <script src="/js/investment.react.js?v=0.1.5"></script>
 <script src="/js/validate-code.react.js?1235ed"></script>
@@ -204,7 +204,7 @@
 
     react_slides_render('full-screen-slider');
     if (products != null){
-        react_investment_render('invest_1001', products, 'http://renben.neowave.com.cn:8080/ydzc/img');
+        react_investment_render('invest_1001', products, 'http://119.254.84.18:8080/ydzc/img');
 //        react_investment_render('invest_1002', products.I1002, 'http://renben.neowave.com.cn:8080/ydzc/img');
 //        react_investment_render('invest_1007', products.I1003, 'http://renben.neowave.com.cn:8080/ydzc/img');
     }
