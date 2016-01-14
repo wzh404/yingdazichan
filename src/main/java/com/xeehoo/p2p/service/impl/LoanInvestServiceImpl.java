@@ -3,18 +3,20 @@ package com.xeehoo.p2p.service.impl;
 import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.mybatis.mapper.ProductMapper;
+import com.xeehoo.p2p.mybatis.mapper.RepayMapper;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanUserInvestment;
+import com.xeehoo.p2p.po.LoanUserRepay;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,7 +25,7 @@ import java.util.*;
  * Created by wangzunhui on 2015/10/16.
  */
 @Service("investService")
-public class LoanInvestServiceImpl implements LoanInvestService{
+public class LoanInvestServiceImpl implements LoanInvestService {
     private final Logger logger = Logger.getLogger(LoanInvestServiceImpl.class);
 
     @Autowired
@@ -32,20 +34,26 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     @Autowired
     ProductMapper productMapper;
 
+    @Autowired
+    RepayMapper repayMapper;
+
     /**
      * 6.转账(商户与个人之间)
      *
      * @param outCustNo
      * @return
      */
-    private CommonRspData transferBmu(String outCustNo, String inCustNo, String contractNo, String amt){
+    private CommonRspData transferBmu(String outCustNo, String inCustNo, String contractNo, String amt) {
         TransferBmuReqData data = new TransferBmuReqData();
         String seqno = CommonUtil.getMchntTxnSsn();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
-        data.setMchnt_txn_ssn(seqno); //流水号
+        data.setMchnt_txn_ssn(seqno); // 流水号
         data.setOut_cust_no(outCustNo);  // 转出账号
         data.setIn_cust_no(inCustNo);   // 转入账号
-        data.setContract_no(contractNo); //预授权号
+
+        if (!StringUtils.isEmpty(contractNo)) {
+            data.setContract_no(contractNo); //预授权号
+        }
         data.setAmt(amt); // 划拨金额
         data.setRem("test"); // 备注
 
@@ -76,21 +84,21 @@ public class LoanInvestServiceImpl implements LoanInvestService{
 
         LoanProduct product = getProduct(productId);
         // 检测产品状态是否为发布状态（1)，产品是否到期
-        if (product == null || product.isNotReleaseStatus()){
+        if (product == null || product.isNotReleaseStatus()) {
             logger.warn("product settle failed");
             return;
         }
 
         // 状态用户冻结资金到盈达账户
         List<Map<String, Object>> userInvestments = getProductInvestments(productId);
-        for (Map<String, Object> map : userInvestments){
-            String payRespCode = (String)map.get("payrespcode"); // 冻结状态
-            String tranRespCode = (String)map.get("tranrespcode"); // 划拨状态
-            if ("0000".equalsIgnoreCase(payRespCode) && !"0000".equalsIgnoreCase(tranRespCode)){
-                Integer investId = (Integer)map.get("investid");
-                String contractNo = (String)map.get("contractno");
-                String mobile = (String)map.get("mobile");
-                BigDecimal amt = (BigDecimal)map.get("amount");
+        for (Map<String, Object> map : userInvestments) {
+            String payRespCode = (String) map.get("payrespcode"); // 冻结状态
+            String tranRespCode = (String) map.get("tranrespcode"); // 划拨状态
+            if ("0000".equalsIgnoreCase(payRespCode) && !"0000".equalsIgnoreCase(tranRespCode)) {
+                Integer investId = (Integer) map.get("investid");
+                String contractNo = (String) map.get("contractno");
+                String mobile = (String) map.get("mobile");
+                BigDecimal amt = (BigDecimal) map.get("amount");
                 String amount = (new Long(amt.longValue() * 100)).toString();
                 logger.info(contractNo + " - " + mobile + " - " + amount);
                 CommonRspData rsp = transferBmu(mobile, "user114", contractNo, amount);
@@ -101,7 +109,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
                 settleMap.put("investId", investId);
                 settleMap.put("transferSeqno", rsp.getMchnt_txn_ssn());
 
-                if (!respCode.equalsIgnoreCase("0000")){
+                if (!respCode.equalsIgnoreCase("0000")) {
                     productStatus = Constant.PRODUCT_STATUS_EXCEPTION;  // 产品未能全部转账成功，产品状态设置为异常，需人为干预。
                 }
                 settles.add(settleMap);
@@ -109,7 +117,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
         }
 
         // 根据转账返回结果，修改用户投资转账返回码
-        if (settles.size() > 0){
+        if (settles.size() > 0) {
             productMapper.updateUserInvestmentTransferCode(settles);
         }
 
@@ -138,7 +146,16 @@ public class LoanInvestServiceImpl implements LoanInvestService{
         return total;
     }
 
-    private PreAuthRspData preAuth(String outCustNo, String inCustNo, String seqno, String amt){
+    /**
+     * 预授权业务
+     *
+     * @param outCustNo
+     * @param inCustNo
+     * @param seqno
+     * @param amt
+     * @return
+     */
+    private PreAuthRspData preAuth(String outCustNo, String inCustNo, String seqno, String amt) {
         PreAuthReqData data = new PreAuthReqData();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
         data.setMchnt_txn_ssn(seqno); // 流水号
@@ -158,7 +175,29 @@ public class LoanInvestServiceImpl implements LoanInvestService{
     }
 
     /**
-     *  投资人投标
+     * @param investment
+     * @param product
+     * @return
+     */
+    private LoanUserRepay createUserRepay(LoanUserInvestment investment, LoanProduct product) {
+        LoanUserRepay userRepay = new LoanUserRepay();
+        // 本金
+        userRepay.setAmount(investment.getInvestAmount());
+
+        // 利息
+        long days = InterestUtil.calculateIntervals(investment.getInvestStartDate(), investment.getInvestClosingDate());
+        userRepay.setInterest(InterestUtil.calculateInterest(investment.getInvestAmount(), product.getLoanRate(), days));
+
+        userRepay.setUserId(investment.getUserId());
+        userRepay.setInvestId(investment.getInvestId());
+        userRepay.setRepayTime(investment.getInvestClosingDate());
+        userRepay.setProductId(investment.getProductId());
+
+        return userRepay;
+    }
+
+    /**
+     * 投资人投标
      *
      * @param productId
      * @param userId
@@ -168,56 +207,69 @@ public class LoanInvestServiceImpl implements LoanInvestService{
      * @throws Exception
      */
     @Override
-    @Transactional(propagation= Propagation.REQUIRED, readOnly = false, rollbackFor=Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public int updateProductUserAmount(Integer productId, Integer userId, String mobile, Long amount)
-        throws Exception{
+            throws Exception {
         LoanProduct product = productMapper.getProduct(productId);
-        if (product == null){
+        if (product == null) {
             logger.warn("product " + productId + "is not found!");
             return 0;
         }
 
-        if (product.isNotReleaseStatus()){
+        if (product.isNotReleaseStatus()) {
             logger.warn("product status [" + product.getProductStatus() + "] is not release!");
             return 0;
         }
 
-        // 减少产品融资金额
+        // 更新产品融资金额
         BigDecimal amt = new BigDecimal(amount / 100.0);
         int result = productMapper.updateProductAmount(productId, amt);
-        if (result > 0) {
-            String seqno = CommonUtil.getMchntTxnSsn();
-            logger.info(mobile + " - user114 " + " - " + amount);
-
-            // 投资人投资预授权
-            PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
-            if (resp != null && resp.getResp_code().equalsIgnoreCase("0000")){
-                LoanUserInvestment investment = new LoanUserInvestment();
-
-                investment.setProductId(productId);
-                investment.setProductName(product.getProductName());
-                investment.setUserId(userId);
-                investment.setInvestAmount(amt);
-                investment.setInvestTime(new Date());
-                investment.setInvestStartDate(new Date());
-                investment.setInvestClosingDate(new Date());
-                investment.setInvestIncome(new BigDecimal(0.00));
-                investment.setInvestServiceCharge(new BigDecimal(0.00));
-                investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
-                investment.setPaySeqno(seqno);
-                investment.setPayContractNo(resp.getContract_no());
-                investment.setPayResponseCode("0000");
-                investment.setTransferResponseCode("9999");
-
-                return productMapper.saveUserInvestment(investment);
-            }
-            else{
-                throw new Exception("error");// database rollback product amount
-            }
+        if (result <= 0) {
+            logger.warn("amount is not enough");
+            return 0;
         }
 
-        logger.warn("amount is not enough");
-        return 0; // failed
+        // 用户投资项目
+        LoanUserInvestment investment = new LoanUserInvestment();
+        investment.setProductId(productId);
+        investment.setProductName(product.getProductName());
+        investment.setUserId(userId);
+        investment.setInvestAmount(amt);
+        investment.setInvestTime(new Date());
+        investment.setInvestStartDate(InterestUtil.tomorrow()); // 计息日期为次日
+        investment.setInvestClosingDate(InterestUtil.calculateInvestClosingDate(investment.getInvestStartDate(), product.getInvestDay()));
+        investment.setInvestIncome(new BigDecimal(0.00));
+        investment.setInvestServiceCharge(new BigDecimal(0.00));
+        investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
+        String seqno = CommonUtil.getMchntTxnSsn();
+        investment.setPaySeqno(seqno);
+        investment.setPayResponseCode("9999");
+        investment.setTransferResponseCode("9999");
+        Integer rows = productMapper.saveUserInvestment(investment);
+        if (rows <= 0) {
+            throw new Exception("saveUserInvestment failed"); // database rollback
+        }
+
+        // 还款计划
+        List<LoanUserRepay> userRepays = new ArrayList<LoanUserRepay>();
+        LoanUserRepay userRepay = createUserRepay(investment, product);
+        userRepay.setInvestId(investment.getInvestId());
+        userRepays.add(userRepay);
+        rows = repayMapper.saveUserRepays(userRepays);
+        if (rows <= 0) {
+            throw new Exception("saveUserRepays error"); // database rollback
+        }
+
+        // 第三方支付预授权
+        PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
+        if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) {
+            productMapper.updateUserInvestmentPay(investment.getInvestId(), resp.getContract_no(), resp.getResp_code());
+        }
+        else{
+            throw new Exception("pay error"); // database rollback
+        }
+
+        return 1; // OK
     }
 
     @Override
@@ -251,7 +303,7 @@ public class LoanInvestServiceImpl implements LoanInvestService{
 
     @Override
     public LoanPagedListHolder getUserInvestments(int page, QueryCondition cond) {
-        return new QueryPager<LoanUserInvestment>(page, cond){
+        return new QueryPager<LoanUserInvestment>(page, cond) {
             @Override
             public Integer total(QueryCondition cond) {
                 return productMapper.getTotalUserInvestment(cond.getCond());

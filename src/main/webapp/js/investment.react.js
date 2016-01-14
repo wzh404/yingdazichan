@@ -155,6 +155,8 @@ var InvestmentBuy = React.createClass({
             return React.createElement("div", { className: "xrb_a20_0" });
         } else {
             var amount = formatNum(this.props.remain, 0);
+            var buy_id = "buy_amt_" + this.props.product;
+            console.log(buy_id);
             return React.createElement(
                 "div",
                 { className: "xrb_a21" },
@@ -167,7 +169,7 @@ var InvestmentBuy = React.createClass({
                 React.createElement(
                     "div",
                     { className: "xrb_a20_1" },
-                    React.createElement("input", { type: "text", id: "buy_amt", style: c2Style }),
+                    React.createElement("input", { type: "text", id: buy_id, style: c2Style }),
                     React.createElement(
                         "a",
                         { style: c3Style, href: "javascript: void(0);", onClick: this.buy },
@@ -178,7 +180,7 @@ var InvestmentBuy = React.createClass({
         }
     },
     buy: function buy() {
-        var amt = $('#buy_amt').val();
+        var amt = $('#buy_amt_' + this.props.product).val();
         var isValidMoney = /^\d{2,8}(\.\d{0,2})?$/.test(amt);
         if (isValidMoney) {
             var r = confirm("投资金额：" + formatNum(parseFloat(amt), 2) + "元, 确定？");

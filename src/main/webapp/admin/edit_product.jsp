@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="pg" tagdir="/WEB-INF/tags" %>
+
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
+
 <!doctype html>
 <html class="no-js">
 <head>
@@ -319,8 +322,12 @@
                 };
 
                 validate.blur = function(){
-                    console.log(ins.length);
+//                    console.log(ins.length);
                     for (var i = 0; i < ins.length; i++) {
+//                        console.log('[' + ins[i].id + ']');
+                        if (ins[i].value != ''){
+                            validate.setMaskById(true, ins[i].id);
+                        }
                         var errMsg = '<span style="color:red;display:none" id="span_errmsg_' + ins[i].id + '"></span>';
                         $('#' + ins[i].id).parent().append(errMsg);
 
@@ -332,6 +339,7 @@
                 };
 
                 validate.submit = function(id){
+                    console.log(mask + "-" + mm);
                     if (mask != mm) {
                         return;
                     }
@@ -347,7 +355,7 @@
         v.blur();
 
         function submitProduct() {
-            if ($('#productId').val() == '') {
+            if ($('#product_id').val() == '') {
                 $('#form_product').attr("action", '/admin/saveProduct');
             }
             else{
@@ -357,7 +365,7 @@
         }
 
         function submitSettleProduct(){
-            if ($('#productId').val() != ''){
+            if ($('#product_id').val() != ''){
                 $('#form_product').attr("action", '/admin/settleAccount');
                 $('#form_product').submit();
             }

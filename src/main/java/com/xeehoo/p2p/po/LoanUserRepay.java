@@ -9,15 +9,33 @@ import java.util.Date;
 public class LoanUserRepay {
     private Integer repayId;  // 还款记录ID
     private Integer investId; // 用户投资记录ID
+    private Integer productId; // 产品ID
     private Integer userId;  // 用户ID
     private BigDecimal amount; // 应还本金
     private BigDecimal interest; // 应还利息
-    private Date repayTime;  // 还款日期
+    private Date repayTime;  // 计划还款日期
     private String repaySeqno; // 支付流水
     private String repayResponseCode; // 支付应答码
+    private Date repayRealTime; // 实际还款时间
 
     public Integer getRepayId() {
         return repayId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public Date getRepayRealTime() {
+        return repayRealTime;
+    }
+
+    public void setRepayRealTime(Date repayRealTime) {
+        this.repayRealTime = repayRealTime;
     }
 
     public void setRepayId(Integer repayId) {

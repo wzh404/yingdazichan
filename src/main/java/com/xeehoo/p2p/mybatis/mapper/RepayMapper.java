@@ -1,7 +1,6 @@
 package com.xeehoo.p2p.mybatis.mapper;
 
 import com.xeehoo.p2p.po.LoanProduct;
-import com.xeehoo.p2p.po.LoanProductRepay;
 import com.xeehoo.p2p.po.LoanUserRepay;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,12 +17,6 @@ public interface RepayMapper {
      */
     public Integer saveUserRepays(@Param("userRepays")List<LoanUserRepay> userRepays);
 
-    /**
-     *
-     * @param productRepay
-     * @return
-     */
-    public Integer saveProductRepay(LoanProductRepay productRepay);
 
     /**
      *
@@ -31,12 +24,4 @@ public interface RepayMapper {
      * @return
      */
     public List<LoanUserRepay> getUserRepays(Integer investId);
-
-    /**
-     *
-     * @param productId
-     * @return
-     */
-    public List<LoanProductRepay> getProductRepay(Integer productId);
-
 }

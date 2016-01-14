@@ -15,7 +15,7 @@ public class LoanProduct {
     private String productName; // 产品名称
     private String productType; // 产品类型
     private BigDecimal loanRate; // 年化收益率
-//    private Date valueDate;  //起息日期
+    //    private Date valueDate;  //起息日期
     private String investDay;  //投资期限 1M
     private BigDecimal totalAmount;  //总额度
     private BigDecimal residualAmount; //剩余金额
@@ -26,7 +26,7 @@ public class LoanProduct {
     private Integer raiseDays; // 募集周期
     private String riskControl; //风控措施
     private String riskCue;  //风险提示
-//    private String bankCode;  //收款银行
+    //    private String bankCode;  //收款银行
 //    private String bankAccountNo;  //收款银行账户
     private BigDecimal minAmount;  //最小投资额度
     private BigDecimal minAddAmount; //最小增加额度
@@ -39,6 +39,7 @@ public class LoanProduct {
     public String getInvestDayName(){
         if (this.investDay == null)
             return "-";
+
         Map<String, String> map = new HashMap<String, String>(4);
         map.put("D", "天");
         map.put("W", "周");

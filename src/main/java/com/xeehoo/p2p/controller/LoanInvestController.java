@@ -1,14 +1,11 @@
 package com.xeehoo.p2p.controller;
 
-import com.sun.jndi.toolkit.url.Uri;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.po.LoanProduct;
-import com.xeehoo.p2p.po.LoanSlider;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.service.LoanCacheService;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
-import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.parser.Entity;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +61,14 @@ public class LoanInvestController {
         }
 
         try {
-            Integer investId = investService.updateProductUserAmount(productId, so.getUserID(), so.getLoginName(), amount);
-            if (investId > 0) {
-                logger.info("investId is " + investId);
+            Integer result = investService.updateProductUserAmount(productId, so.getUserID(), so.getLoginName(), amount);
+            if (result > 0) {
                 return CommonUtil.generateJsonMap("OK", null);
             } else {
                 return CommonUtil.generateJsonMap("failed", "投资失败");
             }
         } catch (Exception e){
+            e.printStackTrace();
             return CommonUtil.generateJsonMap("exception", "系统例外");
         }
     }

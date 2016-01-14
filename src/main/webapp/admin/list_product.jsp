@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="pg" tagdir="/WEB-INF/tags" %>
+
+<c:set var="js" value="http://119.254.84.18:8080/xeehoo/js"/>
+
 <!doctype html>
 <html class="no-js">
 <head>
@@ -199,8 +202,8 @@
 </div>
 
 <jsp:include page="footer.jsp"/>
-<script src="http://renben.neowave.com.cn:8080/xeehoo/js/react.js" type="text/javascript"></script>
-<script src="http://renben.neowave.com.cn:8080/xeehoo/js/react-dom.js" type="text/javascript"></script>
+<script src="${js}/react.js" type="text/javascript"></script>
+<script src="${js}/react-dom.js" type="text/javascript"></script>
 <script src="/js/validate-code.react.js?12357"></script>
 <script src="/js/ydzc.js?12357"></script>
 <script type="text/javascript">

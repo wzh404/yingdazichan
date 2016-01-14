@@ -57,9 +57,9 @@ public interface ProductMapper {
      * @param contractNo
      * @param respCode
      * @return
-
-    public Integer updateUserInvestmentResponse(@Param("investId")Integer investId, @Param("contractNo")String contractNo, @Param("respCode")String respCode);
      */
+    public Integer updateUserInvestmentPay(@Param("investId")Integer investId, @Param("contractNo")String contractNo, @Param("respCode")String respCode);
+
 
     /**
      *

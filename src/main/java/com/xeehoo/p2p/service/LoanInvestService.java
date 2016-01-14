@@ -1,12 +1,9 @@
 package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanProduct;
-import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import com.xeehoo.p2p.util.QueryCondition;
-import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 

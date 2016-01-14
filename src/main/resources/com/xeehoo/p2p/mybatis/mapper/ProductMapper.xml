@@ -69,6 +69,7 @@
     <select id="getProductPager" resultMap="product" parameterType="java.util.Map">
         SELECT * FROM t_loan_product
         <include refid="product_pager_where"/>
+        ORDER BY product_id DESC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -81,10 +82,17 @@
     <!-- 投标 -->
     <update id="updateProductAmount">
         UPDATE t_loan_product SET residual_amount = residual_amount - #{amount}
-        WHERE product_status = 1
-          AND check_status = 1
+        WHERE product_status = 2
           AND residual_amount > #{amount}
           AND product_id = #{productId}
+    </update>
+
+    <!-- 修改用户投标支付结果 -->
+    <update id="updateUserInvestmentPay">
+        UPDATE t_loan_user_investment
+         SET pay_resp_code = #{respCode},
+             pay_contract_no = #{contractNo}
+        WHERE invest_id = #{investId}
     </update>
 
     <!-- 修改用户投资状态 -->

@@ -112,11 +112,13 @@ var InvestmentBuy = React.createClass({
         }
         else {
             var amount = formatNum(this.props.remain, 0);
+            var buy_id = "buy_amt_" + this.props.product;
+            console.log(buy_id);
             return (
                 <div className="xrb_a21">
                     <p style={c1Style}>{amount}（剩余金额）</p>
                     <div className="xrb_a20_1">
-                        <input type="text"  id="buy_amt" style={c2Style} />
+                        <input type="text"  id={buy_id} style={c2Style} />
                         <a style={c3Style} href="javascript: void(0);" onClick={this.buy}>立即抢购</a>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ var InvestmentBuy = React.createClass({
         }
     },
     buy: function(){
-        var amt = $('#buy_amt').val();
+        var amt = $('#buy_amt_' + this.props.product).val();
         var isValidMoney = /^\d{2,8}(\.\d{0,2})?$/.test(amt);
         if (isValidMoney){
             var r = confirm("投资金额：" + formatNum(parseFloat(amt), 2) + "元, 确定？");
