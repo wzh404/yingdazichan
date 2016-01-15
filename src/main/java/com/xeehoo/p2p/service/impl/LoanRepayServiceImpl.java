@@ -31,9 +31,6 @@ public class LoanRepayServiceImpl implements LoanRepayService {
     private RepayMapper repayMapper;
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     private Environment environment;
 
     @Override
@@ -55,7 +52,7 @@ public class LoanRepayServiceImpl implements LoanRepayService {
      * @param amt 转入金额
      * @return
      */
-    private CommonRspData transferBmu(String outCustNo, String inCustNo,String amt) {
+    private CommonRspData transferBmu(String outCustNo, String inCustNo, String amt) {
         TransferBmuReqData data = new TransferBmuReqData();
         String seqno = CommonUtil.getMchntTxnSsn();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号

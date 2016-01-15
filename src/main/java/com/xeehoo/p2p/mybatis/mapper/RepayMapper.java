@@ -20,11 +20,11 @@ public interface RepayMapper {
 
 
     /**
+     * 获取当天的还款计划。
      *
-     * @param investId
      * @return
      */
-    public List<LoanUserRepay> getUserRepays(Integer investId);
+    public List<LoanUserRepay> getUserRepayNow();
 
     /**
      * 修改还款结果状态。
