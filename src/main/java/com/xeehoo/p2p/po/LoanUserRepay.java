@@ -11,12 +11,21 @@ public class LoanUserRepay {
     private Integer investId; // 用户投资记录ID
     private Integer productId; // 产品ID
     private Integer userId;  // 用户ID
+    private String mobile; // 用户第三方ID
     private BigDecimal amount; // 应还本金
     private BigDecimal interest; // 应还利息
     private Date repayTime;  // 计划还款日期
     private String repaySeqno; // 支付流水
     private String repayResponseCode; // 支付应答码
     private Date repayRealTime; // 实际还款时间
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
     public Integer getRepayId() {
         return repayId;

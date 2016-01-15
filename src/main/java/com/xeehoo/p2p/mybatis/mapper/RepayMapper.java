@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface RepayMapper {
     /**
+     * 生成还款计划
      *
      * @param userRepays
      * @return
@@ -24,4 +25,14 @@ public interface RepayMapper {
      * @return
      */
     public List<LoanUserRepay> getUserRepays(Integer investId);
+
+    /**
+     * 修改还款结果状态。
+     *
+     * @param repayId
+     * @param respCode
+     * @param seqno
+     * @return
+     */
+    public Integer updateRepayResponse(@Param("repayId")Integer repayId, @Param("respCode")String respCode, @Param("seqno")String seqno);
 }

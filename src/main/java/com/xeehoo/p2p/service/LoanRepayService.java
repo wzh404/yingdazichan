@@ -9,4 +9,12 @@ import java.util.List;
  */
 public interface LoanRepayService {
 
+    /**
+     * 根据还款计划还款。
+     *
+     * @param userRepay 还款计划
+     * @return
+     */
+    public Integer repay(LoanUserRepay userRepay);
+
 }

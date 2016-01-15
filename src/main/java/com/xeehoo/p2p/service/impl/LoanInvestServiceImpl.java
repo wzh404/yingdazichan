@@ -254,6 +254,8 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         List<LoanUserRepay> userRepays = new ArrayList<LoanUserRepay>();
         LoanUserRepay userRepay = createUserRepay(investment, product);
         userRepay.setInvestId(investment.getInvestId());
+        userRepay.setMobile(mobile);
+
         userRepays.add(userRepay);
         rows = repayMapper.saveUserRepays(userRepays);
         if (rows <= 0) {
