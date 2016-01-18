@@ -27,7 +27,7 @@ public class LoanSliderController {
 
     @RequestMapping(value = "/cache/slide", method = RequestMethod.GET)
     @ResponseBody
-    public List<LoanSlider> cacheSlide(HttpServletRequest request, HttpServletResponse response){
+    public List<LoanSlider> cacheSlider(HttpServletRequest request, HttpServletResponse response){
         logger.info("-----------------cache slide1-------------");
         List<LoanSlider> sliders = loanSliderService.getSliders();
 

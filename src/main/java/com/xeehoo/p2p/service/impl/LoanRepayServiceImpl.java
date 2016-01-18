@@ -14,6 +14,7 @@ import com.xeehoo.p2p.util.InterestUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * Created by wangzunhui on 2016/1/7.
  */
+@Service("repayService")
 public class LoanRepayServiceImpl implements LoanRepayService {
     private final Logger logger = Logger.getLogger(LoanRepayServiceImpl.class);
 
@@ -42,6 +44,14 @@ public class LoanRepayServiceImpl implements LoanRepayService {
 
         CommonRspData rsp = transferBmu("user114", userRepay.getMobile(), amt.toString());
         return repayMapper.updateRepayResponse(userRepay.getRepayId(), rsp.getResp_code(), rsp.getMchnt_txn_ssn());
+    }
+
+    @Override
+    public void repayNow() {
+        List<LoanUserRepay> userRepays = repayMapper.getUserRepayNow();
+        for (LoanUserRepay userRepay : userRepays){
+            repay(userRepay);
+        }
     }
 
     /**

@@ -15,14 +15,8 @@
                             class="am-icon-angle-right am-fr am-margin-right"></span>
                     </a>
                     <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
-                        <c:if test="${sessionScope.staff.subMenu('01', '0101')}">
-                            <li><a href="admin-user.html" class="am-cf"><span class="am-icon-check"></span>
-                                数据字典<span class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span></a>
-                            </li>
-                        </c:if>
-
                         <c:if test="${sessionScope.staff.subMenu('01', '0102')}">
-                            <li><a href="admin-help.html"><span class="am-icon-puzzle-piece"></span> 一级字典</a></li>
+                            <li><a href="/admin/listDict1?dict_code=10"><span class="am-icon-puzzle-piece"></span> 一级字典</a></li>
                         </c:if>
 
                         <c:if test="${sessionScope.staff.subMenu('01', '0103')}">
@@ -51,13 +45,13 @@
                 </a>
                 <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-page-nav">
                     <c:if test="${sessionScope.staff.subMenu('01', '0101')}">
-                        <li><a href="admin-user.html" class="am-cf"><span class="am-icon-check"></span> 幻灯片
+                        <li><a href="/admin/list_slider.jsp" class="am-cf"><span class="am-icon-check"></span> 幻灯片
                             <span class="am-icon-bars am-fr am-margin-right admin-icon-yellow"></span></a></li>
                     </c:if>
                 </ul>
             </li>
 
-            <li><a href="admin-table.html"><span class="am-icon-bookmark"></span> 发布公告</a></li>
+            <li><a href="/admin/list_bulletin.jsp"><span class="am-icon-bookmark"></span> 发布公告</a></li>
             <li><a href="/admin/product"><span class="am-icon-bookmark"></span> 项目管理</a></li>
 
             <li><a href="/admin/settleProduct"><span class="am-icon-sign-out"></span> 财务结算</a></li>

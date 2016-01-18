@@ -3,7 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xeehoo.p2p.mybatis.mapper.DictMapper">
-    <!-- 数据字典1 -->
+    <!-- 数据字典 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanDict" id="dict">
+        <id property="dictID" column="dict_id"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="dictCode" column="dict_code"/>
+    </resultMap>
+
+    <!-- 1级数据字典 -->
     <resultMap type="com.xeehoo.p2p.po.LoanDict1" id="dict1">
         <id property="dict1ID" column="dict_1_id"/>
         <id property="dictID" column="dict_id"/>
@@ -11,7 +18,12 @@
         <result property="dict1Code" column="dict_1_code"/>
     </resultMap>
 
-    <!-- 根据字典代码查询字典数据  -->
+    <!-- 查询字典数据 -->
+    <select id="getAllDict" resultMap="dict">
+        SELECT * FROM t_loan_dict
+    </select>
+
+    <!-- 根据字典代码查询字典数据 -->
     <select id="getAllDict1" resultMap="dict1">
         SELECT d1.*
         FROM
@@ -20,4 +32,35 @@
         WHERE
           d.dict_code = #{dictCode}
     </select>
+
+    <!-- 删除1级数据字典 -->
+    <delete id="removeDict1">
+        <foreach collection="listDict1" item="dict1" separator=";">
+            DELETE FROM t_loan_dict_1
+            <where>
+                dict_1_id = #{dict1.dict1ID}
+            </where>
+        </foreach>
+    </delete>
+
+    <!-- 修改1级数据字典 -->
+    <update id="updateDict1" parameterType="com.xeehoo.p2p.po.LoanDict1">
+        UPDATE t_loan_dict_1
+           SET dict_1_code = #{dict1Code},
+               dict_1_name = #{dict1Name}
+         WHERE dict_1_id = #{dict1ID}
+    </update>
+
+    <!-- 添加1级数据字典 -->
+    <insert id="saveDict1" parameterType="com.xeehoo.p2p.po.LoanDict1">
+        INSERT INTO t_loan_dict_1 (
+            dict_id,
+            dict_1_name,
+            dict_1_code
+        ) VALUES(
+            #{dictID},
+            #{dict1Name},
+            #{dict1Code}
+        )
+    </insert>
 </mapper>

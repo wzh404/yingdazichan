@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by wangzunhui on 2015/10/29.
  */
-@Service
+@Service("sliderService")
 public class LoanSliderServiceImpl implements LoanSliderService {
     @Autowired
     SliderMapper sliderMapper;
@@ -20,5 +20,15 @@ public class LoanSliderServiceImpl implements LoanSliderService {
     public List<LoanSlider> getSliders() {
         List<LoanSlider> sliders = sliderMapper.getSliders();
         return sliders;
+    }
+
+    @Override
+    public Integer updateSliderStatus(Integer sliderId, Integer sliderStatus) {
+        return sliderMapper.updateSliderStatus(sliderId, sliderStatus);
+    }
+
+    @Override
+    public Integer updateSlider(LoanSlider slider) {
+        return sliderMapper.updateSlider(slider);
     }
 }

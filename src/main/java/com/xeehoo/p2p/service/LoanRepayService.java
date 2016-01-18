@@ -17,4 +17,11 @@ public interface LoanRepayService {
      */
     public Integer repay(LoanUserRepay userRepay);
 
+    /**
+     *
+     * 执行当天的还款计划
+     *
+     */
+    public void repayNow();
+
 }

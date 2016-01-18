@@ -16,11 +16,20 @@
 
     <!-- 查询Slider  -->
     <select id="getSliders" resultMap="slider">
-        SELECT
-          slider_uri,
-          slider_img
-        FROM
-          t_loan_admin_slider
-        LIMIT 5 OFFSET 0
+        SELECT * FROM t_loan_admin_slider
     </select>
+
+    <update id="updateSlider" parameterMap="slider">
+        UPDATE t_loan_admin_slider
+           SET slider_url = #{sliderUrl},
+               slider_name = #{sliderName},
+               slider_img = #{sliderImg}
+         WHERE slider_id = #{sliderId}
+    </update>
+
+    <update id="updateSliderStatus">
+        UPDATE t_loan_admin_slider
+           SET slider_status = #{sliderStatus}
+         WHERE slider_id = #{sliderId}
+    </update>
 </mapper>

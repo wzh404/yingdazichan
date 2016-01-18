@@ -1,6 +1,7 @@
 package com.xeehoo.p2p.service.impl;
 
 import com.xeehoo.p2p.mybatis.mapper.DictMapper;
+import com.xeehoo.p2p.po.LoanDict;
 import com.xeehoo.p2p.po.LoanDict1;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.util.Constant;
@@ -36,8 +37,28 @@ public class LoanDictServiceImpl implements LoanDictService {
         List<LoanDict1>  dict1s = getAllDict1(dict1Code);
         Map<String, Object> map = new HashMap<String, Object>();
         for (LoanDict1 dict1 : dict1s){
-            map.put(dict1.getDict1Code(),dict1.getDict1Name());
+            map.put(dict1.getDict1Code(), dict1.getDict1Name());
         }
         mav.addObject(key, map);
+    }
+
+    @Override
+    public List<LoanDict> getAllDict() {
+        return dictMapper.getAllDict();
+    }
+
+    @Override
+    public Integer removeDict1(List<Map<String, Integer>> listDict1) {
+        return dictMapper.removeDict1(listDict1);
+    }
+
+    @Override
+    public Integer updateDict1(LoanDict1 dict1) {
+        return dictMapper.updateDict1(dict1);
+    }
+
+    @Override
+    public Integer saveDict1(LoanDict1 dict1) {
+        return dictMapper.saveDict1(dict1);
     }
 }
