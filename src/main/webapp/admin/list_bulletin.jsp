@@ -44,18 +44,18 @@
         </div>
 
         <div class="am-g am-margin-top">
-            <div class="am-u-sm-4 am-u-md-2 am-text-right">状态:</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">类型:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_dict">
+                <div class="am-btn-group" id="query_bulletin_type">
 
                 </div>
             </div>
         </div>
 
         <div class="am-g am-margin-top">
-            <div class="am-u-sm-4 am-u-md-2 am-text-right">类型:</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">状态:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_bulletin_type">
+                <div class="am-btn-group" id="query_bulletin_stat">
 
                 </div>
             </div>
@@ -70,33 +70,39 @@
                         <th class="table-id">ID</th>
                         <th class="table-title">名称</th>
                         <th class="table-title">URL</th>
-                        <th class="table-title">状态</th>
-                        <th class="table-type">发布人</th>
                         <th class="table-set">发布时间</th>
-                        <th class="table-set">操作</th>
+                        <th class="table-set">状态</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${dict1List}" var="dict1">
+                    <c:forEach items="${pagedListHolder.source}" var="bulletin">
                         <tr>
-                            <td><input type="checkbox" name="dict_ids" value="${dict1.dict1ID}"/></td>
-                            <td>${dict1.dict1ID}</td>
-                            <td><a href="javascript:add('${dict1.dict1ID}', '${dict1.dict1Code}', '${dict1.dict1Name}');">${dict1.dict1Name}</a></td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
+                            <td><input type="checkbox"/></td>
+                            <td>${bulletin.bulletinId}</td>
+                            <td><a href="javascript:add();">${bulletin.bulletinTitle}</a></td>
+                            <td>${bulletin.bulletinUrl}</td>
+                            <td><fmt:formatDate value="${bulletin.bulletinDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
+                                <c:if test="${bulletin.bulletinStatus == 1}">
                                 <div class="am-btn-toolbar">
                                     <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/editDict?dict_id=${dict1.dict1ID}">预览</a>
+                                        <a href="#">发布</a>
                                     </div>
                                 </div>
+                                </c:if>
+                                <c:if test="${bulletin.bulletinStatus == 2}">
+                                    已发布
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
+
+                <c:url value="${pageUri}" var="pagedLink">
+                    <c:param name="page" value="~"/>
+                </c:url>
+                <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
             </div>
         </div>
         <input type="hidden" name="dict_code" value="${dictCode}"/>
@@ -145,8 +151,27 @@
 <script src="/js/ydzc.js?12357"></script>
 <script src="/js/ydzc-validate.js?12357"></script>
 <script type="text/javascript">
+    var type_options = [
+        {"name": "全部", "value": "0000"},
+        <c:forEach items="${bulletinTypes}" var="p">
+        {"name": "${p.value}", "value": "${p.key}"},
+        </c:forEach>
+    ]
+
     var type_query = {
-        "name": 'slider_status',
+        "name": 'type',
+        'select': {
+            'method' : 'default',
+            'options': type_options
+        },
+        'server':{
+            'value':'${type}',
+            'uri':'${typeUri}'
+        }
+    }
+
+    var status_query = {
+        "name": 'stat',
         'select': {
             'method': 'default',
             'options': [{"name": "全部", "value": "0"},
@@ -154,12 +179,13 @@
                         {"name": "已发布", "value": "2"}]
         },
         'server': {
-            'value': '0',
-            'uri': '/admin/listSlider?q=1'
+            'value': '${stat}',
+            'uri': '${statUri}'
         }
     }
 
-    test_factor('query_dict', type_query);
+    test_factor('query_bulletin_stat', status_query);
+    test_factor('query_bulletin_type', type_query);
 </script>
 </body>
 </html>

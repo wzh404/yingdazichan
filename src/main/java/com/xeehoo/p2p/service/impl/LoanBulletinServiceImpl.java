@@ -2,7 +2,11 @@ package com.xeehoo.p2p.service.impl;
 
 import com.xeehoo.p2p.mybatis.mapper.BulletinMapper;
 import com.xeehoo.p2p.po.LoanBulletin;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.service.LoanBulletinService;
+import com.xeehoo.p2p.util.LoanPagedListHolder;
+import com.xeehoo.p2p.util.QueryCondition;
+import com.xeehoo.p2p.util.QueryPager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +20,20 @@ import java.util.Map;
 @Service("bbsService")
 public class LoanBulletinServiceImpl implements LoanBulletinService {
     @Autowired
-    BulletinMapper bbsMapper;
+    BulletinMapper bulletinMapper;
 
     @Override
-    public List<LoanBulletin> getBbsPager(int page, int pageSize) {
-        int offset = pageSize * page;
+    public LoanPagedListHolder getBulletinPager(int page, QueryCondition cond) {
+        return new QueryPager<LoanBulletin>(page, cond) {
+            @Override
+            public Integer total(QueryCondition cond) {
+                return bulletinMapper.getTotalBulletin();
+            }
 
-        Map<String, Object> cond = new HashMap<String, Object>();
-        cond.put("pageSize", pageSize);
-        cond.put("offset", offset);
-        List<LoanBulletin> bbs = bbsMapper.getBulletinPager(cond);
-        return bbs;
-    }
-
-    @Override
-    public int getTotalBbs() {
-        Integer total = bbsMapper.getTotalBulletin();
-        return total;
+            @Override
+            public List<LoanBulletin> elements(int page, QueryCondition cond) {
+                return bulletinMapper.getBulletinPager(cond.getCond());
+            }
+        }.query();
     }
 }

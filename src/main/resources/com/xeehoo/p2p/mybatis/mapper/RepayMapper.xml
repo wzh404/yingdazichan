@@ -52,4 +52,19 @@
           AND ui.pay_resp_code = '0000'
           AND ui.transfer_resp_code = '0000'
     </select>
+
+    <!-- 根据产品查询还款情况  -->
+    <select id="getProductRepay" resultMap="userRepay" parameterType="java.util.Map">
+        SELECT *
+        FROM t_loan_user_repay
+        WHERE product_id = #{_productId}
+         ORDER BY repay_time
+        LIMIT #{_pageSize} OFFSET #{_offset}
+    </select>
+
+    <select id="getTotalProductRepay" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT COUNT(*)
+          FROM t_loan_user_repay
+         WHERE product_id = #{_productId}
+    </select>
 </mapper>

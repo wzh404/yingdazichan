@@ -10,17 +10,31 @@
         <result property="bulletinUrl" column="bulletin_url"/>
         <result property="bulletinType" column="bulletin_type"/>
         <result property="bulletinDate" column="bulletin_date"/>
+        <result property="bulletinStatus" column="bulletin_status"/>
         <result property="bulletinStaff" column="bulletin_staff"/>
     </resultMap>
+
+    <sql id="bulletin_pager_where">
+        <where>
+            <if test="type != null and type != '0000'">
+                AND bulletin_type = #{type}
+            </if>
+            <if test='stat > 0'> <!-- 状态 -->
+                AND bulletin_status = #{stat}
+            </if>
+        </where>
+    </sql>
 
     <!-- 分页查询系统公告  -->
     <select id="getBulletinPager" resultMap="bulletin" parameterType="java.util.Map">
         SELECT * FROM t_loan_admin_bulletin
-        LIMIT #{pageSize} OFFSET #{offset}
+        <include refid="bulletin_pager_where"/>
+        LIMIT #{_pageSize} OFFSET #{_offset}
     </select>
 
     <!-- 系统公告记录数  -->
     <select id="getTotalBulletin" resultType="java.lang.Integer">
         SELECT count(*) FROM t_loan_admin_bulletin
+        <include refid="bulletin_pager_where"/>
     </select>
 </mapper>

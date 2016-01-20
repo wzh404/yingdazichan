@@ -47,10 +47,9 @@
             <ul class="am-tabs-nav am-nav am-nav-tabs">
                 <li class="am-active"><a href="#tab1">基本信息</a></li>
                 <li><a href="#tab2">风控信息</a></li>
-                <li><a href="#tab3">投资记录</a></li>
-                <li><a href="#tab4">还款表现</a></li>
+                <li><a href="#tab3" onclick="javascript:invest();">投资记录</a></li>
+                <li><a href="#tab4" onclick="javascript:repay();">还款表现</a></li>
             </ul>
-
 
             <div class="am-tabs-bd">
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
@@ -203,63 +202,15 @@
 
                     </form>
                 </div>
-                <div class="am-tab-panel am-fade" id="tab3">
-                    <table class="am-table am-table-striped am-table-hover table-main">
-                        <thead>
-                        <tr>
-                            <th class="table-id" style="width: 30%;">投标时间</th>
-                            <th class="table-title" style="width: 20%;">投标人</th>
-                            <th class="table-type" style="width: 20%;">投标金额</th>
-                            <th class="table-type" style="width: 20%;">划拨状态</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach items="${investments}" var="invest">
-                            <tr>
-                                <td><fmt:formatDate value="${invest.investtime}" pattern="yyyy-MM-dd HH:mm"/></td>
-                                <td>${invest.username}</td>
-                                <td><fmt:formatNumber value="${invest.amount}" type="currency"/></td>
-                                <td>
-                                    <c:if test="${invest.tranrespcode == '0000'}">
-                                        已划拨
-                                    </c:if>
-                                    <c:if test="${!invest.tranrespcode == '0000'}">
-                                        划拨失败<span style="color:red">(${invest.tranrespcode})</span>
-                                    </c:if>
-                                </td>
 
-                            </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                <div class="am-tab-panel am-fade" id="tab3">
                 </div>
 
                 <div class="am-tab-panel am-fade" id="tab4">
-                    <table class="am-table am-table-striped am-table-hover table-main">
-                        <thead>
-                        <tr>
-                            <th class="table-id" style="width: 20%;">还款日期</th>
-                            <th class="table-title" style="width: 30%;">还款类型</th>
-                            <th class="table-type" style="width: 30%;">还款金额</th>
-                            <th class="table-type" style="width: 20%;">还款状态</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${incomes}" var="income">
-                            <tr>
-                                <td>${income.username}</td>
-                                <td><fmt:formatNumber value="${income.amount}" type="currency"/></td>
-                                <td>${income.investtime}</td>
-                                <td>${income.investtime}</td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
             <div class="am-margin">
-
                 <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="submitProduct();">提交保存</button>
                 <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="submitSettleProduct();">满标</button>
             </div>
@@ -369,6 +320,34 @@
                 $('#form_product').attr("action", '/admin/settleAccount');
                 $('#form_product').submit();
             }
+        }
+
+        var currentTab;
+        function repay(){
+            currentTab = "#tab4";
+            toPage('/admin/listProductRepay?page=0');
+        }
+
+        function invest(){
+            currentTab = "#tab3";
+            toPage('/admin/listProductInvestment?page=0');
+        }
+
+        function toPage(url){
+            $.ajax({
+                url: url,
+                data: {product_id: ${product.productId}},
+                type: "get",
+                dataType: "html",
+                async: false,
+                success: function success(html) {
+                    console.log(html);
+                    $(currentTab).html(html);
+                },
+                error: function error(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(textStatus + ": " + XMLHttpRequest.status);
+                }
+            });
         }
     </script>
 </body>

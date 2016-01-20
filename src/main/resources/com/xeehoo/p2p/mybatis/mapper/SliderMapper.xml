@@ -16,10 +16,16 @@
 
     <!-- 查询Slider  -->
     <select id="getSliders" resultMap="slider">
-        SELECT * FROM t_loan_admin_slider
+        SELECT *
+          FROM t_loan_admin_slider
+        <where>
+            <if test='sliderStatus > 0'> <!-- 状态 -->
+                AND slider_status = #{sliderStatus}
+            </if>
+        </where>
     </select>
 
-    <update id="updateSlider" parameterMap="slider">
+    <update id="updateSlider" parameterType="com.xeehoo.p2p.po.LoanSlider">
         UPDATE t_loan_admin_slider
            SET slider_url = #{sliderUrl},
                slider_name = #{sliderName},

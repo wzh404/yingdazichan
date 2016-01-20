@@ -13,7 +13,7 @@ public interface LoanSliderService {
      *
      * @return
      */
-    public List<LoanSlider> getSliders();
+    public List<LoanSlider> getSliders(Integer sliderStatus);
 
     /**
      * 修改slider状态

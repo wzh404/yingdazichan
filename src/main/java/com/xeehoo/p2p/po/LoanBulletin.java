@@ -11,7 +11,16 @@ public class LoanBulletin {
     private String bulletinUrl;
     private String bulletinType;
     private Integer bulletinStaff;
+    private Integer bulletinStatus;
     private Date bulletinDate;
+
+    public Integer getBulletinStatus() {
+        return bulletinStatus;
+    }
+
+    public void setBulletinStatus(Integer bulletinStatus) {
+        this.bulletinStatus = bulletinStatus;
+    }
 
     public Integer getBulletinId() {
         return bulletinId;

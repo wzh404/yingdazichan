@@ -38,13 +38,13 @@
     <!-- content start -->
     <form class="admin-content" id="form1" method="post" action="/admin/removeDict1">
         <div class="am-cf am-padding">
-            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">数据字典</strong> /
+            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">一级字典</strong> /
                 <small>Dictionary</small>
             </div>
         </div>
 
         <div class="am-g am-margin-top">
-            <div class="am-u-sm-4 am-u-md-2 am-text-right">数据字典:</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">字典:</div>
             <div class="am-u-sm-11 am-u-md-10">
                 <div class="am-btn-group" id="query_dict">
 
@@ -78,7 +78,6 @@
                         <th class="table-id">ID</th>
                         <th class="table-title">名称</th>
                         <th class="table-type">代码</th>
-                        <th class="table-set">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -88,13 +87,7 @@
                             <td>${dict1.dict1ID}</td>
                             <td><a href="javascript:add('${dict1.dict1ID}', '${dict1.dict1Code}', '${dict1.dict1Name}');">${dict1.dict1Name}</a></td>
                             <td>${dict1.dict1Code}</td>
-                            <td>
-                                <div class="am-btn-toolbar">
-                                    <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/editDict?dict_id=${dict1.dict1ID}">处理</a>
-                                    </div>
-                                </div>
-                            </td>
+
                         </tr>
                     </c:forEach>
                     </tbody>

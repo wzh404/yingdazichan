@@ -5,12 +5,12 @@ import com.fuiou.data.TransferBmuReqData;
 import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.mybatis.mapper.ProductMapper;
 import com.xeehoo.p2p.mybatis.mapper.RepayMapper;
+import com.xeehoo.p2p.po.LoanBulletin;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.po.LoanUserRepay;
 import com.xeehoo.p2p.service.LoanRepayService;
-import com.xeehoo.p2p.util.CommonUtil;
-import com.xeehoo.p2p.util.InterestUtil;
+import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -52,6 +52,21 @@ public class LoanRepayServiceImpl implements LoanRepayService {
         for (LoanUserRepay userRepay : userRepays){
             repay(userRepay);
         }
+    }
+
+    @Override
+    public LoanPagedListHolder getProductRepayPager(int page, QueryCondition cond) {
+        return new QueryPager<LoanUserRepay>(page, cond) {
+            @Override
+            public Integer total(QueryCondition cond) {
+                return repayMapper.getTotalProductRepay(cond.getCond());
+            }
+
+            @Override
+            public List<LoanUserRepay> elements(int page, QueryCondition cond) {
+                return repayMapper.getProductRepay(cond.getCond());
+            }
+        }.query();
     }
 
     /**

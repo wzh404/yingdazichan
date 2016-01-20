@@ -14,7 +14,7 @@ public interface SliderMapper {
      *
      * @return
      */
-    public List<LoanSlider> getSliders();
+    public List<LoanSlider> getSliders(@Param("sliderStatus")Integer sliderStatus);
 
     /**
      * 修改slider状态

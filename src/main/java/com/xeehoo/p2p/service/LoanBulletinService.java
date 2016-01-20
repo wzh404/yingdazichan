@@ -1,6 +1,8 @@
 package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanBulletin;
+import com.xeehoo.p2p.util.LoanPagedListHolder;
+import com.xeehoo.p2p.util.QueryCondition;
 
 import java.util.List;
 
@@ -9,17 +11,11 @@ import java.util.List;
  */
 public interface LoanBulletinService {
     /**
-     * 查询指定页的公告数据
+     * 分页查询公告板
      *
      * @param page
-     * @param pageSize
+     * @param cond
      * @return
      */
-    public List<LoanBulletin> getBbsPager(int page, int pageSize);
-
-    /**
-     * 获取公告板记录数
-     * @return
-     */
-    public int getTotalBbs();
+    public LoanPagedListHolder getBulletinPager(int page, QueryCondition cond);
 }

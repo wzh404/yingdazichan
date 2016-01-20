@@ -89,8 +89,8 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             return;
         }
 
-        // 状态用户冻结资金到盈达账户
-        List<Map<String, Object>> userInvestments = getProductInvestments(productId);
+        // 状态用户冻结资金到盈达账户 modify 2016-01-19
+        List<Map<String, Object>> userInvestments = productMapper.getProductInvestments(productId);
         for (Map<String, Object> map : userInvestments) {
             String payRespCode = (String) map.get("payrespcode"); // 冻结状态
             String tranRespCode = (String) map.get("tranrespcode"); // 划拨状态
@@ -211,17 +211,18 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     public int updateProductUserAmount(Integer productId, Integer userId, String mobile, Long amount)
             throws Exception {
         LoanProduct product = productMapper.getProduct(productId);
-        if (product == null) {
+        if (product == null) { //  产品不存在
             logger.warn("product " + productId + "is not found!");
             return 0;
         }
 
+        // 产品不是发布状态
         if (product.isNotReleaseStatus()) {
             logger.warn("product status [" + product.getProductStatus() + "] is not release!");
             return 0;
         }
 
-        // 更新产品融资金额
+        // 1. 减少产品融资金额
         BigDecimal amt = new BigDecimal(amount / 100.0);
         int result = productMapper.updateProductAmount(productId, amt);
         if (result <= 0) {
@@ -229,7 +230,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             return 0;
         }
 
-        // 用户投资项目
+        // 2. 用户投资项目
         LoanUserInvestment investment = new LoanUserInvestment();
         investment.setProductId(productId);
         investment.setProductName(product.getProductName());
@@ -237,7 +238,8 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         investment.setInvestAmount(amt);
         investment.setInvestTime(new Date());
         investment.setInvestStartDate(InterestUtil.tomorrow()); // 计息日期为次日
-        investment.setInvestClosingDate(InterestUtil.calculateInvestClosingDate(investment.getInvestStartDate(), product.getInvestDay()));
+        investment.setInvestClosingDate(
+                InterestUtil.calculateInvestClosingDate(investment.getInvestStartDate(), product.getInvestDay()));
         investment.setInvestIncome(new BigDecimal(0.00));
         investment.setInvestServiceCharge(new BigDecimal(0.00));
         investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
@@ -250,24 +252,22 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             throw new Exception("saveUserInvestment failed"); // database rollback
         }
 
-        // 还款计划
+        // 3. 还款计划
         List<LoanUserRepay> userRepays = new ArrayList<LoanUserRepay>();
         LoanUserRepay userRepay = createUserRepay(investment, product);
         userRepay.setInvestId(investment.getInvestId());
         userRepay.setMobile(mobile);
-
         userRepays.add(userRepay);
         rows = repayMapper.saveUserRepays(userRepays);
         if (rows <= 0) {
             throw new Exception("saveUserRepays error"); // database rollback
         }
 
-        // 第三方支付预授权
+        // 4. 第三方支付预授权
         PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
-        if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) {
+        if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
             productMapper.updateUserInvestmentPay(investment.getInvestId(), resp.getContract_no(), resp.getResp_code());
-        }
-        else{
+        }else{ // 支付失败， 回滚
             throw new Exception("pay error"); // database rollback
         }
 
@@ -298,9 +298,24 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         return productMapper.getProduct(productId);
     }
 
+//    @Override
+//    public List<Map<String, Object>> getProductInvestments(Integer productId) {
+//        return productMapper.getProductInvestments(productId);
+//    }
+
     @Override
-    public List<Map<String, Object>> getProductInvestments(Integer productId) {
-        return productMapper.getProductInvestments(productId);
+    public LoanPagedListHolder getProductInvestmentPager(int page, QueryCondition cond) {
+        return new QueryPager<Map<String, Object>>(page, cond) {
+            @Override
+            public Integer total(QueryCondition cond) {
+                return productMapper.getTotalProductInvestment(cond.getCond());
+            }
+
+            @Override
+            public List<Map<String, Object>> elements(int page, QueryCondition cond) {
+                return productMapper.getProductInvestmentPager(cond.getCond());
+            }
+        }.query();
     }
 
     @Override

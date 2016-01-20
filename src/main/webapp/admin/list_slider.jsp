@@ -61,26 +61,24 @@
                         <th class="table-id">ID</th>
                         <th class="table-title">名称</th>
                         <th class="table-title">URL</th>
-                        <th class="table-title">状态</th>
-                        <th class="table-type">发布人</th>
+                        <th class="table-type">图片</th>
                         <th class="table-set">发布时间</th>
-                        <th class="table-set">操作</th>
+                        <th class="table-set">状态</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${dict1List}" var="dict1">
+                    <c:forEach items="${sliders}" var="slider">
                         <tr>
-                            <td><input type="checkbox" name="dict_ids" value="${dict1.dict1ID}"/></td>
-                            <td>${dict1.dict1ID}</td>
-                            <td><a href="javascript:add('${dict1.dict1ID}', '${dict1.dict1Code}', '${dict1.dict1Name}');">${dict1.dict1Name}</a></td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
-                            <td>${dict1.dict1Code}</td>
+                            <td><input type="checkbox"/></td>
+                            <td>${slider.sliderId}</td>
+                            <td><a href="javascript:add();">${slider.sliderName}</a></td>
+                            <td>${slider.sliderUri}</td>
+                            <td>${slider.sliderImg}</td>
+                            <td><fmt:formatDate value="${slider.sliderTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
                                 <div class="am-btn-toolbar">
                                     <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/editDict?dict_id=${dict1.dict1ID}">预览</a>
+                                        <a href="/admin/editDict?dict_id=${dict1.dict1ID}">发布</a>
                                     </div>
                                 </div>
                             </td>
@@ -137,7 +135,7 @@
 <script src="/js/ydzc-validate.js?12357"></script>
 <script type="text/javascript">
     var type_query = {
-        "name": 'slider_status',
+        "name": 'stat',
         'select': {
             'method': 'default',
             'options': [{"name": "全部", "value": "0"},
@@ -145,7 +143,7 @@
                         {"name": "已发布", "value": "2"}]
         },
         'server': {
-            'value': '0',
+            'value': '${stat}',
             'uri': '/admin/listSlider?q=1'
         }
     }

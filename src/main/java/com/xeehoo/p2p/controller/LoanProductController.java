@@ -3,11 +3,10 @@ package com.xeehoo.p2p.controller;
 import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
 import com.xeehoo.p2p.annotation.Permission;
-import com.xeehoo.p2p.po.LoanDict1;
-import com.xeehoo.p2p.po.LoanProduct;
-import com.xeehoo.p2p.po.StaffSessionObject;
+import com.xeehoo.p2p.po.*;
 import com.xeehoo.p2p.service.LoanDictService;
 import com.xeehoo.p2p.service.LoanInvestService;
+import com.xeehoo.p2p.service.LoanRepayService;
 import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,9 @@ public class LoanProductController {
 
     @Autowired
     private LoanInvestService investService;
+
+    @Autowired
+    private LoanRepayService repayService;
 
     @Autowired
     private Environment environment;
@@ -66,6 +68,58 @@ public class LoanProductController {
         return mav;
     }
 
+    /**
+     * 产品还款记录
+     *
+     * @param request
+     * @param page
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value="/admin/listProductRepay")
+    @Permission("0201")
+    public ModelAndView listProductRepay(HttpServletRequest request,
+                                         @RequestParam(value = "page", required = false) Integer page,
+                                         @RequestParam(value = "product_id", required = false) Integer productId){
+        ModelAndView mav = new ModelAndView("/admin/list_product_repay");
+        QueryHolder queryHolder = new QueryHolder<LoanBulletin>(page, mav){
+            @Override
+            public LoanPagedListHolder getPagedListHolder(int page, QueryCondition queryCondition) {
+                return repayService.getProductRepayPager(page, queryCondition);
+            }
+        };
+        queryHolder.put("_productId", productId);
+        queryHolder.query(request.getRequestURI());
+
+        return mav;
+    }
+
+    /**
+     * 产品投资记录
+     *
+     * @param request
+     * @param page
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value="/admin/listProductInvestment")
+    @Permission("0201")
+    public ModelAndView listProductInvestment(HttpServletRequest request,
+                                         @RequestParam(value = "page", required = false) Integer page,
+                                         @RequestParam(value = "product_id", required = false) Integer productId){
+        ModelAndView mav = new ModelAndView("/admin/list_product_invest");
+        QueryHolder queryHolder = new QueryHolder<LoanBulletin>(page, mav){
+            @Override
+            public LoanPagedListHolder getPagedListHolder(int page, QueryCondition queryCondition) {
+                return investService.getProductInvestmentPager(page, queryCondition);
+            }
+        };
+        queryHolder.put("_productId", productId);
+        queryHolder.query(request.getRequestURI());
+
+        return mav;
+    }
+
     @RequestMapping(value="/admin/releaseProduct")
     @Permission("0201")
     public ModelAndView releaseProduct(HttpServletRequest request,
@@ -79,9 +133,9 @@ public class LoanProductController {
 
             LoanProduct product = investService.getProduct(productId);
             mav.addObject("product", product);
-            List<Map<String, Object>> userInvestments = investService.getProductInvestments(productId);
-
-            mav.addObject("investments", userInvestments);
+//            List<Map<String, Object>> userInvestments = investService.getProductInvestments(productId);
+//
+//            mav.addObject("investments", userInvestments);
         }
         else{
             LoanProduct product  = new LoanProduct();

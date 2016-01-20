@@ -68,6 +68,19 @@ public interface ProductMapper {
      */
     public List<Map<String, Object>> getProductInvestments(@Param("productId")Integer productId);
 
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    public List<Map<String, Object>> getProductInvestmentPager(Map<String, Object> cond);
+
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    public Integer getTotalProductInvestment(Map<String, Object> cond);
 
     /**
      *

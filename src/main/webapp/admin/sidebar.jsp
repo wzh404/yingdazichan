@@ -45,15 +45,18 @@
                 </a>
                 <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-page-nav">
                     <c:if test="${sessionScope.staff.subMenu('01', '0101')}">
-                        <li><a href="/admin/list_slider.jsp" class="am-cf"><span class="am-icon-check"></span> 幻灯片
+                        <li><a href="/admin/listSlider" class="am-cf"><span class="am-icon-check"></span> 轮播图
+                            <span class="am-icon-bars am-fr am-margin-right admin-icon-yellow"></span></a></li>
+                    </c:if>
+                    <c:if test="${sessionScope.staff.subMenu('01', '0101')}">
+                        <li><a href="/admin/bulletin" class="am-cf"><span class="am-icon-check"></span> 公告板
                             <span class="am-icon-bars am-fr am-margin-right admin-icon-yellow"></span></a></li>
                     </c:if>
                 </ul>
+
             </li>
 
-            <li><a href="/admin/list_bulletin.jsp"><span class="am-icon-bookmark"></span> 发布公告</a></li>
             <li><a href="/admin/product"><span class="am-icon-bookmark"></span> 项目管理</a></li>
-
             <li><a href="/admin/settleProduct"><span class="am-icon-sign-out"></span> 财务结算</a></li>
         </ul>
 

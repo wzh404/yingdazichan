@@ -17,8 +17,8 @@ public class LoanSliderServiceImpl implements LoanSliderService {
     SliderMapper sliderMapper;
 
     @Override
-    public List<LoanSlider> getSliders() {
-        List<LoanSlider> sliders = sliderMapper.getSliders();
+    public List<LoanSlider> getSliders(Integer sliderStatus) {
+        List<LoanSlider> sliders = sliderMapper.getSliders(sliderStatus);
         return sliders;
     }
 

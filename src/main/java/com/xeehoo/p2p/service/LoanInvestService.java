@@ -59,13 +59,20 @@ public interface LoanInvestService {
      */
     public LoanProduct getProduct(Integer productId);
 
+//    /**
+//     *
+//     * @param productId
+//     * @return
+//     */
+//    public List<Map<String, Object>> getProductInvestments(Integer productId);
+
     /**
      *
-     * @param productId
+     * @param page
+     * @param cond
      * @return
      */
-    public List<Map<String, Object>> getProductInvestments(Integer productId);
-
+    public LoanPagedListHolder getProductInvestmentPager(int page, QueryCondition cond);
 
     /**
      *

@@ -5,6 +5,7 @@ import com.xeehoo.p2p.po.LoanUserRepay;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangzunhui on 2016/1/7.
@@ -35,4 +36,20 @@ public interface RepayMapper {
      * @return
      */
     public Integer updateRepayResponse(@Param("repayId")Integer repayId, @Param("respCode")String respCode, @Param("seqno")String seqno);
+
+    /**
+     * 查询产品还款计划
+     *
+     * @param cond
+     * @return
+     */
+    public List<LoanUserRepay> getProductRepay(Map<String, Object> cond);
+
+    /**
+     * 查询产品还款计划数
+     *
+     * @param cond
+     * @return
+     */
+    public Integer getTotalProductRepay(Map<String, Object> cond);
 }
