@@ -28,7 +28,7 @@ public class LoanSliderController {
     @Autowired
     LoanSliderService loanSliderService;
 
-    @RequestMapping(value = "/cache/slide", method = RequestMethod.GET)
+    @RequestMapping(value = "/cache/slider", method = RequestMethod.GET)
     @ResponseBody
     public List<LoanSlider> cacheSlider(HttpServletRequest request, HttpServletResponse response){
         List<LoanSlider> sliders = loanSliderService.getSliders(2);
@@ -48,5 +48,22 @@ public class LoanSliderController {
         mav.addObject("stat", sliderStatus);
 
         return mav;
+    }
+
+    /**
+     * 修改Slider状态
+     *
+     * @param request
+     * @param sliderId
+     * @param sliderStatus
+     * @return
+     */
+    @RequestMapping(value = "/admin/changeSliderStatus", method = {RequestMethod.POST, RequestMethod.GET})
+    @Permission("0101")
+    public ModelAndView changeStaffStatus(HttpServletRequest request,
+                                          @RequestParam(value = "slider_id", required = true) Integer sliderId,
+                                          @RequestParam(value = "slider_status", required = true) Integer sliderStatus) {
+        loanSliderService.updateSliderStatus(sliderId, sliderStatus);
+        return new ModelAndView("redirect:/admin/listSlider");
     }
 }

@@ -8,11 +8,66 @@
         <id property="bulletinId" column="bulletin_id"/>
         <result property="bulletinTitle" column="bulletin_name"/>
         <result property="bulletinUrl" column="bulletin_url"/>
+        <result property="bulletinContent" column="bulletin_content"/>
         <result property="bulletinType" column="bulletin_type"/>
         <result property="bulletinDate" column="bulletin_date"/>
         <result property="bulletinStatus" column="bulletin_status"/>
         <result property="bulletinStaff" column="bulletin_staff"/>
     </resultMap>
+
+    <select id="getBulletin" resultMap="bulletin">
+        SELECT *
+        FROM
+          t_loan_admin_bulletin
+        WHERE
+          bulletin_id = #{bulletinId}
+    </select>
+
+    <insert id="saveBulletin" parameterType="com.xeehoo.p2p.po.LoanBulletin">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="bulletinId" >
+            SELECT currval('t_loan_admin_bulletin_bulletin_id_seq') AS staffId
+        </selectKey>
+
+        INSERT INTO t_loan_admin_bulletin (
+            bulletin_name,
+            bulletin_url,
+            bulletin_content,
+            bulletin_staff,
+            bulletin_date,
+            bulletin_status,
+            bulletin_type
+        )
+        VALUES (
+            #{bulletinTitle},
+            #{bulletinUrl},
+            #{bulletinContent},
+            #{bulletinStaff},
+            #{bulletinDate},
+            #{bulletinStatus},
+            #{bulletinType}
+        )
+    </insert>
+
+    <update id="updateBulletin" parameterType="com.xeehoo.p2p.po.LoanBulletin">
+        UPDATE
+          t_loan_admin_bulletin
+        SET
+          bulletin_name = #{bulletinTitle},
+          bulletin_url = #{bulletinUrl},
+          bulletin_content = #{bulletinContent},
+          bulletin_type = #{bulletinType}
+        WHERE
+          bulletin_id = #{bulletinId}
+    </update>
+
+    <update id="changeBulletinStatus">
+        UPDATE
+          t_loan_admin_bulletin
+        SET
+          bulletin_status = #{bulletinStatus}
+        WHERE
+          bulletin_id = #{bulletinId}
+    </update>
 
     <sql id="bulletin_pager_where">
         <where>
@@ -28,7 +83,8 @@
     <!-- 分页查询系统公告  -->
     <select id="getBulletinPager" resultMap="bulletin" parameterType="java.util.Map">
         SELECT * FROM t_loan_admin_bulletin
-        <include refid="bulletin_pager_where"/>
+        <include refid="bulletin_pager_where" />
+        ORDER BY bulletin_id DESC
         LIMIT #{_pageSize} OFFSET #{_offset}
     </select>
 

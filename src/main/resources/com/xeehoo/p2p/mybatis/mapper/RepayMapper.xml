@@ -56,9 +56,12 @@
     <!-- 根据产品查询还款情况  -->
     <select id="getProductRepay" resultMap="userRepay" parameterType="java.util.Map">
         SELECT *
-        FROM t_loan_user_repay
-        WHERE product_id = #{_productId}
-         ORDER BY repay_time
+        FROM
+          t_loan_user_repay
+        WHERE
+          product_id = #{_productId}
+        ORDER BY
+          repay_time
         LIMIT #{_pageSize} OFFSET #{_offset}
     </select>
 

@@ -30,7 +30,7 @@
 <body>
 <div class="header">
   <div class="am-g">
-    <h1>后台管理平台</h1>
+    <h1>盈达资产后台管理</h1>
     <p>YingDaZiChan System Management Platform<br/>系统管理、发布公告、产品融资、资产结算</p>
   </div>
   <hr />

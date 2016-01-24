@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -133,12 +134,10 @@ public class LoanProductController {
 
             LoanProduct product = investService.getProduct(productId);
             mav.addObject("product", product);
-//            List<Map<String, Object>> userInvestments = investService.getProductInvestments(productId);
-//
-//            mav.addObject("investments", userInvestments);
         }
         else{
             LoanProduct product  = new LoanProduct();
+            product.setProductId(0);
             product.setRaiseDays(10);
             product.setMinAmount(new BigDecimal(100));
             product.setMinAddAmount(new BigDecimal(100));
@@ -151,7 +150,9 @@ public class LoanProductController {
 
     @RequestMapping(value="/admin/saveProduct")
     @Permission("0201")
-    public ModelAndView saveProduct(HttpServletRequest request, @ModelAttribute("product")LoanProduct product){
+    public ModelAndView saveProduct(HttpServletRequest request,
+                                    RedirectAttributes attr,
+                                    @ModelAttribute("product")LoanProduct product){
         logger.info("product.name is " + product.getProductType());
         StaffSessionObject sso = (StaffSessionObject)request.getSession().getAttribute("staff");
         product.setStaffId(sso.getStaffId());
@@ -160,7 +161,8 @@ public class LoanProductController {
         product.setResidualAmount(product.getTotalAmount());
         investService.saveProduct(product);
 
-        return new ModelAndView("redirect:/admin/product");
+        attr.addAttribute("product_id", product.getProductId());
+        return new ModelAndView("redirect:/admin/releaseProduct");
     }
 
     @RequestMapping(value="/admin/settleProduct")
@@ -184,7 +186,6 @@ public class LoanProductController {
             return CommonUtil.generateJsonMap("ERROR", "发布失败");
         }
     }
-
 
     /**
      * 满标转账
@@ -227,9 +228,9 @@ public class LoanProductController {
             long cu = Long.parseLong(resultData.getCu_balance());
 
             map.put("ct", new BigDecimal(ct / 100.0).setScale(2, BigDecimal.ROUND_HALF_UP));
-            map.put("ca", new BigDecimal(ca / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
-            map.put("cf", new BigDecimal(cf / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
-            map.put("cu", new BigDecimal(cu / 100.0).setScale(2,   BigDecimal.ROUND_HALF_UP));
+            map.put("ca", new BigDecimal(ca / 100.0).setScale(2, BigDecimal.ROUND_HALF_UP));
+            map.put("cf", new BigDecimal(cf / 100.0).setScale(2, BigDecimal.ROUND_HALF_UP));
+            map.put("cu", new BigDecimal(cu / 100.0).setScale(2, BigDecimal.ROUND_HALF_UP));
         } catch (Exception e) {
             e.printStackTrace();
             // 异常，金额为0.0;

@@ -36,17 +36,17 @@
     <!-- sidebar end -->
 
     <!-- content start -->
-    <form class="admin-content" id="form1" method="post" action="/admin/removeDict1">
+    <form class="admin-content" id="form1" method="post" action="">
         <div class="am-cf am-padding">
-            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">公告</strong> /
-                <small>Bulletin</small>
+            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">员工管理</strong> /
+                <small>Staff</small>
             </div>
         </div>
 
         <div class="am-g am-margin-top">
-            <div class="am-u-sm-4 am-u-md-2 am-text-right">类型:</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">角色:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_bulletin_type">
+                <div class="am-btn-group" id="query_staff_role">
 
                 </div>
             </div>
@@ -55,7 +55,7 @@
         <div class="am-g am-margin-top">
             <div class="am-u-sm-4 am-u-md-2 am-text-right">状态:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_bulletin_stat">
+                <div class="am-btn-group" id="query_staff_stat">
 
                 </div>
             </div>
@@ -66,13 +66,12 @@
                 <div class="am-btn-toolbar">
                     <div class="am-btn-group am-btn-group-xs">
                         <button type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span>
-                            <a href="/admin/editBulletin?bulletin_id=0">发布新公告</a>
+                            <a href="/admin/editStaff?staffId=0">增加新员工</a>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="am-g">
             <div class="am-u-sm-12">
                 <table class="am-table am-table-striped am-table-hover table-main">
@@ -81,29 +80,51 @@
                         <th class="table-check"><input type="checkbox"/></th>
                         <th class="table-id">ID</th>
                         <th class="table-title">名称</th>
-                        <th class="table-title">URL</th>
-                        <th class="table-set">发布时间</th>
+                        <th class="table-title">性别</th>
+                        <th class="table-set">角色</th>
+                        <th class="table-set">注册时间</th>
                         <th class="table-set">状态</th>
+                        <th class="table-set">操作</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${pagedListHolder.source}" var="bulletin">
+                    <c:forEach items="${pagedListHolder.source}" var="staff">
                         <tr>
                             <td><input type="checkbox"/></td>
-                            <td>${bulletin.bulletinId}</td>
-                            <td><a href="javascript:add();">${bulletin.bulletinTitle}</a></td>
-                            <td>${bulletin.bulletinUrl}</td>
-                            <td><fmt:formatDate value="${bulletin.bulletinDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>${staff.staffId}</td>
+                            <td><a href="/admin/editStaff?staff_id=${staff.staffId}">${staff.staffName}</a></td>
                             <td>
-                                <c:if test="${bulletin.bulletinStatus == 1}">
-                                <div class="am-btn-toolbar">
-                                    <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/changeBulletinStatus?bulletin_id=${bulletin.bulletinId}&bulletin_status=2">发布</a>
-                                    </div>
-                                </div>
+                                <c:if test="${staff.staffSex == 'F'}">
+                                    女
                                 </c:if>
-                                <c:if test="${bulletin.bulletinStatus == 2}">
-                                    已发布
+                                <c:if test="${staff.staffSex == 'M'}">
+                                    男
+                                </c:if>
+                            </td>
+                            <td>${staff.roleName}</td>
+                            <td><fmt:formatDate value="${staff.staffRegtime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>
+                                <c:if test="${staff.staffStatus == 1}">
+                                    正常
+                                </c:if>
+                                <c:if test="${staff.staffStatus == 2}">
+                                    已删除
+                                </c:if>
+                            </td>
+                            <td>
+                                <c:if test="${staff.staffStatus == 1}">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="/admin/changeStaffStatus?staff_id=${staff.staffId}&staff_status=2">删除</a>
+                                        </div>
+                                    </div>
+                                </c:if>
+                                <c:if test="${staff.staffStatus == 2}">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="/admin/changeStaffStatus?staff_id=${staff.staffId}&staff_status=1">激活</a>
+                                        </div>
+                                    </div>
                                 </c:if>
                             </td>
                         </tr>
@@ -117,42 +138,9 @@
                 <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
             </div>
         </div>
-        <input type="hidden" name="dict_code" value="${dictCode}"/>
     </form>
 </div>
-<!-- content end -->
-<div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
-    <div class="am-modal-dialog">
-        <div class="am-modal-hd">盈达资产</div>
-        <div class="am-modal-bd">
-            确定要删除选择的记录吗？
-        </div>
-        <div class="am-modal-footer">
-            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
-            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
-        </div>
-    </div>
-</div>
 
-<div class="am-modal am-modal-confirm" tabindex="-1" id="dic-modal-add">
-    <div class="am-modal-dialog">
-        <div class="am-modal-hd"><span id="modal_add_title">dict</span>
-        </div>
-        <form id="save_update_dict_form" method="post" action="saveOrUpdateDict1"/>
-        <div class="am-modal-bd">
-            名称：<input type="text" id="dict_1_name" name="dict_1_name" value=""/><span style="color:red">*</span> &nbsp;&nbsp;
-            代码：<input type="text" id="dict_1_code" name="dict_1_code" value=""/><span style="color:red">*</span>
-            <input type="hidden" id="dict_1_id" name="dict_1_id" value=""/>
-            <input type="hidden" name="dict_code" value="${dictCode}"/>
-            <input type="hidden" id="dict_id" name="dict_id" value="0"/>
-        </div>
-        </form>
-        <div class="am-modal-footer">
-            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
-            <span class="am-modal-btn" data-am-modal-confirm>确定</span>
-        </div>
-    </div>
-</div>
 
 </div>
 
@@ -163,22 +151,22 @@
 <script src="/js/ydzc.js?12357"></script>
 <script src="/js/ydzc-validate.js?12357"></script>
 <script type="text/javascript">
-    var type_options = [
-        {"name": "全部", "value": "0000"},
-        <c:forEach items="${bulletinTypes}" var="p">
-        {"name": "${p.value}", "value": "${p.key}"},
+    var role_options = [
+        {"name": "全部", "value": "00"},
+        <c:forEach items="${roles}" var="role">
+        {"name": "${role.roleName}", "value": "${role.roleCode}"},
         </c:forEach>
     ]
 
-    var type_query = {
-        "name": 'type',
+    var role_query = {
+        "name": 'role',
         'select': {
             'method' : 'default',
-            'options': type_options
+            'options': role_options
         },
         'server':{
-            'value':'${type}',
-            'uri':'${typeUri}'
+            'value':'${role}',
+            'uri':'${roleUri}'
         }
     }
 
@@ -187,8 +175,8 @@
         'select': {
             'method': 'default',
             'options': [{"name": "全部", "value": "0"},
-                        {"name": "未发布", "value": "1"},
-                        {"name": "已发布", "value": "2"}]
+                        {"name": "正常", "value": "1"},
+                        {"name": "删除", "value": "2"}]
         },
         'server': {
             'value': '${stat}',
@@ -196,8 +184,8 @@
         }
     }
 
-    test_factor('query_bulletin_stat', status_query);
-    test_factor('query_bulletin_type', type_query);
+    test_factor('query_staff_stat', status_query);
+    test_factor('query_staff_role', role_query);
 </script>
 </body>
 </html>

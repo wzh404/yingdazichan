@@ -1,6 +1,7 @@
 package com.xeehoo.p2p.mybatis.mapper;
 
 import com.xeehoo.p2p.po.LoanPermission;
+import com.xeehoo.p2p.po.LoanRole;
 import com.xeehoo.p2p.po.LoanStaff;
 
 import java.util.List;
@@ -16,4 +17,11 @@ public interface PermissionMapper {
      * @return
      */
     public List<LoanPermission> getPermissionByRoleCode(String roleCode);
+
+    /**
+     * 查询角色
+     *
+     * @return
+     */
+    public List<LoanRole> getRoles();
 }

@@ -23,6 +23,11 @@ public class LoanBulletinServiceImpl implements LoanBulletinService {
     BulletinMapper bulletinMapper;
 
     @Override
+    public LoanBulletin getBulletin(Integer bulletinId) {
+        return bulletinMapper.getBulletin(bulletinId);
+    }
+
+    @Override
     public LoanPagedListHolder getBulletinPager(int page, QueryCondition cond) {
         return new QueryPager<LoanBulletin>(page, cond) {
             @Override
@@ -35,5 +40,20 @@ public class LoanBulletinServiceImpl implements LoanBulletinService {
                 return bulletinMapper.getBulletinPager(cond.getCond());
             }
         }.query();
+    }
+
+    @Override
+    public Integer saveBulletin(LoanBulletin bulletin) {
+        return bulletinMapper.saveBulletin(bulletin);
+    }
+
+    @Override
+    public Integer updateBulletin(LoanBulletin bulletin) {
+        return bulletinMapper.updateBulletin(bulletin);
+    }
+
+    @Override
+    public Integer changeBulletinStatus(Integer bulletinId, Integer bulletinStatus) {
+        return bulletinMapper.changeBulletinStatus(bulletinId, bulletinStatus);
     }
 }

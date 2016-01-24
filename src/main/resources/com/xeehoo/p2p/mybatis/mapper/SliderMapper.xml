@@ -23,16 +23,22 @@
                 AND slider_status = #{sliderStatus}
             </if>
         </where>
+        ORDER BY slider_id DESC
     </select>
 
+    <!-- 修改Slider -->
     <update id="updateSlider" parameterType="com.xeehoo.p2p.po.LoanSlider">
-        UPDATE t_loan_admin_slider
-           SET slider_url = #{sliderUrl},
-               slider_name = #{sliderName},
-               slider_img = #{sliderImg}
-         WHERE slider_id = #{sliderId}
+        UPDATE
+              t_loan_admin_slider
+           SET
+              slider_url = #{sliderUrl},
+              slider_name = #{sliderName},
+              slider_img = #{sliderImg}
+         WHERE
+              slider_id = #{sliderId}
     </update>
 
+    <!-- 修改Slider状态 -->
     <update id="updateSliderStatus">
         UPDATE t_loan_admin_slider
            SET slider_status = #{sliderStatus}

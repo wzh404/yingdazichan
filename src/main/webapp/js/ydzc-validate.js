@@ -5,6 +5,7 @@ function isValideCode(v) { var reg = /\W/; return (v.match(reg) == null) ? true 
 function isNotNull(v) { return trim(v) == "" ? false : true; }
 function isMoney(v) {return /^\d{1,8}(\.\d{0,2})?$/.test(v);}
 function isNumber3(v) {return /^\d{1,3}$/.test(v);}
+function isMail(v) {return /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(v);}
 
 var validate = [
     {
@@ -26,6 +27,10 @@ var validate = [
     {
         name : 'isNumber3',
         errorMsg: '请输入正确的数字'
+    },
+    {
+        name : 'isMail',
+        errorMsg: '请输入正确的电子邮件'
     }
 ];
 
@@ -106,6 +111,7 @@ function hideErrorMsg(id){
 function check(k, v, id){
     var r = false;
     for(var i = 0; i < validate.length; i++){
+
         if (validate[i].name == k){
             if (k.substring(0, 2) == 'is'){
                 r = eval(k + "('" + $('#' + id).val() + "')");
@@ -114,6 +120,7 @@ function check(k, v, id){
                 r = eval(k + "('" + $('#' + id).val() + "', '" + v + "')");
             }
 
+            console.log(validate[i].name + " -  " + r);
             if (!r){
                 showErrorMsg(id, validate[i].errorMsg);
                 return false;

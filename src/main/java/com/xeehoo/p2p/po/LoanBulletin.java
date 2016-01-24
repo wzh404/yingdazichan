@@ -12,7 +12,16 @@ public class LoanBulletin {
     private String bulletinType;
     private Integer bulletinStaff;
     private Integer bulletinStatus;
+    private String bulletinContent;
     private Date bulletinDate;
+
+    public String getBulletinContent() {
+        return bulletinContent;
+    }
+
+    public void setBulletinContent(String bulletinContent) {
+        this.bulletinContent = bulletinContent;
+    }
 
     public Integer getBulletinStatus() {
         return bulletinStatus;

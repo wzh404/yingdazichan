@@ -24,9 +24,9 @@
                         class="am-icon-caret-down"></span>
                 </a>
                 <ul class="am-dropdown-content">
-                    <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>
-                    <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
-                    <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>
+                    <li><a href="/admin/home"><span class="am-icon-user"></span> 账户资料</a></li>
+                    <li><a href="/admin/change_staff_pwd.jsp"><span class="am-icon-cog"></span> 修改密码</a></li>
+                    <li><a href="/admin/logout"><span class="am-icon-power-off"></span> 退出</a></li>
                 </ul>
             </li>
             <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen"><span

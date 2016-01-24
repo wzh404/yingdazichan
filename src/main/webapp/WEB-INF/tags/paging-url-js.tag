@@ -9,10 +9,10 @@
         <ul class="am-pagination">
             <c:if test="${pagedListHolder.pageCount > 1}">
                 <c:if test="${!pagedListHolder.firstPage}">
-                    <li ><a href="javascript:toPage(0);">首页</a></li>
+                    <li ><a href="javascript:toPage('<%= StringUtils.replace(pagedLink, "~", String.valueOf(0)) %>');">首页</a></li>
                 </c:if>
                 <c:if test="${!pagedListHolder.firstPage}">
-                    <li><a href="javascript:toPage(<%= (pagedListHolder.getPage() - 1) %>);">上一页</a></li>
+                    <li><a href="javascript:toPage('<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() - 1)) %>');">上一页</a></li>
                 </c:if>
 
                 <c:forEach begin="${pagedListHolder.firstLinkedPage}" end="${pagedListHolder.lastLinkedPage}" var="i">
@@ -21,16 +21,16 @@
                             <li class="am-active"><a href="javascript:void(0);">${i+1}</a></li>
                         </c:when>
                         <c:otherwise>
-                            <li ><a href="javascript: toPage(${i+1});">${i}</a></li>
+                            <li ><a href="javascript: toPage('<%= StringUtils.replace(pagedLink, "~", String.valueOf(jspContext.getAttribute("i"))) %>');">${i+1}</a></li>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
 
                 <c:if test="${!pagedListHolder.lastPage}">
-                    <li><a href="javascript:toPage(<%= (pagedListHolder.getPage() + 1) %>);">下一页</a></li>
+                    <li><a href="javascript:toPage('<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPage() + 1)) %>');">下一页</a></li>
                 </c:if>
                 <c:if test="${!pagedListHolder.lastPage}">
-                    <li><a href="javascript:toPage(<%= (pagedListHolder.getPageCount() - 1) %>);">尾页</a></li>
+                    <li><a href="javascript:toPage('<%= StringUtils.replace(pagedLink, "~", String.valueOf(pagedListHolder.getPageCount() - 1)) %>');">尾页</a></li>
                 </c:if>
             </c:if>
         </ul>

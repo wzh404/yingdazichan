@@ -250,8 +250,8 @@ var QueryFactor = React.createClass({
 function react_slides_render(elementName){
     var slides
     $.ajax({
-        url: "/cache/slide",
-        data: {version: "0.1.3"},
+        url: "/cache/slider",
+        data: {version: "0.1.3", flush: true},
         type: "get",
         dataType: "json",
         async: false,

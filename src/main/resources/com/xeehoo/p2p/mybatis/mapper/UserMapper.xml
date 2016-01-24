@@ -8,6 +8,7 @@
     <resultMap type="com.xeehoo.p2p.po.LoanUser" id="user">
         <id property="userId" column="user_id"/>
         <result property="loginName" column="login_name"/>
+        <result property="realName" column="real_name"/>
         <result property="loginPwd" column="login_pwd"/>
         <result property="userStatus" column="user_status"/>
         <result property="registerIP" column="register_ip"/>
@@ -63,24 +64,29 @@
           user_status,
           register_time,
           register_ip
-        FROM t_loan_userinfo
+        FROM
+          t_loan_userinfo
+        WHERE
+          user_status = 1
         <if test="loginType == 'name'">
-            WHERE login_name = #{loginName}
+            AND login_name = #{loginName}
         </if>
         <if test="loginType == 'mobile'">
-            WHERE mobile = #{loginName}
+            AND mobile = #{loginName}
         </if>
     </select>
 
     <!-- 修改预留安全信息，防止钓鱼网站 -->
     <update id="updateUserSecurityMessage">
-        UPDATE t_loan_userinfo
-        SET security_message = #{securityMessage}
+        UPDATE
+          t_loan_userinfo
+        SET
+          security_message = #{securityMessage}
         WHERE
           user_id = #{userId}
     </update>
 
-    <!-- 身份认证 -->
+    <!-- 身份认证
     <update id="updateUserIdCard" parameterType="java.util.Map">
         UPDATE t_loan_userinfo
         SET real_name = #{realName},
@@ -90,7 +96,7 @@
             sex = #{sex}
         WHERE
           user_id = #{userId}
-    </update>
+    </update>-->
 
     <!-- 修改用户状态 -->
     <update id="updateUserStatus">
@@ -111,31 +117,79 @@
 
     <!-- 修改用户登录密码 -->
     <update id="updateUserLoginPwd">
-        UPDATE t_loan_userinfo
-        SET login_pwd = #{loginPwd}
+        UPDATE
+          t_loan_userinfo
+        SET
+          login_pwd = #{loginPwd}
         WHERE
           user_id = #{userId}
     </update>
 
     <!-- 修改用户支付密码 -->
     <update id="updateUserPayPwd">
-        UPDATE t_loan_userinfo
-        SET pay_pwd = #{payPwd}
+        UPDATE
+          t_loan_userinfo
+        SET
+          pay_pwd = #{payPwd}
         WHERE
           user_id = #{userId}
     </update>
 
     <!-- 修改第三方用户认证信息 -->
     <update id="updateUserAuthentication" parameterType="com.xeehoo.p2p.po.LoanUser">
-        UPDATE t_loan_userinfo
-           SET escrow_account = #{escrowAccount},
-               real_name = #{realName},
-               id_card = #{idCard}
-         WHERE user_id = #{userId}
+        UPDATE
+            t_loan_userinfo
+        SET
+            escrow_account = #{escrowAccount},
+            real_name = #{realName},
+            id_card = #{idCard}
+        WHERE
+            user_id = #{userId}
     </update>
 
     <!-- 获取用户资产信息 -->
     <select id="getUserFund" resultMap="userFund" parameterType="int">
         SELECT * FROM t_loan_user_fund WHERE user_id = #{userId}
+    </select>
+
+    <!-- 客户管理 列表用户 -->
+    <sql id="query_user_where">
+        <where>
+            <if test="user_status > 0">
+                AND user_status = #{user_status}
+            </if>
+            <if test='login_name != null'>
+                AND login_name = #{login_name}
+            </if>
+            <if test='real_name != null'>
+                AND real_name LIKE CONCAT('%',#{real_name},'%')
+            </if>
+            <if test="id_card != null">
+                AND id_card = #{id_card}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getUsers" resultMap="user" parameterType="java.util.Map">
+        SELECT
+            user_id,
+            real_name,
+            login_name,
+            id_card,
+            sex,
+            birth,
+            user_status
+        FROM
+            t_loan_userinfo
+        <include refid="query_user_where"/>
+        LIMIT #{_pageSize} OFFSET #{_offset}
+    </select>
+
+    <select id="getTotalUser" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+            COUNT (*)
+        FROM
+            t_loan_userinfo
+        <include refid="query_user_where"/>
     </select>
 </mapper>

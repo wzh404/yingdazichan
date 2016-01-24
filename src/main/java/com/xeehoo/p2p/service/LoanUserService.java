@@ -2,8 +2,10 @@ package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.po.LoanUserFund;
+import com.xeehoo.p2p.util.LoanPagedListHolder;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -56,14 +58,12 @@ public interface LoanUserService {
      */
     public LoanUserFund getFundByUserID(Integer userID);
 
-
     /**
      *
      * @param user
      * @return
      */
     public Integer updateUserAuthentication(LoanUser user);
-
 
     /**
      * 根据用户名或手机号查询用户信息
@@ -72,4 +72,12 @@ public interface LoanUserService {
      * @return
      */
     public LoanUser getUser(String loginName);
+
+    /**
+     *
+     * @param page
+     * @param cond
+     * @return
+     */
+    public LoanPagedListHolder getUserPager(int page, Map<String, Object> cond);
 }

@@ -3,6 +3,7 @@ package com.xeehoo.p2p.controller;
 import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
 import com.fuiou.util.SecurityUtils;
+import com.xeehoo.p2p.annotation.Permission;
 import com.xeehoo.p2p.cache.Cache;
 import com.xeehoo.p2p.cache.impl.HttpSessionCache;
 import com.xeehoo.p2p.po.LoanUserFund;
@@ -18,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -100,7 +102,7 @@ public class LoanUserController {
             return new ModelAndView("/user/register_step_1");
         }
 
-        /*
+        /* 短信认证
         String cacheAuthCode = (String)cache.get(user.getMobile());
         if (cacheAuthCode == null || !cacheAuthCode.equalsIgnoreCase(authCode)){
             sendAuthCode(cache, user.getMobile());
@@ -131,7 +133,7 @@ public class LoanUserController {
     }
 
     /**
-     * 新用户注册第二步
+     * 新用户注册第三步
      *
      * @param mobile
      * @param authCode
@@ -220,6 +222,27 @@ public class LoanUserController {
     }
 
     /**
+     * 修改密码
+     *
+     * @return
+     */
+    @RequestMapping(value = "/user/changePwd", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView changePwd(HttpServletRequest request,
+                                  @RequestParam(value = "old_pwd", required = true) String oldLoginPwd,
+                                  @RequestParam(value = "new_pwd", required = true) String newLoginPwd) {
+        SessionObject so = CommonUtil.getSessionObject(request, null);
+        if (so == null) {
+            return new ModelAndView("/user/login");
+        }
+
+        if (userService.changeLoginPwd(so.getUserID(), oldLoginPwd, newLoginPwd)){
+            return new ModelAndView("/user/user_change_pwd");
+        }
+
+        return new ModelAndView("/user/user_change_pwd");
+    }
+
+    /**
      * 获取用户资产情况
      *
      * @return
@@ -281,6 +304,7 @@ public class LoanUserController {
     }
 
     /**
+     * 进入用户取现
      *
      * @param request
      * @return
@@ -300,6 +324,7 @@ public class LoanUserController {
     }
 
     /**
+     * 进入用户认证
      *
      * @param request
      * @return
@@ -321,7 +346,7 @@ public class LoanUserController {
     }
 
     /**
-     *
+     * 进入用户充值
      * @param request
      * @return
      */
@@ -340,6 +365,7 @@ public class LoanUserController {
     }
 
     /**
+     * 用户投资项目
      *
      * @param request
      * @return
@@ -432,7 +458,7 @@ public class LoanUserController {
     }
 
     /**
-     * 富友页面注册
+     * 富友页面注册（认证）
      *
      * @param request
      * @return
@@ -457,6 +483,42 @@ public class LoanUserController {
 
         return mav;
     }
+
+    /*---------------------------- admin ----------------------*/
+    @RequestMapping(value="/admin/listUser")
+    @Permission("0201")
+    public ModelAndView execute(HttpServletRequest request,
+                                @RequestParam(value = "login_name", required = false) String loginName,
+                                @RequestParam(value = "user_status", required = false) Integer userStatus,
+                                @RequestParam(value = "real_name", required = false) String realName,
+                                @RequestParam(value = "id_card", required = false) String idCard,
+                                @RequestParam(value = "page", required = false) Integer page) {
+        if (page == null) page = 0;
+        Map<String, Object> cond = new HashMap<String, Object>();
+        ModelAndView mav = new ModelAndView("/admin/list_user");
+
+        if (!StringUtils.isEmpty(loginName)){
+            cond.put("login_name", loginName);
+            mav.addObject("login_name", loginName);
+        }
+        if (!StringUtils.isEmpty(realName)){
+            cond.put("real_name", realName);
+            mav.addObject("real_name", realName);
+        }
+        if (!StringUtils.isEmpty(idCard)){
+            cond.put("id_card", idCard);
+            mav.addObject("id_card", idCard);
+        }
+        cond.put("user_status", userStatus);
+
+        LoanPagedListHolder pagedListHolder = userService.getUserPager(page, cond);
+        mav.addObject("pagedListHolder", pagedListHolder);
+        mav.addObject("user_status", userStatus);
+
+        return mav;
+    }
+
+    /*---------------------------- private --------------------*/
 
     /**
      * 用户登录业务逻辑
@@ -536,7 +598,7 @@ public class LoanUserController {
         return (cacheValidecode != null && cacheValidecode.equalsIgnoreCase(vcode));
     }
 
-    /*---------------------------Ajax controller--------------------------------*/
+    /*---------------------------Ajax controller----------------------*/
 
     /**
      * 用户登录

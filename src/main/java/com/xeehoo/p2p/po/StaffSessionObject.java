@@ -9,9 +9,18 @@ import java.util.Map;
 public class StaffSessionObject {
     private Integer staffId;
     private String staffName;
+    private String staffLogin;
 
     private List<LoanPermission> permissions;
     private Map<String, List<LoanPermission>> menus;
+
+    public String getStaffLogin() {
+        return staffLogin;
+    }
+
+    public void setStaffLogin(String staffLogin) {
+        this.staffLogin = staffLogin;
+    }
 
     public Integer getStaffId() {
         return staffId;
@@ -68,6 +77,8 @@ public class StaffSessionObject {
 
     public boolean isAuth(String code){
         if (code == null) return false;
+        if (code.equalsIgnoreCase("0000"))
+            return true;
 
         for (LoanPermission p : getPermissions()){
             if (p.getPermissionCode().equalsIgnoreCase(code)){

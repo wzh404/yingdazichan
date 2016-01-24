@@ -76,11 +76,21 @@
                             <td>${slider.sliderImg}</td>
                             <td><fmt:formatDate value="${slider.sliderTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                             <td>
+                                <c:if test="${slider.sliderStatus == 1}">
                                 <div class="am-btn-toolbar">
                                     <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/editDict?dict_id=${dict1.dict1ID}">发布</a>
+                                        <a href="/admin/changeSliderStatus?slider_id=${slider.sliderId}&slider_status=2">发布</a>
                                     </div>
                                 </div>
+                                </c:if>
+
+                                <c:if test="${slider.sliderStatus == 2}">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="/admin/changeSliderStatus?slider_id=${slider.sliderId}&slider_status=1">暂停</a>
+                                        </div>
+                                    </div>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>

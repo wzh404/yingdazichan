@@ -176,7 +176,7 @@
                                 <textarea rows="6" placeholder="请输入借款用途" name="loanPurpose">${product.loanPurpose}</textarea>
                             </div>
                         </div>
-                        <input type="hidden" id="product_id" name="product_id" value="${product.productId}"/>
+                        <input type="hidden" id="productId" name="productId" value="${product.productId}"/>
                     </form>
                 </div>
 
@@ -223,6 +223,7 @@
     <script src="${js}/react.js" type="text/javascript"></script>
     <script src="${js}/react-dom.js" type="text/javascript"></script>
     <script type="text/javascript" src="/js/ydzc-validate.js?v=0.1.6"></script>
+    <script type="text/javascript" src="/js/validate-form.js?v=0.1.6"></script>
 
     <script type="text/javascript">
         function setSelection(id, code){
@@ -243,70 +244,11 @@
         setSelection('interestWay', '${product.interestWay}');
         setInvestDayValueAndType('${product.investDay}');
 
-        var FormValidate ={
-            createNew: function(){
-                var validate = {};
-                var mask = 0x00;
-                var ins = $("input[data-validate]");
-                var mm = ((0x01 << ins.length) - 1);
 
-                validate.getPosition = function(id){
-                    for (var i = 0; i < ins.length; i++) {
-                        if (ins[i].id == id)
-                            return i;
-                    }
-                    return -1;
-                };
-
-                validate.setMaskById = function(b, id){
-                    var inx = validate.getPosition(id);
-                    if (inx >= 0) {
-                        validate.setMask(b, 0x01 << inx);
-                    }
-                };
-
-                validate.setMask = function(r, v){
-                    if (r)
-                        mask |= v;
-                    else
-                        mask &= (mm - v);
-                };
-
-                validate.blur = function(){
-//                    console.log(ins.length);
-                    for (var i = 0; i < ins.length; i++) {
-//                        console.log('[' + ins[i].id + ']');
-                        if (ins[i].value != ''){
-                            validate.setMaskById(true, ins[i].id);
-                        }
-                        var errMsg = '<span style="color:red;display:none" id="span_errmsg_' + ins[i].id + '"></span>';
-                        $('#' + ins[i].id).parent().append(errMsg);
-
-                        $('#' + ins[i].id).blur(function () {
-                            var b = checkValue(this.id);
-                            validate.setMaskById(b, this.id);
-                        });
-                    }
-                };
-
-                validate.submit = function(id){
-                    console.log(mask + "-" + mm);
-                    if (mask != mm) {
-                        return;
-                    }
-
-                    $(id).submit();
-                }
-
-                return validate;
-            }
-        }
-
-        var v = FormValidate.createNew();
-        v.blur();
+        var v = create_form_validate();
 
         function submitProduct() {
-            if ($('#product_id').val() == '') {
+            if ($('#productId').val() == '0') {
                 $('#form_product').attr("action", '/admin/saveProduct');
             }
             else{
@@ -316,7 +258,7 @@
         }
 
         function submitSettleProduct(){
-            if ($('#product_id').val() != ''){
+            if ($('#productId').val() != '0'){
                 $('#form_product').attr("action", '/admin/settleAccount');
                 $('#form_product').submit();
             }

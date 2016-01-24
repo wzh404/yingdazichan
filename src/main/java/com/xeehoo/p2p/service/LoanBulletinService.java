@@ -11,6 +11,13 @@ import java.util.List;
  */
 public interface LoanBulletinService {
     /**
+     *
+     * @param bulletinId
+     * @return
+     */
+    public LoanBulletin getBulletin(Integer bulletinId);
+
+    /**
      * 分页查询公告板
      *
      * @param page
@@ -18,4 +25,30 @@ public interface LoanBulletinService {
      * @return
      */
     public LoanPagedListHolder getBulletinPager(int page, QueryCondition cond);
+
+    /**
+     * 新增公告
+     *
+     * @param bulletin
+     * @return
+     */
+    public Integer saveBulletin(LoanBulletin bulletin);
+
+    /**
+     * 修改公告
+     *
+     * @param bulletin
+     * @return
+     */
+    public Integer updateBulletin(LoanBulletin bulletin);
+
+    /**
+     * 修改公告状态
+     *
+     * @param bulletinId
+     * @param bulletinStatus
+     * @return
+     */
+    public Integer changeBulletinStatus(Integer bulletinId, Integer bulletinStatus);
+
 }

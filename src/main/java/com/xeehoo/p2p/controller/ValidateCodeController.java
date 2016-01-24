@@ -99,6 +99,12 @@ public class ValidateCodeController {
         cs.setHeight(37);
     }
 
+    /**
+     * 生成图片验证码
+     *
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/vdcode", method = RequestMethod.GET)
     public void validateCode(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("image/png");

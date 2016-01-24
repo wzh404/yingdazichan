@@ -4,6 +4,7 @@ import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.po.LoanUserFund;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,8 +31,9 @@ public interface UserMapper {
      *
      * @param map
      * @return
-     */
+
     public int updateUserIdCard(Map<String, Object> map);
+     */
 
     /**
      * 根据用户名或手机号查询用户信息
@@ -49,16 +51,25 @@ public interface UserMapper {
      * @param userId
      * @return
      */
-    public int updateUserLoginPwd(@Param("loginPwd")String loginPwd, @Param("userId") Integer userId);
+    public int updateUserLoginPwd(@Param("userId") Integer userId, @Param("loginPwd")String loginPwd);
 
     /**
-     * 修改支付密码
+     * 修改登录密码
      *
      * @param loginPwd
      * @param userId
      * @return
      */
-    public int updateUserPayPwd(@Param("payPwd")String loginPwd, @Param("userId") Integer userId);
+    public int updateUserStatus(@Param("userId") Integer userId, @Param("userStatus")String loginPwd);
+
+    /**
+     * 修改支付密码
+     *
+     * @param payPwd
+     * @param userId
+     * @return
+     */
+    public int updateUserPayPwd(@Param("userId") Integer userId, @Param("payPwd")String payPwd);
 
     /**
      * 获取用户资产信息
@@ -74,4 +85,18 @@ public interface UserMapper {
      * @return
      */
     public Integer updateUserAuthentication(LoanUser user);
+
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    public List<LoanUser> getUsers(Map<String, Object> cond);
+
+    /**
+     *
+     * @param cond
+     * @return
+     */
+    public Integer getTotalUser(Map<String, Object> cond);
 }

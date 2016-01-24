@@ -7,23 +7,132 @@
     <resultMap type="com.xeehoo.p2p.po.LoanStaff" id="staff">
         <id property="staffId" column="staff_id"/>
         <result property="staffName" column="staff_name"/>
+        <result property="staffLogin" column="staff_login"/>
         <result property="staffPwd" column="staff_pwd"/>
-        <result property="staffRegisterTime" column="staff_register_time"/>
+        <result property="staffSex" column="staff_sex"/>
+        <result property="staffMobile" column="staff_mobile"/>
+        <result property="staffEmail" column="staff_email"/>
+        <result property="staffRegtime" column="staff_regtime"/>
         <result property="staffStatus" column="staff_status"/>
         <result property="staffRole" column="staff_role"/>
+        <result property="staffDesc" column="staff_desc"/>
+        <result property="roleName" column="role_name"/>
     </resultMap>
 
+    <select id="getStaff" resultMap="staff">
+        SELECT *
+        FROM
+          t_loan_admin_staff
+        WHERE
+          staff_id = #{staff_id}
+        AND
+          staff_status = 1
+    </select>
+
     <!-- 根据用户名称查询用户信息  -->
-    <select id="getStaffByName" resultMap="staff">
+    <select id="getStaffByLogin" resultMap="staff">
         SELECT
           staff_id,
           staff_name,
           staff_pwd,
+          staff_regtime,
           staff_role
         FROM
           t_loan_admin_staff
         WHERE
-          staff_name = #{staff_name}
-        AND staff_status = 1
+          staff_login = #{staffLogin}
+        AND
+          staff_status = 1
+    </select>
+
+    <insert id="saveStaff" parameterType="com.xeehoo.p2p.po.LoanStaff">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="staffId" >
+            SELECT currval('t_loan_admin_staff_staff_id_seq') AS staffId
+        </selectKey>
+
+        INSERT INTO t_loan_admin_staff (
+            staff_name,
+            staff_login,
+            staff_pwd,
+            staff_sex,
+            staff_mobile,
+            staff_email,
+            staff_regtime,
+            staff_status,
+            staff_role,
+            staff_desc
+        )
+        VALUES (
+            #{staffName},
+            #{staffLogin},
+            #{staffPwd},
+            #{staffSex},
+            #{staffMobile},
+            #{staffEmail},
+            #{staffRegtime},
+            #{staffStatus},
+            #{staffRole},
+            #{staffDesc}
+        )
+    </insert>
+
+    <update id="updateStaff" parameterType="com.xeehoo.p2p.po.LoanStaff">
+        UPDATE t_loan_admin_staff
+           SET staff_name = #{staffName},
+               staff_sex = #{staffSex},
+               staff_mobile = #{staffMobile},
+               staff_email = #{staffEmail},
+               staff_role = #{staffRole},
+               staff_desc = #{staffDesc}
+         WHERE
+           staff_id = #{staffId}
+    </update>
+
+    <update id="changeStaffStatus">
+        UPDATE t_loan_admin_staff
+           SET staff_status = #{staffStatus}
+         WHERE
+           staff_id = #{staffId}
+    </update>
+
+    <update id="changeStaffPwd">
+        UPDATE t_loan_admin_staff
+        SET staff_pwd = #{staffPwd}
+        WHERE
+        staff_id = #{staffId}
+    </update>
+
+    <sql id="query_staff_where">
+        <where>
+            <if test="stat > 0">
+                AND staff_status = #{stat}
+            </if>
+            <if test='name != null'>
+                AND staff_name = '%#{name}'
+            </if>
+            <if test="role != '00'">
+                AND staff_role = #{role}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 列表员工  -->
+    <select id="getStaffs" resultMap="staff" parameterType="java.util.Map">
+        SELECT s.*, r.role_name
+          FROM
+            t_loan_admin_staff s
+        INNER JOIN
+            t_loan_admin_role r
+          ON
+            s.staff_role = r.role_code
+        <include refid="query_staff_where"/>
+        ORDER BY staff_id
+        LIMIT #{_pageSize} OFFSET #{_offset}
+    </select>
+
+    <select id="getTotalStaff" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT COUNT(*)
+        FROM t_loan_admin_staff
+        <include refid="query_staff_where"/>
     </select>
 </mapper>

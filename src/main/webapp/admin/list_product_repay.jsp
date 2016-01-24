@@ -27,4 +27,4 @@
   <c:url value="${pageUri}" var="pagedLink">
     <c:param name="page" value="~"/>
   </c:url>
-  <pg:paging-js pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
+  <pg:paging-url-js pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>

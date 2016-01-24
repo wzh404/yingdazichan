@@ -36,37 +36,58 @@
     <!-- sidebar end -->
 
     <!-- content start -->
-    <form class="admin-content" id="form1" method="post" action="/admin/removeDict1">
+    <form class="admin-content" id="form_user" method="post" action="/admin/listUser">
         <div class="am-cf am-padding">
-            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">公告</strong> /
-                <small>Bulletin</small>
+            <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">客户管理</strong> /
+                <small>User</small>
             </div>
         </div>
 
         <div class="am-g am-margin-top">
-            <div class="am-u-sm-4 am-u-md-2 am-text-right">类型:</div>
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">手机:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_bulletin_type">
-
+                <div class="am-btn-group" >
+                    <input type="text" style="width: 200px;" name="login_name" id="login_name" value="${login_name}"/>
                 </div>
             </div>
         </div>
 
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">姓名:</div>
+            <div class="am-u-sm-11 am-u-md-10">
+                <div class="am-btn-group">
+                    <input type="text" style="width: 200px;" name="real_name" id="real_name" value="${real_name}"/>
+                </div>
+            </div>
+        </div>
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-4 am-u-md-2 am-text-right">身份证:</div>
+            <div class="am-u-sm-11 am-u-md-10">
+                <div class="am-btn-group" >
+                    <input type="text" style="width: 200px;" name="id_card" id="id_card" value="${id_card}"/>
+                </div>
+            </div>
+        </div>
         <div class="am-g am-margin-top">
             <div class="am-u-sm-4 am-u-md-2 am-text-right">状态:</div>
             <div class="am-u-sm-11 am-u-md-10">
-                <div class="am-btn-group" id="query_bulletin_stat">
-
+                <div class="am-btn-group">
+                    <select data-am-selected="{btnSize: 'sm'}" name="user_status" id="user_status">
+                        <option value="0">全部</option>
+                        <option value="1">正常</option>
+                        <option value="2">冻结</option>
+                    </select>
                 </div>
             </div>
         </div>
+
         <br/>
         <div class="am-g">
             <div class="am-u-sm-12 am-u-md-6">
                 <div class="am-btn-toolbar">
                     <div class="am-btn-group am-btn-group-xs">
                         <button type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span>
-                            <a href="/admin/editBulletin?bulletin_id=0">发布新公告</a>
+                            <a href="javascript:query_user();">查询用户</a>
                         </button>
                     </div>
                 </div>
@@ -80,30 +101,36 @@
                     <tr>
                         <th class="table-check"><input type="checkbox"/></th>
                         <th class="table-id">ID</th>
-                        <th class="table-title">名称</th>
-                        <th class="table-title">URL</th>
-                        <th class="table-set">发布时间</th>
+                        <th class="table-title">手机</th>
+                        <th class="table-title">实名</th>
+                        <th class="table-title">性别</th>
+                        <th class="table-set">身份证</th>
                         <th class="table-set">状态</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${pagedListHolder.source}" var="bulletin">
+                    <c:forEach items="${pagedListHolder.source}" var="user">
                         <tr>
                             <td><input type="checkbox"/></td>
-                            <td>${bulletin.bulletinId}</td>
-                            <td><a href="javascript:add();">${bulletin.bulletinTitle}</a></td>
-                            <td>${bulletin.bulletinUrl}</td>
-                            <td><fmt:formatDate value="${bulletin.bulletinDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            <td>${user.userId}</td>
+                            <td><a href="javascript:add();">${user.loginName}</a></td>
+                            <td>${user.realName}</td>
+
                             <td>
-                                <c:if test="${bulletin.bulletinStatus == 1}">
-                                <div class="am-btn-toolbar">
-                                    <div class="am-btn-group am-btn-group-xs">
-                                        <a href="/admin/changeBulletinStatus?bulletin_id=${bulletin.bulletinId}&bulletin_status=2">发布</a>
-                                    </div>
-                                </div>
+                                <c:if test="${user.sex == 'F'}">
+                                    女
                                 </c:if>
-                                <c:if test="${bulletin.bulletinStatus == 2}">
-                                    已发布
+                                <c:if test="${user.sex == 'M'}">
+                                    男
+                                </c:if>
+                            </td>
+                            <td>${user.idCard}</td>
+                            <td>
+                                <c:if test="${user.userStatus == 1}">
+                                    正常 &nbsp; | &nbsp; <a href="">冻结</a>
+                                </c:if>
+                                <c:if test="${user.userStatus == 2}">
+                                    冻结 &nbsp; | &nbsp; <a href="">解结</a>
                                 </c:if>
                             </td>
                         </tr>
@@ -117,7 +144,6 @@
                 <pg:paging pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
             </div>
         </div>
-        <input type="hidden" name="dict_code" value="${dictCode}"/>
     </form>
 </div>
 <!-- content end -->
@@ -163,41 +189,15 @@
 <script src="/js/ydzc.js?12357"></script>
 <script src="/js/ydzc-validate.js?12357"></script>
 <script type="text/javascript">
-    var type_options = [
-        {"name": "全部", "value": "0000"},
-        <c:forEach items="${bulletinTypes}" var="p">
-        {"name": "${p.value}", "value": "${p.key}"},
-        </c:forEach>
-    ]
+    setSelection('user_status', '${user_status}');
 
-    var type_query = {
-        "name": 'type',
-        'select': {
-            'method' : 'default',
-            'options': type_options
-        },
-        'server':{
-            'value':'${type}',
-            'uri':'${typeUri}'
-        }
+    function query_user(){
+        $('#form_user').submit();
     }
 
-    var status_query = {
-        "name": 'stat',
-        'select': {
-            'method': 'default',
-            'options': [{"name": "全部", "value": "0"},
-                        {"name": "未发布", "value": "1"},
-                        {"name": "已发布", "value": "2"}]
-        },
-        'server': {
-            'value': '${stat}',
-            'uri': '${statUri}'
-        }
-    }
+    function toPage(page){
 
-    test_factor('query_bulletin_stat', status_query);
-    test_factor('query_bulletin_type', type_query);
+    }
 </script>
 </body>
 </html>

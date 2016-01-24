@@ -31,7 +31,7 @@
     </c:forEach>
     </tbody>
 </table>
-  <c:url value="${pageUri}" var="pagedLink">
+<c:url value="${pageUri}" var="pagedLink">
     <c:param name="page" value="~"/>
-  </c:url>
-  <pg:paging-js pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>
+</c:url>
+<pg:paging-url-js pagedListHolder="${pagedListHolder}" pagedLink="${pagedLink}"/>

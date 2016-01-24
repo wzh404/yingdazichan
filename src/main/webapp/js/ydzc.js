@@ -1,10 +1,14 @@
 var console = console || {
-        log : function(){
+        log: function () {
             return false;
         }
     }
 
-function callAjax(url, data){
+function setSelection(id, code) {
+    $('#' + id).val(code);
+}
+
+function callAjax(url, data) {
     var json = null;
 
     $.ajax({

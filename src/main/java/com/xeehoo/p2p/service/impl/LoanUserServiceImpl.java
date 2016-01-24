@@ -7,6 +7,7 @@ import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.util.CommonUtil;
 import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.EncryptUtil;
+import com.xeehoo.p2p.util.LoanPagedListHolder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -72,7 +74,7 @@ public class LoanUserServiceImpl implements LoanUserService {
         if (userInfo != null){ // 用户不存在
             if (userInfo.isEqualPwd(oldLoginPwd)){
                 String newEncryptLoginPwd = userInfo.encryptPwd(newLoginPwd);
-                userMapper.updateUserLoginPwd(newEncryptLoginPwd, userId);
+                userMapper.updateUserLoginPwd(userId, newEncryptLoginPwd);
 
                 return true;
             }
@@ -122,5 +124,20 @@ public class LoanUserServiceImpl implements LoanUserService {
     @Override
     public LoanUser getUser(String loginName) {
         return userMapper.getUserLoginInfo("name", loginName);
+    }
+
+    @Override
+    public LoanPagedListHolder getUserPager(int page, Map<String, Object> cond) {
+        cond.put("_pageSize", Constant.PAGE_DEFAULT_SIZE);
+        cond.put("_offset", Constant.PAGE_DEFAULT_SIZE * page);
+
+        LoanPagedListHolder pagedListHolder = new LoanPagedListHolder();
+        pagedListHolder.setSource(userMapper.getUsers(cond));
+        pagedListHolder.setPage(page);
+        pagedListHolder.setPageSize(Constant.PAGE_DEFAULT_SIZE);
+        pagedListHolder.setTotalSize(userMapper.getTotalUser(cond));
+        pagedListHolder.setMaxLinkedPages(Constant.PAGE_MAX_LINKED_PAGES);
+
+        return pagedListHolder;
     }
 }

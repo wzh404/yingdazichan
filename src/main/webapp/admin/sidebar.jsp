@@ -6,7 +6,7 @@
 <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
     <div class="am-offcanvas-bar admin-offcanvas-bar">
         <ul class="am-list admin-sidebar-list">
-            <li><a href="admin-index.html"><span class="am-icon-home"></span> 首页</a></li>
+            <li><a href="/admin/home"><span class="am-icon-home"></span> 首页</a></li>
 
             <c:if test="${sessionScope.staff.mainMenu('01')}">
                 <li class="admin-parent">
@@ -24,8 +24,8 @@
                                     class="am-badge am-badge-secondary am-margin-right am-fr">24</span></a></li>
                         </c:if>
 
-                        <c:if test="${sessionScope.staff.subMenu('01', '0104')}">
-                            <li><a href="admin-log.html"><span class="am-icon-calendar"></span> 用户管理</a></li>
+                        <c:if test="${sessionScope.staff.subMenu('01', '0102')}">
+                            <li><a href="/admin/listStaff"><span class="am-icon-calendar"></span> 员工管理</a></li>
                         </c:if>
 
                         <c:if test="${sessionScope.staff.subMenu('01', '0105')}">
@@ -49,13 +49,13 @@
                             <span class="am-icon-bars am-fr am-margin-right admin-icon-yellow"></span></a></li>
                     </c:if>
                     <c:if test="${sessionScope.staff.subMenu('01', '0101')}">
-                        <li><a href="/admin/bulletin" class="am-cf"><span class="am-icon-check"></span> 公告板
+                        <li><a href="/admin/listBulletin" class="am-cf"><span class="am-icon-check"></span> 公告板
                             <span class="am-icon-bars am-fr am-margin-right admin-icon-yellow"></span></a></li>
                     </c:if>
                 </ul>
 
             </li>
-
+            <li><a href="/admin/listUser"><span class="am-icon-bookmark"></span> 客户管理</a></li>
             <li><a href="/admin/product"><span class="am-icon-bookmark"></span> 项目管理</a></li>
             <li><a href="/admin/settleProduct"><span class="am-icon-sign-out"></span> 财务结算</a></li>
         </ul>

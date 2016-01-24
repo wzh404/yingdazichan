@@ -91,52 +91,56 @@
             <div class="am-u-sm-12 am-u-md-8 am-u-md-pull-4">
                 <form class="am-form am-form-horizontal">
                     <div class="am-form-group">
-                        <label for="user-name" class="am-u-sm-3 am-form-label">姓名 / Name</label>
+                        <label for="staffName" class="am-u-sm-3 am-form-label">工号</label>
 
-                        <div class="am-u-sm-9">
-                            <input type="text" id="user-name" placeholder="姓名 / Name">
-                            <small>输入你的名字，让我们记住你。</small>
+                        <div class="am-u-sm-9" style="margin-top: 8px">
+                            ${loanStaff.staffLogin}
                         </div>
                     </div>
 
                     <div class="am-form-group">
-                        <label for="user-email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>
+                        <label for="staffName" class="am-u-sm-3 am-form-label">姓名</label>
 
                         <div class="am-u-sm-9">
-                            <input type="email" id="user-email" placeholder="输入你的电子邮件 / Email">
-                            <small>邮箱你懂得...</small>
+                            <input type="text" id="staffName" name="staffName" placeholder="姓名 / Name" value="${loanStaff.staffName}">
+
                         </div>
                     </div>
 
                     <div class="am-form-group">
-                        <label for="user-phone" class="am-u-sm-3 am-form-label">电话 / Telephone</label>
+                        <label for="staffName" class="am-u-sm-3 am-form-label">性别</label>
 
                         <div class="am-u-sm-9">
-                            <input type="email" id="user-phone" placeholder="输入你的电话号码 / Telephone">
+                            <select data-am-selected="{btnSize: 'sm'}" name="staffSex" id="staffSex">
+                                <option value="F">女</option>
+                                <option value="M">男</option>
+                            </select>
+
                         </div>
                     </div>
 
                     <div class="am-form-group">
-                        <label for="user-QQ" class="am-u-sm-3 am-form-label">QQ</label>
+                        <label for="staffMobile" class="am-u-sm-3 am-form-label">手机</label>
 
                         <div class="am-u-sm-9">
-                            <input type="email" id="user-QQ" placeholder="输入你的QQ号码">
+                            <input type="text" id="staffMobile" name="staffMobile" placeholder="输入你的电话号码 / Telephone" value="${loanStaff.staffMobile}">
                         </div>
                     </div>
 
                     <div class="am-form-group">
-                        <label for="user-weibo" class="am-u-sm-3 am-form-label">微博 / Twitter</label>
+                        <label for="staffEmail" class="am-u-sm-3 am-form-label">电子邮件</label>
 
                         <div class="am-u-sm-9">
-                            <input type="email" id="user-weibo" placeholder="输入你的微博 / Twitter">
+                            <input type="email" id="staffEmail" name="staffEmail" name="staffEmail" placeholder="输入你的电子邮件 / Email" value="${loanStaff.staffEmail}">
+
                         </div>
                     </div>
 
                     <div class="am-form-group">
-                        <label for="user-intro" class="am-u-sm-3 am-form-label">简介 / Intro</label>
+                        <label for="staffDesc" class="am-u-sm-3 am-form-label">简介 / Intro</label>
 
                         <div class="am-u-sm-9">
-                            <textarea class="" rows="5" id="user-intro" placeholder="输入个人简介"></textarea>
+                            <textarea class="" rows="5" id="staffDesc" name="staffDesc" placeholder="输入个人简介">${loanStaff.staffDesc}</textarea>
                             <small>250字以内写出你的一生...</small>
                         </div>
                     </div>
@@ -154,6 +158,31 @@
 </div>
 
 <jsp:include page="footer.jsp"/>
+<script type="text/javascript" src="/js/ydzc-validate.js?v=0.1.6"></script>
+<script type="text/javascript" src="/js/ydzc.js?v=0.1.6"></script>
+<script type="text/javascript" src="/js/validate-form.js?v=0.1.6"></script>
 
+<script type="text/javascript">
+    setSelection('staffSex', '${loanStaff.staffSex}');
+
+    var v = create_form_validate();
+
+    function submitStaff() {
+        $('#form_staff').attr("action", '/admin/updateStaff');
+        v.submit('#form_staff');
+    }
+
+    function checkStaff(id){
+        var json = callAjax('/admin/ajax/checkStaff', {'name': $('#' + id).val()})
+        if (json.resultCode == 'OK'){
+            showErrorMsg(id, "工号已经存在");
+            return false;
+        }
+        else{
+            hideErrorMsg(id);
+            return true;
+        }
+    }
+</script>
 </body>
 </html>
