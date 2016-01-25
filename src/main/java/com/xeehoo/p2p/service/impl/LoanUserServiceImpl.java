@@ -71,18 +71,29 @@ public class LoanUserServiceImpl implements LoanUserService {
     @Override
     public boolean changeLoginPwd(Integer userId, String oldLoginPwd, String newLoginPwd) {
         LoanUser userInfo = userMapper.getUser(userId);
-        if (userInfo != null){ // 用户不存在
-            if (userInfo.isEqualPwd(oldLoginPwd)){
-                String newEncryptLoginPwd = userInfo.encryptPwd(newLoginPwd);
-                userMapper.updateUserLoginPwd(userId, newEncryptLoginPwd);
-
-                return true;
-            }
-            else {
-                return false;
-            }
+        if (userInfo == null) { // 用户不存在
+            return false;
         }
-        return false;
+
+        int rows = userMapper.updateUserLoginPwd(userId, userInfo.encryptPwd(oldLoginPwd), userInfo.encryptPwd(newLoginPwd));
+        return rows > 0;
+    }
+
+    @Override
+    public boolean changePayPwd(Integer userId, String oldPayPwd, String newPayPwd) {
+        LoanUser user = userMapper.getUser(userId);
+        if (user == null || !user.isEqualPayPwd(oldPayPwd)){
+            return false;
+        }
+
+        int rows = userMapper.changeUserPayPwd(userId, user.encryptPwd(oldPayPwd), user.encryptPwd(newPayPwd));
+        return rows > 0;
+    }
+
+    @Override
+    public boolean updatePayPwd(Integer userId, String payPwd) {
+        int rows = userMapper.updateUserPayPwd(userId, payPwd);
+        return rows > 0;
     }
 
     @Override

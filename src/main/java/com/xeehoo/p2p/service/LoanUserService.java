@@ -41,6 +41,25 @@ public interface LoanUserService {
     public boolean changeLoginPwd(Integer UserID, String oldLoginPwd, String newLoginPwd);
 
     /**
+     * 更改支付密码
+     *
+     * @param userId
+     * @param oldPayPwd
+     * @param newPayPwd
+     * @return
+     */
+    public boolean changePayPwd(Integer userId, String oldPayPwd, String newPayPwd);
+
+    /**
+     * 设置支付密码
+     *
+     * @param userId
+     * @param payPwd
+     * @return
+     */
+    public boolean updatePayPwd(Integer userId, String payPwd);
+
+    /**
      * 根据（登录名、手机号）检查用户是否存在
      *
      * @param name
@@ -48,7 +67,6 @@ public interface LoanUserService {
      * @return
      */
     public boolean checkUser(String checkType, String name);
-
 
     /**
      * 获取用户资产状况

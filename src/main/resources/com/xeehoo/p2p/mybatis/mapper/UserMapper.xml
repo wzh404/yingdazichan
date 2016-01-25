@@ -10,6 +10,7 @@
         <result property="loginName" column="login_name"/>
         <result property="realName" column="real_name"/>
         <result property="loginPwd" column="login_pwd"/>
+        <result property="payPwd" column="pay_pwd"/>
         <result property="userStatus" column="user_status"/>
         <result property="registerIP" column="register_ip"/>
         <result property="registerTime" column="register_time"/>
@@ -60,6 +61,7 @@
         SELECT
           user_id,
           login_pwd,
+          pay_pwd,
           escrow_account,
           user_status,
           register_time,
@@ -123,9 +125,23 @@
           login_pwd = #{loginPwd}
         WHERE
           user_id = #{userId}
+        AND
+          login_pwd = #{oldLoginPwd}
     </update>
 
     <!-- 修改用户支付密码 -->
+    <update id="changeUserPayPwd">
+        UPDATE
+          t_loan_userinfo
+        SET
+          pay_pwd = #{payPwd}
+        WHERE
+          user_id = #{userId}
+        AND
+          pay_pwd = #{oldPayPwd}
+    </update>
+
+    <!-- 设置用户支付密码 -->
     <update id="updateUserPayPwd">
         UPDATE
           t_loan_userinfo

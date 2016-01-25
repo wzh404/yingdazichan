@@ -284,4 +284,8 @@ public class LoanUser implements Serializable {
     public boolean isEqualPwd(String pwd){
         return encryptPwd(pwd).equalsIgnoreCase(loginPwd);
     }
+
+    public boolean isEqualPayPwd(String pwd){
+        return encryptPwd(pwd).equalsIgnoreCase(payPwd);
+    }
 }
