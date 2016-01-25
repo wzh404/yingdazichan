@@ -33,9 +33,6 @@ public class UserController {
     private LoanUserService userService;
 
     @Autowired
-    private LoanInvestService investService;
-
-    @Autowired
     private TokenService tokenService;
 
     /**
