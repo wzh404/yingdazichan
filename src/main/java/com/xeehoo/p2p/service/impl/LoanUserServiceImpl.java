@@ -75,7 +75,13 @@ public class LoanUserServiceImpl implements LoanUserService {
             return false;
         }
 
-        int rows = userMapper.updateUserLoginPwd(userId, userInfo.encryptPwd(oldLoginPwd), userInfo.encryptPwd(newLoginPwd));
+        int rows = userMapper.changeUserLoginPwd(userId, userInfo.encryptPwd(oldLoginPwd), userInfo.encryptPwd(newLoginPwd));
+        return rows > 0;
+    }
+
+    @Override
+    public boolean updateLoginPwd(Integer userId, String loginPwd) {
+        int rows = userMapper.updateUserLoginPwd(userId, loginPwd);
         return rows > 0;
     }
 

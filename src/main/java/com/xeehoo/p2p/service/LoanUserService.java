@@ -33,12 +33,21 @@ public interface LoanUserService {
     /**
      * 修改密码
      *
-     * @param UserID
+     * @param userId
      * @param oldLoginPwd
      * @param newLoginPwd
      * @return
      */
-    public boolean changeLoginPwd(Integer UserID, String oldLoginPwd, String newLoginPwd);
+    public boolean changeLoginPwd(Integer userId, String oldLoginPwd, String newLoginPwd);
+
+    /**
+     * 设置密码
+     *
+     * @param userId
+     * @param loginPwd
+     * @return
+     */
+    public boolean updateLoginPwd(Integer userId, String loginPwd);
 
     /**
      * 更改支付密码

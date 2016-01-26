@@ -72,7 +72,7 @@ public class LoanUserController {
                                 @RequestParam(value = "vcode", required = true) String valideCode) {
         LoanUser userInfo = new LoanUser();
         userInfo.setLoginName(mobile);
-        userInfo.setLoginPwd(loginPwd);
+        userInfo.setLoginPwd(userInfo.encryptPwd(loginPwd));
         userInfo.setMobile(mobile);
 
         Cache cache = new HttpSessionCache(request.getSession());

@@ -51,7 +51,16 @@ public interface UserMapper {
      * @param userId
      * @return
      */
-    public int updateUserLoginPwd(@Param("userId") Integer userId, @Param("oldLoginPwd")String oldLoginPwd, @Param("loginPwd")String loginPwd);
+    public int changeUserLoginPwd(@Param("userId") Integer userId, @Param("oldLoginPwd")String oldLoginPwd, @Param("loginPwd")String loginPwd);
+
+    /**
+     * 修改登录密码
+     *
+     * @param loginPwd
+     * @param userId
+     * @return
+     */
+    public int updateUserLoginPwd(@Param("userId") Integer userId, @Param("loginPwd")String loginPwd);
 
     /**
      * 修改登录密码

@@ -118,7 +118,7 @@
     </update>
 
     <!-- 修改用户登录密码 -->
-    <update id="updateUserLoginPwd">
+    <update id="changeUserLoginPwd">
         UPDATE
           t_loan_userinfo
         SET
@@ -127,6 +127,16 @@
           user_id = #{userId}
         AND
           login_pwd = #{oldLoginPwd}
+    </update>
+
+    <!-- 设置用户登录密码 -->
+    <update id="updateUserLoginPwd">
+        UPDATE
+          t_loan_userinfo
+        SET
+          login_pwd = #{loginPwd}
+        WHERE
+          user_id = #{userId}
     </update>
 
     <!-- 修改用户支付密码 -->
