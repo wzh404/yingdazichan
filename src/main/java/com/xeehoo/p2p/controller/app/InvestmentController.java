@@ -5,6 +5,7 @@ import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.service.TokenService;
 import com.xeehoo.p2p.util.CommonUtil;
+import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.TokenUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -87,5 +90,18 @@ public class InvestmentController {
             e.printStackTrace();
             return CommonUtil.generateJsonMap("ER99", "系统例外");
         }
+    }
+
+    /**
+     * 个人投资产品
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/app/product", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public List<Map<String, Object>> invest(HttpServletRequest request,
+                                      @RequestParam(value = "max_product_id", required = true) Integer productId) {
+        return investService.getAppProduct(productId);
     }
 }

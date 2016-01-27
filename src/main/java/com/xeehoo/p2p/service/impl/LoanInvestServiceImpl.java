@@ -131,6 +131,11 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     }
 
     @Override
+    public List<Map<String, Object>> getAppProduct(Integer productId) {
+        return productMapper.getAppProduct(productId);
+    }
+
+    @Override
     public List<LoanProduct> getInvestProductPager(int page, int pageSize, Map<String, Object> cond) {
         int offset = pageSize * page;
 

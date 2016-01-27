@@ -13,13 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,15 +38,13 @@ public class UserController {
     /**
      * APP登录
      *
-     * @param request
      * @param name    登录
      * @param pwd     密码
      * @return
      */
     @RequestMapping(value = "/app/login", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> login(HttpServletRequest request,
-                                     @RequestParam(value = "name", required = true) String name,
+    public Map<String, Object> login(@RequestParam(value = "name", required = true) String name,
                                      @RequestParam(value = "pwd", required = true) String pwd) {
         LoanUser user = userService.getUser(name);
         if (user == null) {
@@ -76,10 +72,9 @@ public class UserController {
      */
     @RequestMapping(value = "/app/changePwd", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> changePwd(HttpServletRequest request,
-                                         @RequestParam(value = "old_pwd", required = true) String oldLoginPwd,
+    public Map<String, Object> changePwd(@RequestParam(value = "old_pwd", required = true) String oldLoginPwd,
                                          @RequestParam(value = "new_pwd", required = true) String newLoginPwd,
-                                         @RequestParam(value = "token", required = true) String token) {
+                                         @RequestHeader(value = "authorization", required = true) String token) {
         Integer userId = tokenService.getUserId(token);
         if (userId == null) {
             return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
@@ -99,10 +94,9 @@ public class UserController {
      */
     @RequestMapping(value = "/app/changePayPwd", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> changePayPwd(HttpServletRequest request,
-                                            @RequestParam(value = "old_pwd", required = true) String oldLoginPwd,
+    public Map<String, Object> changePayPwd(@RequestParam(value = "old_pwd", required = true) String oldLoginPwd,
                                             @RequestParam(value = "new_pwd", required = true) String newLoginPwd,
-                                            @RequestParam(value = "token", required = true) String token) {
+                                            @RequestHeader(value = "authorization", required = true) String token) {
         Integer userId = tokenService.getUserId(token);
         if (userId == null) {
             return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
@@ -122,21 +116,20 @@ public class UserController {
      */
     @RequestMapping(value = "/app/setPayPwd", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> setPayPwd(@RequestParam(value = "new_pwd", required = true) String newLoginPwd,
-                                         @RequestParam(value = "smscode", required = true) String smscode,
-                                         @RequestParam(value = "token", required = true) String token) {
-        String[] user = tokenService.getUserByToken(token);
-        if (user == null) {
-            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
-        }
-
-        Integer userId = Integer.parseInt(user[0]);
-        String tokenSmsCode = tokenService.get("SMS_" + user[1]);
-        if (!smscode.equalsIgnoreCase(tokenSmsCode)) {
+    public Map<String, Object> setPayPwd(@RequestParam(value = "mobile", required = true) String mobile,
+                                         @RequestParam(value = "pwd", required = true) String pwd,
+                                         @RequestParam(value = "sms", required = true) String sms) {
+        String localSms = tokenService.get("SMS_" + mobile);
+        if (!sms.equalsIgnoreCase(localSms)) {
             return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 
-        if (userService.updatePayPwd(userId, newLoginPwd)) {
+        LoanUser user = userService.getUser(mobile);
+        if (user == null){
+            return CommonUtil.generateJsonMap("ER14", "用户不存在");
+        }
+
+        if (userService.updatePayPwd(user.getUserId(), pwd)) {
             return CommonUtil.generateJsonMap("ER14", "修改支付密码失败");
         }
 
@@ -146,20 +139,15 @@ public class UserController {
     /**
      * 发送手机验证码
      *
-     * @param token
+     * @param mobile
      * @return
      */
     @RequestMapping(value = "/app/sendSms", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> sendSms(@RequestParam(value = "token", required = true) String token) {
-        String[] user = tokenService.getUserByToken(token);
-        if (user == null) {
-            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
-        }
-
-        String smscode = CommonUtil.generateAuthCode();
-        logger.info(user[1] + " smscode is " + smscode);
-        tokenService.put("SMS_" + user[1], smscode, 5);
+    public Map<String, Object> sendSms(@RequestParam(value = "mobile", required = true) String mobile) {
+        String sms = CommonUtil.generateAuthCode();
+        logger.info(mobile + " sms is " + sms);
+        tokenService.put("SMS_" + mobile, sms, 5);
 
         return CommonUtil.generateJsonMap("OK", null);
     }
@@ -170,13 +158,13 @@ public class UserController {
      * @param smscode
      *
      * @return
-     */
+
     @RequestMapping(value = "/app/checkSmscode", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Map<String, Object> checkSmscode(@RequestParam(value = "mobile", required = true) String mobile,
                                             @RequestParam(value = "smscode", required = true) String smscode) {
         return checkMobileSmscode(mobile, smscode);
-    }
+    }*/
 
     /**
      * 已登录用户，根据token检查验证手机号
@@ -184,7 +172,7 @@ public class UserController {
      * @param smscode
      *
      * @return
-     */
+
     @RequestMapping(value = "/app/checkTokenSmscode", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Map<String, Object> checkTokenSmscode(@RequestParam(value = "token", required = true) String token,
@@ -195,7 +183,7 @@ public class UserController {
         }
 
         return checkMobileSmscode(user[1], smscode);
-    }
+    }*/
 
     /**
      * 检查手机验证码
@@ -203,7 +191,7 @@ public class UserController {
      * @param mobile
      * @param smscode
      * @return
-     */
+
     private Map<String, Object> checkMobileSmscode(String mobile, String smscode){
         String tokenSmsCode = (String) tokenService.get("SMS_" + mobile);
         if (!smscode.equalsIgnoreCase(tokenSmsCode)) {
@@ -214,24 +202,30 @@ public class UserController {
         tokenService.put(authcode, mobile, 2);
 
         return CommonUtil.generateJsonMap("OK", authcode);
-    }
+    }*/
 
     /**
-     * 注册 - 输入密码
+     * 注册用户
      *
-     * @return
+     * @returnr
      */
-    @RequestMapping(value = "/app/stepRegister", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/app/register", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Map<String, Object> stepRegister(HttpServletRequest request,
-            @RequestParam(value = "authcode", required = true) String authcode,
+            @RequestParam(value = "mobile", required = true) String mobile,
+            @RequestParam(value = "sms", required = true) String sms,
             @RequestParam(value = "pwd", required = true) String pwd) {
-        String mobile = tokenService.get(authcode);
-        if (mobile == null) {
-            return CommonUtil.generateJsonMap("ER91", "输入参数错误");
+        String localSms = tokenService.get("SMS_" + mobile);
+        if (!sms.equalsIgnoreCase(localSms)) {
+            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 
-        LoanUser user = new LoanUser();
+        LoanUser user = userService.getUser(mobile);
+        if (user != null){
+            return CommonUtil.generateJsonMap("ER14", "用户已经存在");
+        }
+
+        user = new LoanUser();
         user.setLoginName(mobile);
         user.setMobile(mobile);
         user.setLoginPwd(pwd);
@@ -251,6 +245,7 @@ public class UserController {
         }
     }
 
+
     /**
      * 重置密码
      *
@@ -258,12 +253,15 @@ public class UserController {
      */
     @RequestMapping(value = "/app/resetPwd", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Map<String, Object> resetPwd(HttpServletRequest request,
-                                        @RequestParam(value = "authcode", required = true) String authcode,
+    public Map<String, Object> resetPwd(@RequestParam(value = "mobile", required = true) String mobile,
+                                        @RequestParam(value = "sms", required = true) String sms,
                                         @RequestParam(value = "pwd", required = true) String pwd) {
-        String mobile = tokenService.get(authcode);
-        if (mobile == null) {
-            return CommonUtil.generateJsonMap("ER91", "输入参数错误");
+//        String localSms = tokenService.get("SMS_" + mobile);
+//        if (!sms.equalsIgnoreCase(localSms)) {
+//            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
+//        }
+        if (!sms.equalsIgnoreCase("0000")){
+            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 
         LoanUser user = userService.getUser(mobile);

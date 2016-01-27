@@ -43,6 +43,11 @@
         <result property="transferTime" column="transfer_time"/>
     </resultMap>
 
+    <!-- 根据产品ID获取产品信息 -->
+    <select id="getProduct" resultMap="product" parameterType="int">
+        SELECT * FROM t_loan_product WHERE product_id = #{productId}
+    </select>
+
     <sql id="product_pager_where">
         <where>
             <if test="low_rate != null">
@@ -57,13 +62,11 @@
             <if test="type != null">
                 AND product_type = #{type}
             </if>
+            <if test="app != null">
+                AND residual_amount &gt; 100
+            </if>
         </where>
     </sql>
-
-    <!-- 根据产品ID获取产品信息 -->
-    <select id="getProduct" resultMap="product" parameterType="int">
-        SELECT * FROM t_loan_product WHERE product_id = #{productId}
-    </select>
 
     <!-- 分页查询产品信息  -->
     <select id="getProductPager" resultMap="product" parameterType="java.util.Map">
@@ -291,5 +294,28 @@
         SELECT COUNT(*)
         FROM t_loan_user_investment ui
         <include refid="user_invest_where"/>
+    </select>
+
+    <select id="getAppProduct" resultType="java.util.HashMap">
+        SELECT
+            product_id,
+            product_name,
+            product_status,
+            loan_rate,
+            invest_day,
+            total_amount,
+            residual_amount,
+            release_time
+        FROM
+            t_loan_product
+        WHERE
+            product_status = 2
+          AND
+            residual_amount > 100
+          AND
+            product_id > #{productId}
+        ORDER BY
+            product_id DESC
+        LIMIT 30
     </select>
 </mapper>

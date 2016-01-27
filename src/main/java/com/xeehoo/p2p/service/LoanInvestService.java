@@ -3,6 +3,7 @@ package com.xeehoo.p2p.service;
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import com.xeehoo.p2p.util.QueryCondition;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -96,4 +97,11 @@ public interface LoanInvestService {
      */
     public Integer updateProductStatus(Integer productId, Integer productStatus);
 
+    /**
+     * APP产品列表，查询大于productId的产品的30条记录
+     *
+     * @param productId
+     * @return
+     */
+    public List<Map<String, Object>> getAppProduct(Integer productId);
 }

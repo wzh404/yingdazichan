@@ -125,4 +125,13 @@ public interface ProductMapper {
      * @return
      */
     public Integer updateProductStatus(@Param("productId")Integer productId, @Param("productStatus")Integer productStatus);
+
+
+    /**
+     * APP产品列表，查询大于productId的产品的30条记录
+     *
+     * @param productId
+     * @return
+     */
+    public List<Map<String, Object>> getAppProduct(@Param("productId")Integer productId);
 }
