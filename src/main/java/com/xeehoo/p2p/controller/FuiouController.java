@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * Created by WIN10 on 2015/12/5.
  */
-@Controller
+//@Controller
 public class FuiouController {
     private final Logger logger = Logger.getLogger(FuiouController.class);
 

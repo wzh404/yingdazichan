@@ -296,6 +296,7 @@
         <include refid="user_invest_where"/>
     </select>
 
+    <!-- APP 列表在售产品 -->
     <select id="getAppProduct" resultType="java.util.HashMap">
         SELECT
             product_id,
@@ -316,6 +317,27 @@
             product_id > #{productId}
         ORDER BY
             product_id DESC
+        LIMIT 30
+    </select>
+
+    <!-- APP 列表用户投资记录 -->
+    <select id="getAppUserInvestment" resultType="java.util.HashMap">
+        SELECT
+            invest_id,
+            product_id,
+            product_name,
+            invest_amount,
+            invest_income,
+            invest_time,
+            invest_status
+        FROM
+            t_loan_user_investment
+        WHERE
+            user_id = #{user_id}
+          AND
+            invest_id > #{invest_id}
+        ORDER BY
+            invest_id DESC
         LIMIT 30
     </select>
 </mapper>
