@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -41,7 +38,7 @@ public class InvestmentController {
 
 
     /**
-     * 个人投资产品
+     * 投资产品
      *
      * @param request
      * @param amount  投资金额
@@ -93,15 +90,38 @@ public class InvestmentController {
     }
 
     /**
-     * 个人投资产品
+     * 在售产品
      *
      * @param request
      * @return
      */
     @RequestMapping(value = "/app/product", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public List<Map<String, Object>> invest(HttpServletRequest request,
-                                      @RequestParam(value = "max_product_id", required = true) Integer productId) {
-        return investService.getAppProduct(productId);
+    public Map<String, Object> invest(HttpServletRequest request,
+                                      @RequestParam(value = "product_id", required = true) Integer productId) {
+        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+        map.put("data", investService.getAppProduct(productId));
+        return map;
+    }
+
+    /**
+     * 在售产品
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/app/user/investments", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> investments(HttpServletRequest request,
+                                            @RequestParam(value = "invest_id", required = true) Integer investId,
+                                            @RequestHeader(value = "authorization", required = true) String token     ) {
+        Integer userId = tokenService.getUserId(token);
+        if (userId == null) {
+            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
+        }
+
+        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+        map.put("data", investService.getAppUserInvestment(userId, investId));
+        return map;
     }
 }

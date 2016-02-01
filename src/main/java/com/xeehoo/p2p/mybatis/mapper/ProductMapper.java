@@ -134,4 +134,13 @@ public interface ProductMapper {
      * @return
      */
     public List<Map<String, Object>> getAppProduct(@Param("productId")Integer productId);
+
+    /**
+     * 个人理财产品
+     *
+     * @param userId
+     * @param investId
+     * @return
+     */
+    public List<Map<String, Object>> getAppUserInvestment(@Param("userId")Integer userId, @Param("investId")Integer investId);
 }

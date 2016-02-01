@@ -104,4 +104,13 @@ public interface LoanInvestService {
      * @return
      */
     public List<Map<String, Object>> getAppProduct(Integer productId);
+
+    /**
+     * 个人理财产品
+     *
+     * @param userId
+     * @param investId
+     * @return
+     */
+    public List<Map<String, Object>> getAppUserInvestment(Integer userId, Integer investId);
 }

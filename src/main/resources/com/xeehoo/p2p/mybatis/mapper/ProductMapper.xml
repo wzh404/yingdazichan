@@ -333,9 +333,9 @@
         FROM
             t_loan_user_investment
         WHERE
-            user_id = #{user_id}
+            user_id = #{userId}
           AND
-            invest_id > #{invest_id}
+            invest_id > #{investId}
         ORDER BY
             invest_id DESC
         LIMIT 30
