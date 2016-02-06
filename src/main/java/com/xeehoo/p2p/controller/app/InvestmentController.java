@@ -50,9 +50,9 @@ public class InvestmentController {
     @ResponseBody
     public Map<String, Object> invest(HttpServletRequest request,
                                       @RequestParam(value = "amount", required = true) Long amount,
-                                      @RequestParam(value = "product", required = true) Integer productId,
+                                      @RequestParam(value = "product_id", required = true) Integer productId,
                                       @RequestParam(value = "pwd", required = true) String payPwd,
-                                      @RequestParam(value = "token", required = true) String token) {
+                                      @RequestHeader(value = "authorization", required = true) String token) {
         String val = tokenService.get(token);
         if (val == null){
             return CommonUtil.generateJsonMap("ER01", "请重新登录");

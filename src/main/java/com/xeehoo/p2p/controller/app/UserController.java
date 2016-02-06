@@ -61,7 +61,7 @@ public class UserController {
 
         if (user.isEqualPwd(pwd)) {
             String token = TokenUtil.generateAuthorizationToken(name);
-            tokenService.put(token, user.getUserId().toString() + "," + name, 10);
+            tokenService.put(token, user.getUserId().toString() + "," + name, 30);
 
             return CommonUtil.generateJsonMap("OK", token);
         } else {
