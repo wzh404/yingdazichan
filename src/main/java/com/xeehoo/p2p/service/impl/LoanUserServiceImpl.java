@@ -40,6 +40,7 @@ public class LoanUserServiceImpl implements LoanUserService {
         java.util.Date regtime = new java.util.Date(System.currentTimeMillis());
         userInfo.setRegisterTime(regtime);
         userInfo.setLoginPwd(userInfo.encryptPwd(userInfo.getLoginPwd()));
+        userInfo.setPayPwd(userInfo.getLoginPwd());
         userInfo.setUserStatus(Constant.USER_STATUS_NORMAL);
         userMapper.saveUser(userInfo);
 

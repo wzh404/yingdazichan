@@ -106,7 +106,7 @@ public class FuiouController {
     @RequestMapping(value = "/app/fuiou/withdraw", method = RequestMethod.GET)
     public ModelAndView withdraw(HttpServletRequest request,
                                  @RequestParam(value = "token", required = true) String token,
-                                 @RequestParam(value = "amt", required = false) String v6) {
+                                 @RequestParam(value = "amt", required = false) BigDecimal amt) {
         String[] v = tokenService.getUserByToken(token);
         if (v == null) {
             logger.error("token is invalidate.");
@@ -118,7 +118,9 @@ public class FuiouController {
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
         data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
         data.setLogin_id(v[1]);  // 账号
-        data.setAmt(v6);   // 金额
+
+        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
+        data.setAmt(longAmt.toString());   // 金额
         data.setPage_notify_url(environment.getProperty("withdraw_back_url")); //回调地址
         data.setSignature(SecurityUtils.sign(data.getSignature()));
 

@@ -238,6 +238,7 @@ public class UserController {
         user.setLoginName(mobile);
         user.setMobile(mobile);
         user.setLoginPwd(pwd);
+        user.setPayPwd(pwd);
         user.setRegisterTime(new Date());
 
         // 用户状态为正常
@@ -249,7 +250,7 @@ public class UserController {
 
         if (userService.save(user) > 0) {
             return CommonUtil.generateJsonMap("OK", null);
-        }else{
+        } else {
             return CommonUtil.generateJsonMap("ER90", "注册失败");
         }
     }
