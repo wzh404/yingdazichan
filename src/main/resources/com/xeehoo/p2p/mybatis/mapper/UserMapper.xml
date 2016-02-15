@@ -37,6 +37,7 @@
           login_name,
           login_pwd,
           mobile,
+          invite_code,
           register_time,
           register_ip,
           user_status
@@ -45,6 +46,7 @@
           #{loginName},
           #{loginPwd},
           #{mobile},
+          #{inviteCode},
           #{registerTime},
           #{registerIP},
           #{userStatus}
