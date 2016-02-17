@@ -62,8 +62,14 @@ public class UserController {
         if (user.isEqualPwd(pwd)) {
             String token = TokenUtil.generateAuthorizationToken(name);
             tokenService.put(token, user.getUserId().toString() + "," + name, 30);
-
-            return CommonUtil.generateJsonMap("OK", token);
+            Map<String, Object> map = CommonUtil.generateJsonMap("OK", token);
+            if (StringUtils.isEmpty(user.getEscrowAccount())){
+                map.put("account", false);
+            }
+            else{
+                map.put("account", true);
+            }
+            return map;
         } else {
             return CommonUtil.generateJsonMap("ER11", "密码不正确");
         }

@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -143,11 +144,106 @@ public class FuiouController {
             return null;
         }
         logger.info("mobile is " + v[1]);
+        return bal(v[1]);
+//        QueryBalanceReqData data = new QueryBalanceReqData();
+//        data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
+//        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+//        data.setCust_no(v[1]);  // 用户ID
+//        data.setMchnt_txn_dt(getCurrentDate()); //交易日期
+//
+//        QueryBalanceRspData rsp = null;
+//        try {
+//            rsp = FuiouService.balanceAction(data);
+//            logger.info(rsp.toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//
+//            return CommonUtil.generateJsonMap("EX99", "查询失败");
+//        }
+//
+//        if ("0000".equalsIgnoreCase(rsp.getResp_code())) {
+//            Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+//            QueryBalanceResultData resultData = rsp.getResults().get(0);
+//
+//            map.put("ca", resultData.getCa_balance());
+//            map.put("cf", resultData.getCf_balance());
+//            map.put("ct", resultData.getCt_balance());
+//            map.put("cu", resultData.getCu_balance());
+//
+//            return map;
+//
+//        } else {
+//            return CommonUtil.generateJsonMap("EX20", rsp.getResp_code());
+//        }
+    }
 
+    /**
+     * 3. 查询用户信息
+     *
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/app/fuiou/user", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> queryUser(@RequestHeader(value = "authorization", required = true) String token) {
+        String[] v = tokenService.getUserByToken(token);
+        if (v == null) {
+            logger.error("token is invalidate.");
+            return null;
+        }
+
+        logger.info("mobile is " + v[1]);
+
+        QueryUserInfsReqData data = new QueryUserInfsReqData();
+        data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
+        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
+        data.setMchnt_txn_dt(getCurrentDate()); //交易日期
+        data.setUser_ids(v[1]);  // 用户ID
+
+        try {
+            QueryUserInfsRspData rspData = FuiouService.queryUserInfs(data);
+
+            if ("0000".equalsIgnoreCase(rspData.getResp_code())){
+                String custName = rspData.getResults().get(0).getCust_nm();
+                if (StringUtils.isEmpty(custName)){
+                    return CommonUtil.generateJsonMap("ER31", rspData.getResp_code());
+                }
+                Map<String, Object> map = bal(v[1]);
+                map.put("name", custName);
+
+                return map;
+            }
+            else{
+                return CommonUtil.generateJsonMap("ER30", rspData.getResp_code());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonUtil.generateJsonMap("EX99", "查询失败");
+        }
+    }
+
+    /**
+     * 获取当前日期yyyymmdd
+     *
+     * @return
+     */
+    private String getCurrentDate() {
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(dt);
+    }
+
+    /**
+     * 查询用户账户余额
+     *
+     * @param mobile
+     * @return
+     */
+    private Map<String, Object> bal(String mobile){
         QueryBalanceReqData data = new QueryBalanceReqData();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
         data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
-        data.setCust_no(v[1]);  // 用户ID
+        data.setCust_no(mobile);  // 用户ID
         data.setMchnt_txn_dt(getCurrentDate()); //交易日期
 
         QueryBalanceRspData rsp = null;
@@ -172,54 +268,7 @@ public class FuiouController {
             return map;
 
         } else {
-            return CommonUtil.generateJsonMap("EX20", rsp.getResp_code());
+            return CommonUtil.generateJsonMap("ER20", rsp.getResp_code());
         }
-    }
-
-    /**
-     * 3. 查询用户信息
-     *
-     * @param token
-     * @return
-     */
-    @RequestMapping(value = "/app/fuiou/user", method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String, Object> queryUser(@RequestHeader(value = "authorization", required = true) String token) {
-        String[] v = tokenService.getUserByToken(token);
-        if (v == null) {
-            logger.error("token is invalidate.");
-            return null;
-        }
-
-        logger.info("mobile is " + v[1]);
-        QueryUserInfsReqData data = new QueryUserInfsReqData();
-        data.setMchnt_cd(environment.getProperty("mchnt_cd")); //商户号
-        data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); //流水号
-        data.setMchnt_txn_dt(getCurrentDate()); //交易日期
-        data.setUser_ids(v[1]);  // 用户ID
-
-        try {
-            QueryUserInfsRspData rspData = FuiouService.queryUserInfs(data);
-            if ("0000".equalsIgnoreCase(rspData.getResp_code())){
-                return CommonUtil.generateJsonMap("OK", null);
-            }
-            else{
-                return CommonUtil.generateJsonMap("OK", rspData.getResp_code());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonUtil.generateJsonMap("EX99", "查询失败");
-        }
-    }
-
-    /**
-     * 获取当前日期yyyymmdd
-     *
-     * @return
-     */
-    private String getCurrentDate() {
-        Date dt = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        return sdf.format(dt);
     }
 }
