@@ -35,22 +35,40 @@ public class LoanProduct {
     private Integer staffId;  //发布人
     private Integer productStatus;  //产品状态 1 录入  2 发布  3 满标结算
 
+    private String investDayValue;
+    private String investDayUnitName;
+    private String investDayUnit;
+    private String investDayName;
 
-    public String getInvestDayName(){
-        if (this.investDay == null)
-            return "-";
-
+    public String getInvestDayUnitName(){
         Map<String, String> map = new HashMap<String, String>(4);
         map.put("D", "天");
         map.put("W", "周");
         map.put("M", "个月");
         map.put("Y", "年");
 
-        String oper = this.investDay.substring(this.investDay.length() - 1);
-        String num = this.investDay.substring(0, this.investDay.length() - 1);
-
-        return num + map.get(oper);
+        String unit = getInvestDayUnit();
+        return map.get(unit);
     }
+
+    public String getInvestDayValue(){
+        return investDay.substring(0, this.investDay.length() - 1);
+    }
+
+    public String getInvestDayUnit(){
+        return  investDay.substring(this.investDay.length() - 1);
+    }
+
+    public String getInvestDayName(){
+        if (this.investDay == null)
+            return "-";
+
+        String unitName = getInvestDayUnitName(); // this.investDay.substring(this.investDay.length() - 1);
+        String val = getInvestDayValue(); //this.investDay.substring(0, this.investDay.length() - 1);
+
+        return val + unitName;
+    }
+
     /**
      * 检查产品状态是否为s
      *
