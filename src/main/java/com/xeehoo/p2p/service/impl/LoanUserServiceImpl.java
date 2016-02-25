@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 /**
@@ -42,6 +44,7 @@ public class LoanUserServiceImpl implements LoanUserService {
         userInfo.setLoginPwd(userInfo.encryptPwd(userInfo.getLoginPwd()));
         userInfo.setUserStatus(Constant.USER_STATUS_NORMAL);
         userMapper.saveUser(userInfo);
+
 
         return userInfo.getUserId();
     }
