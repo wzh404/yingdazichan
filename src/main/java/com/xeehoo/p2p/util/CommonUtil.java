@@ -6,12 +6,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.security.SecureRandom;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by wangzunhui on 2015/9/28.
@@ -193,4 +192,21 @@ public class CommonUtil {
         return sdf.format(dt);
     }
 
+    /**
+     *
+     * @return
+     */
+    public static String tomorrow(){
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(new Date());
+        gc.add(GregorianCalendar.DATE, 1);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return sdf.format(gc.getTime());
+    }
+
+    public static String getMoney(BigDecimal money){
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CHINA);
+        return format.format(money);
+    }
 }

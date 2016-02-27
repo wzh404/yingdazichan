@@ -62,8 +62,14 @@ public class UserController {
         if (user.isEqualPwd(pwd)) {
             String token = TokenUtil.generateAuthorizationToken(name);
             tokenService.put(token, user.getUserId().toString() + "," + name, 30);
-
-            return CommonUtil.generateJsonMap("OK", token);
+            Map<String, Object> map = CommonUtil.generateJsonMap("OK", token);
+            if (StringUtils.isEmpty(user.getEscrowAccount())){
+                map.put("account", false);
+            }
+            else{
+                map.put("account", true);
+            }
+            return map;
         } else {
             return CommonUtil.generateJsonMap("ER11", "密码不正确");
         }
@@ -124,8 +130,12 @@ public class UserController {
     public Map<String, Object> setPayPwd(@RequestParam(value = "mobile", required = true) String mobile,
                                          @RequestParam(value = "pwd", required = true) String pwd,
                                          @RequestParam(value = "sms", required = true) String sms) {
-        String localSms = tokenService.get("SMS_" + mobile);
-        if (!sms.equalsIgnoreCase(localSms)) {
+//        String localSms = tokenService.get("SMS_" + mobile);
+//        if (!sms.equalsIgnoreCase(localSms)) {
+//            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
+//        }
+
+        if (!sms.equalsIgnoreCase("000000")){
             return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 
@@ -210,6 +220,24 @@ public class UserController {
     }*/
 
     /**
+     * 检查邀请码
+     *
+     * @returnr
+     */
+    @RequestMapping(value = "/app/mobile", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> checkInviteCode(@RequestParam(value = "mobile", required = true) String mobile
+                                            ){
+        LoanUser user = userService.getUser(mobile);
+        if (user == null){
+            return CommonUtil.generateJsonMap("ER18", "邀请码不正确");
+        }
+
+        return CommonUtil.generateJsonMap("OK", null);
+    }
+
+
+    /**
      * 注册用户
      *
      * @returnr
@@ -219,17 +247,23 @@ public class UserController {
     public Map<String, Object> stepRegister(HttpServletRequest request,
             @RequestParam(value = "mobile", required = true) String mobile,
             @RequestParam(value = "sms", required = true) String sms,
+            @RequestParam(value = "invite", required = true) String invite,
             @RequestParam(value = "pwd", required = true) String pwd) {
 //        String localSms = tokenService.get("SMS_" + mobile);
 //        if (!sms.equalsIgnoreCase(localSms)) {
 //            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
 //        }
 
-        if (!sms.equalsIgnoreCase("0000")){
+        if (!sms.equalsIgnoreCase("000000")){
             return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 
-        LoanUser user = userService.getUser(mobile);
+        LoanUser user = userService.getUser(invite);
+        if (user == null){
+            return CommonUtil.generateJsonMap("ER18", "邀请码不正确");
+        }
+
+        user = userService.getUser(mobile);
         if (user != null){
             return CommonUtil.generateJsonMap("ER14", "用户已经存在");
         }
@@ -240,6 +274,7 @@ public class UserController {
         user.setLoginPwd(pwd);
         user.setPayPwd(pwd);
         user.setRegisterTime(new Date());
+        user.setInviteCode(invite);
 
         // 用户状态为正常
         user.setUserStatus(Constant.USER_STATUS_NORMAL);
@@ -270,7 +305,7 @@ public class UserController {
 //        if (!sms.equalsIgnoreCase(localSms)) {
 //            return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
 //        }
-        if (!sms.equalsIgnoreCase("0000")){
+        if (!sms.equalsIgnoreCase("000000")){
             return CommonUtil.generateJsonMap("ER91", "输入验证码错误");
         }
 

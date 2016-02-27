@@ -38,6 +38,7 @@
           login_pwd,
           pay_pwd,
           mobile,
+          invite_code,
           register_time,
           register_ip,
           user_status
@@ -47,6 +48,7 @@
           #{loginPwd},
           #{payPwd},
           #{mobile},
+          #{inviteCode},
           #{registerTime},
           #{registerIP},
           #{userStatus}

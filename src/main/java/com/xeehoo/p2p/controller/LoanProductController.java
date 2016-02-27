@@ -121,6 +121,13 @@ public class LoanProductController {
         return mav;
     }
 
+    /**
+     * 产品详情
+     *
+     * @param request
+     * @param productId
+     * @return
+     */
     @RequestMapping(value="/admin/releaseProduct")
     @Permission("0201")
     public ModelAndView releaseProduct(HttpServletRequest request,
@@ -148,6 +155,14 @@ public class LoanProductController {
         return mav;
     }
 
+    /**
+     * 录入产品
+     *
+     * @param request
+     * @param attr
+     * @param product
+     * @return
+     */
     @RequestMapping(value="/admin/saveProduct")
     @Permission("0201")
     public ModelAndView saveProduct(HttpServletRequest request,
@@ -165,6 +180,12 @@ public class LoanProductController {
         return new ModelAndView("redirect:/admin/releaseProduct");
     }
 
+    /**
+     * 产品结算
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value="/admin/settleProduct")
     @Permission("0201")
     public ModelAndView settleProduct(HttpServletRequest request){
@@ -174,6 +195,12 @@ public class LoanProductController {
         return mav;
     }
 
+    /**
+     * 发布产品
+     *
+     * @param productId
+     * @return
+     */
     @RequestMapping(value="/admin/changeProductToRelease")
     @Permission("0201")
     @ResponseBody

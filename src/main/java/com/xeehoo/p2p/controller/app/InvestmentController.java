@@ -1,5 +1,6 @@
 package com.xeehoo.p2p.controller.app;
 
+import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanUser;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanUserService;
@@ -13,8 +14,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,12 +75,13 @@ public class InvestmentController {
         if (StringUtils.isEmpty(user.getPayPwd())){
             return CommonUtil.generateJsonMap("ER12", "没有设置支付密码");
         }
+
         if (!user.isEqualPayPwd(payPwd)){
             return CommonUtil.generateJsonMap("ER11", "支付密码不正确");
         }
 
         try {
-            Integer result = investService.updateProductUserAmount(productId, userId, v[1], amount);
+            Integer result = investService.updateProductUserAmount(productId, userId, v[1], amount * 100);
             if (result > 0) {
                 return CommonUtil.generateJsonMap("OK", null);
             } else {
@@ -102,6 +106,31 @@ public class InvestmentController {
         Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
         map.put("data", investService.getAppProduct(productId));
         return map;
+    }
+
+    @RequestMapping(value = "/app/product/details", method = {RequestMethod.GET})
+    public ModelAndView invest(@RequestParam(value = "product_id", required = true) Integer productId) {
+        LoanProduct product = investService.getProduct(productId);
+        if (product == null){
+            return new ModelAndView("/app/error");
+        }
+
+        Map<String, String> map = new HashMap<String, String>();
+        Integer progress = product.getResidualAmount()
+                .divide(product.getTotalAmount(), 2, BigDecimal.ROUND_DOWN)
+                .multiply(new BigDecimal(100))
+                .intValue();
+
+        String amt = CommonUtil.getMoney(product.getTotalAmount());
+
+        amt = amt.substring(1, amt.indexOf("."));
+        map.put("totalAmount", amt);
+        map.put("startDay", CommonUtil.tomorrow());
+        map.put("progress", progress.toString());
+        map.put("investDayUnitName", product.getInvestDayUnitName());
+        map.put("investDayValue", product.getInvestDayValue());
+
+        return new ModelAndView("/app/product", map);
     }
 
     /**

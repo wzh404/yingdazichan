@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 /**
@@ -43,6 +45,7 @@ public class LoanUserServiceImpl implements LoanUserService {
         userInfo.setPayPwd(userInfo.getLoginPwd());
         userInfo.setUserStatus(Constant.USER_STATUS_NORMAL);
         userMapper.saveUser(userInfo);
+
 
         return userInfo.getUserId();
     }
@@ -82,7 +85,12 @@ public class LoanUserServiceImpl implements LoanUserService {
 
     @Override
     public boolean updateLoginPwd(Integer userId, String loginPwd) {
-        int rows = userMapper.updateUserLoginPwd(userId, loginPwd);
+        LoanUser user = userMapper.getUser(userId);
+        if (user == null){
+            return false;
+        }
+
+        int rows = userMapper.updateUserLoginPwd(userId, user.encryptPwd(loginPwd));
         return rows > 0;
     }
 
@@ -99,7 +107,12 @@ public class LoanUserServiceImpl implements LoanUserService {
 
     @Override
     public boolean updatePayPwd(Integer userId, String payPwd) {
-        int rows = userMapper.updateUserPayPwd(userId, payPwd);
+        LoanUser user = userMapper.getUser(userId);
+        if (user == null){
+            return false;
+        }
+
+        int rows = userMapper.updateUserPayPwd(userId, user.encryptPwd(payPwd));
         return rows > 0;
     }
 
