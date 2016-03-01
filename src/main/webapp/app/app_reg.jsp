@@ -11,10 +11,10 @@
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>沃易付统一支付网关</title>
-    <meta name="description" content="中国联通第三方支付平台" />
+    <title>第三方托管账户</title>
+    <meta name="description" content="第三方托管账户" />
     <meta name="keywords"
-          content="网上购物-网上支付-安全支付-安全购物-购物，安全-支付-联通支付,在线-付款,收款-网上,贸易-网上贸易" />
+          content="" />
 
     <style type="text/css">
         #loader_container {
@@ -60,7 +60,7 @@
     </style>
     <script type="text/javascript">
         function doPay(){
-            document.payR.payBtn.click();
+            document.getElementById("pay_form").submit();
         }
     </script>
 </head>
@@ -76,16 +76,11 @@
         </div>
     </div>
 </div>
-<form name="payR" method="post" action="http://www-1.fuiou.com:9057/jzh/app/${action}.action" >
+<form id="pay_form" method="post" action="http://www-1.fuiou.com:9057/jzh/app/${action}.action" >
     <input type="hidden" name="mchnt_cd" value="${data.mchnt_cd}" >
     <input type="hidden" name="mchnt_txn_ssn" value="${data.mchnt_txn_ssn}" >
     <input type="hidden" name="mobile_no" value="${data.mobile_no}" >
     <input type="hidden" name="signature" value="${data.signature}" >
-
-    <input type="submit" name="payBtn" value="提交" >
-    <p>
-        &nbsp;
-    </p>
 </form>
 </body>
 </html>

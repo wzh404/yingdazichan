@@ -73,7 +73,7 @@ public class FuiouController {
     @RequestMapping(value = "/app/fuiou/recharge", method = RequestMethod.GET)
     public ModelAndView bankRecharge(HttpServletRequest request,
                                      @RequestParam(value = "token", required = true) String token,
-                                     @RequestParam(value = "amt", required = true) BigDecimal amt) {
+                                     @RequestParam(value = "amt", required = true) String amt) {
         String[] v = tokenService.getUserByToken(token);
         if (v == null) {
             logger.error("token is invalidate.");
@@ -86,8 +86,8 @@ public class FuiouController {
         data.setMchnt_txn_ssn(CommonUtil.getMchntTxnSsn()); // 流水号
         data.setLogin_id(v[1]);  // 账号
 
-        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
-        data.setAmt(longAmt.toString());   // 金额
+//        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
+        data.setAmt(amt);   // 金额
         data.setPage_notify_url(environment.getProperty("recharge_back_url")); //回调地址
 
         data.setSignature(SecurityUtils.sign(data.getSignature()));

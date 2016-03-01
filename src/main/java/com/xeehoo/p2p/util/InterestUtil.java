@@ -123,6 +123,6 @@ public class InterestUtil {
      * @return
      */
     public static BigDecimal calculateInterest(BigDecimal amount, BigDecimal rate, long days){
-        return amount.multiply(rate).multiply(new BigDecimal(days / 360.0 / 100.0));
+        return amount.multiply(rate).multiply(new BigDecimal(days / 360.0 / 100.0)).setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
 }

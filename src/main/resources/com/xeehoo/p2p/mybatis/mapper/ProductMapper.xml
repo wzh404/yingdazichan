@@ -112,6 +112,18 @@
         WHERE product_id = #{productId}
     </update>
 
+    <!-- 修改产品状态 -->
+    <update id="updateProductStatusAndDate">
+        UPDATE
+          t_loan_product
+        SET
+          invest_start_date = #{investStartDate},
+          invest_close_date = #{investCloseDate},
+          product_status = #{productStatus}
+        WHERE
+          product_id = #{productId}
+    </update>
+
     <!-- 修改产品审核状态 -->
     <update id="updateProductCheckStatus">
         UPDATE t_loan_product

@@ -5,6 +5,7 @@ import com.xeehoo.p2p.util.LoanPagedListHolder;
 import com.xeehoo.p2p.util.QueryCondition;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -96,6 +97,18 @@ public interface LoanInvestService {
      * @return
      */
     public Integer updateProductStatus(Integer productId, Integer productStatus);
+
+
+    /**
+     * 发布产品
+     *
+     * @param productId
+     * @param productStatus
+     * @param investStartDate
+     * @param investCloseDate
+     * @return
+     */
+    public Integer updateProductStatusAndDate(Integer productId, Integer productStatus, Date investStartDate, Date investCloseDate);
 
     /**
      * APP产品列表，查询大于productId的产品的30条记录

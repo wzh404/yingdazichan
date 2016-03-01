@@ -80,6 +80,7 @@ public class InvestmentController {
             return CommonUtil.generateJsonMap("ER11", "支付密码不正确");
         }
 
+        logger.info("user is " + userId + " - mobile is " + v[1]);
         try {
             Integer result = investService.updateProductUserAmount(productId, userId, v[1], amount * 100);
             if (result > 0) {

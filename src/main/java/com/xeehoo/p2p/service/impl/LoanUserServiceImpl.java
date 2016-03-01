@@ -168,6 +168,7 @@ public class LoanUserServiceImpl implements LoanUserService {
         pagedListHolder.setTotalSize(userMapper.getTotalUser(cond));
         pagedListHolder.setMaxLinkedPages(Constant.PAGE_MAX_LINKED_PAGES);
 
+
         return pagedListHolder;
     }
 }
