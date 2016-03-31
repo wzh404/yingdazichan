@@ -313,7 +313,7 @@ public class UserController {
             return CommonUtil.generateJsonMap("ER14", "用户不存在");
         }
 
-        if (userService.updateLoginPwd(user.getUserId(), user.encryptPwd(pwd))){
+        if (userService.updateLoginPwd(user.getUserId(), pwd)){
             return CommonUtil.generateJsonMap("OK", null);
         }
         else{

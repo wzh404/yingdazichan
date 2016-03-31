@@ -318,7 +318,9 @@
             invest_day,
             total_amount,
             residual_amount,
-            release_time
+            release_time,
+            invest_start_date,
+            invest_close_date
         FROM
             t_loan_product
         WHERE

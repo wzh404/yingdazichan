@@ -135,7 +135,8 @@ public class InvestmentController {
     }
 
     /**
-     * 在售产品
+     * 用户投资产品
+     *
      *
      * @param request
      * @return
