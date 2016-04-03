@@ -131,6 +131,11 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     }
 
     @Override
+    public Integer updateProductStatusAndDate(Integer productId, Integer productStatus, Date investStartDate, Date investCloseDate) {
+        return productMapper.updateProductStatusAndDate(productId, productStatus, investStartDate, investCloseDate);
+    }
+
+    @Override
     public List<Map<String, Object>> getAppProduct(Integer productId) {
         return productMapper.getAppProduct(productId);
     }
@@ -250,7 +255,9 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         investment.setInvestStartDate(InterestUtil.tomorrow()); // 计息日期为次日
         investment.setInvestClosingDate(
                 InterestUtil.calculateInvestClosingDate(investment.getInvestStartDate(), product.getInvestDay()));
-        investment.setInvestIncome(new BigDecimal(0.00));
+
+        BigDecimal income = InterestUtil.calculateInterest(amt, product.getLoanRate(), InterestUtil.calculateIntervals(investment.getInvestStartDate(), investment.getInvestClosingDate()));
+        investment.setInvestIncome(income);
         investment.setInvestServiceCharge(new BigDecimal(0.00));
         investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
         String seqno = CommonUtil.getMchntTxnSsn();
@@ -277,7 +284,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
         if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
             productMapper.updateUserInvestmentPay(investment.getInvestId(), resp.getContract_no(), resp.getResp_code());
-        }else{ // 支付失败， 回滚
+        } else { // 支付失败， 回滚
             throw new Exception("pay error"); // database rollback
         }
 

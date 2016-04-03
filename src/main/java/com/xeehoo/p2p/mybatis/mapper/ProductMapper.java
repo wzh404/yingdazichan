@@ -5,6 +5,7 @@ import com.xeehoo.p2p.po.LoanUserInvestment;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -119,12 +120,28 @@ public interface ProductMapper {
     public Integer updateUserInvestmentTransferCode(@Param("investments")List<Map<String, Object>> settles);
 
     /**
+     * 修改产品状态
      *
      * @param productId
      * @param productStatus
      * @return
      */
     public Integer updateProductStatus(@Param("productId")Integer productId, @Param("productStatus")Integer productStatus);
+
+    /**
+     * 发布产品
+     *
+     * @param productId
+     * @param productStatus
+     * @param investStartDate
+     * @param investCloseDate
+     * @return
+     */
+    public Integer updateProductStatusAndDate(
+            @Param("productId")Integer productId,
+            @Param("productStatus")Integer productStatus,
+            @Param("investStartDate")Date investStartDate,
+            @Param("investCloseDate")Date investCloseDate);
 
 
     /**

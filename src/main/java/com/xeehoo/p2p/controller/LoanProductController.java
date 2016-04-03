@@ -205,7 +205,14 @@ public class LoanProductController {
     @Permission("0201")
     @ResponseBody
     public Map<String, Object> changeProductToRelease(@RequestParam(value = "product_id", required = true) Integer productId){
-        Integer updateRows = investService.updateProductStatus(productId, Constant.PRODUCT_STATUS_RELEASE);
+        LoanProduct product = investService.getProduct(productId);
+        if (product == null){
+            return CommonUtil.generateJsonMap("ERROR", "发布失败");
+        }
+
+        Date investStartDate = InterestUtil.tomorrow();
+        Date investCloseDate = InterestUtil.calculateInvestClosingDate(investStartDate, product.getInvestDay());
+        Integer updateRows = investService.updateProductStatusAndDate(productId, Constant.PRODUCT_STATUS_RELEASE, investStartDate, investCloseDate);
         if (updateRows > 0) {
             return CommonUtil.generateJsonMap("OK", null);
         }
