@@ -181,6 +181,25 @@ public class LoanProductController {
     }
 
     /**
+     * 修改产品
+     *
+     * @param request
+     * @param attr
+     * @param product
+     * @return
+     */
+    @RequestMapping(value="/admin/updateProduct")
+    @Permission("0201")
+    public ModelAndView updateProduct(HttpServletRequest request,
+                                    RedirectAttributes attr,
+                                    @ModelAttribute("product")LoanProduct product){
+        investService.updateProduct(product);
+
+        attr.addAttribute("product_id", product.getProductId());
+        return new ModelAndView("redirect:/admin/releaseProduct");
+    }
+
+    /**
      * 产品结算
      *
      * @param request

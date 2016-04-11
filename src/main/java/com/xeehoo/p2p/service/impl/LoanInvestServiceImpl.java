@@ -311,6 +311,11 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     }
 
     @Override
+    public Integer updateProduct(LoanProduct loanProduct) {
+        return productMapper.updateProduct(loanProduct);
+    }
+
+    @Override
     public LoanProduct getProduct(Integer productId) {
         return productMapper.getProduct(productId);
     }

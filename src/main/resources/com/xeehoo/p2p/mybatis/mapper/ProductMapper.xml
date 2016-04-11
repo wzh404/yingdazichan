@@ -192,6 +192,24 @@
         )
     </insert>
 
+    <update id="updateProduct" parameterType="com.xeehoo.p2p.po.LoanProduct">
+        UPDATE t_loan_product
+           SET product_name = #{productName},
+               product_type = #{productType},
+               loan_rate = #{loanRate},
+               invest_day = #{investDay},
+               total_amount = #{totalAmount},
+               product_desc = #{productDesc},
+               income_mode = #{incomeMode},
+               min_amount = #{minAmount},
+               min_add_amount = #{minAddAmount},
+               max_amount = #{maxAmount},
+               loan_purpose = #{loanPurpose},
+               raise_days = #{raiseDays},
+               interest_way = #{interestWay}
+         WHERE product_id = #{productId}
+    </update>
+
     <!-- 用户投资 -->
     <insert id="saveUserInvestment" parameterType="com.xeehoo.p2p.po.LoanUserInvestment">
         <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="investId" >
