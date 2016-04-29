@@ -159,9 +159,16 @@
                                                         class="am-icon-pencil-square-o"></span> 满标
                                                 </button>
                                             </c:if>
+
                                             <c:if test="${product.isInputStatus()}">
                                                 <button class="am-btn  am-btn-xs am-text-danger am-hide-sm-only" onclick="settle(${product.productId});">
                                                     <span class="am-icon-pencil-square-o"></span> 发布
+                                                </button>
+                                            </c:if>
+
+                                            <c:if test="${product.isRelease()}">
+                                                <button class="am-btn  am-btn-xs am-text-danger am-hide-sm-only" onclick="complete(${product.productId});">
+                                                    <span class="am-icon-pencil-square-o"></span> 完成
                                                 </button>
                                             </c:if>
 
@@ -220,10 +227,10 @@
             'method' : 'default',
             'options': [
                 {"name": "全部", "value": "all"},
-                {"name": "未发布", "value": "0"},
-                {"name": "投标中", "value": "1"},
-                {"name": "已满标", "value": "2"},
-                {"name": "已完成", "value": "9"}
+                {"name": "未发布", "value": "1"},
+                {"name": "投标中", "value": "2"},
+                {"name": "已满标", "value": "3"},
+                {"name": "已完成", "value": "5"}
             ]
         },
         'server':{
@@ -291,7 +298,18 @@
             location.reload();
         }
         else{
-            alert('发布失败');
+            alert(json.resultMsg);
+        }
+    }
+
+    function complete(pid){
+        var json = callAjax('/admin/product/status', {'product_id': pid, 'status': 'complete'})
+        if (json.resultCode == 'OK'){
+            alert('状态更新成功');
+            location.reload();
+        }
+        else{
+            alert(json.resultMsg);
         }
     }
 </script>

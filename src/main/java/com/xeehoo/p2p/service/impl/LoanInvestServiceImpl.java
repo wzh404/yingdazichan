@@ -43,9 +43,9 @@ public class LoanInvestServiceImpl implements LoanInvestService {
      * @param outCustNo
      * @return
      */
-    private CommonRspData transferBmu(String outCustNo, String inCustNo, String contractNo, String amt) {
+    private CommonRspData transferBmu(String outCustNo, String inCustNo, String seqno, String contractNo, String amt) {
         TransferBmuReqData data = new TransferBmuReqData();
-        String seqno = CommonUtil.getMchntTxnSsn();
+//        String seqno = CommonUtil.getMchntTxnSsn();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
         data.setMchnt_txn_ssn(seqno); // 流水号
         data.setOut_cust_no(outCustNo);  // 转出账号
@@ -90,36 +90,37 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         }
 
         // 状态用户冻结资金到盈达账户 modify 2016-01-19
-        List<Map<String, Object>> userInvestments = productMapper.getProductInvestments(productId);
-        for (Map<String, Object> map : userInvestments) {
-            String payRespCode = (String) map.get("payrespcode"); // 冻结状态
-            String tranRespCode = (String) map.get("tranrespcode"); // 划拨状态
-            if ("0000".equalsIgnoreCase(payRespCode) && !"0000".equalsIgnoreCase(tranRespCode)) {
-                Integer investId = (Integer) map.get("investid");
-                String contractNo = (String) map.get("contractno");
-                String mobile = (String) map.get("mobile");
-                BigDecimal amt = (BigDecimal) map.get("amount");
-                String amount = (new Long(amt.longValue() * 100)).toString();
-                logger.info(contractNo + " - " + mobile + " - " + amount);
-                CommonRspData rsp = transferBmu(mobile, "user114", contractNo, amount);
-
-                Map<String, Object> settleMap = new HashMap<>();
-                String respCode = rsp.getResp_code();
-                settleMap.put("transferRespCode", respCode);
-                settleMap.put("investId", investId);
-                settleMap.put("transferSeqno", rsp.getMchnt_txn_ssn());
-
-                if (!respCode.equalsIgnoreCase("0000")) {
-                    productStatus = Constant.PRODUCT_STATUS_EXCEPTION;  // 产品未能全部转账成功，产品状态设置为异常，需人为干预。
-                }
-                settles.add(settleMap);
-            }
-        }
-
-        // 根据转账返回结果，修改用户投资转账返回码
-        if (settles.size() > 0) {
-            productMapper.updateUserInvestmentTransferCode(settles);
-        }
+//        List<Map<String, Object>> userInvestments = productMapper.getProductInvestments(productId);
+//        for (Map<String, Object> map : userInvestments) {
+//            String payRespCode = (String) map.get("payrespcode"); // 冻结状态
+//            String tranRespCode = (String) map.get("tranrespcode"); // 划拨状态
+//            if ("0000".equalsIgnoreCase(payRespCode) && !"0000".equalsIgnoreCase(tranRespCode)) {
+//                Integer investId = (Integer) map.get("investid");
+//                String contractNo = (String) map.get("contractno"); // 合同号
+//                String mobile = (String) map.get("mobile");
+//                BigDecimal amt = (BigDecimal) map.get("amount");
+//                String amount = (new Long(amt.longValue() * 100)).toString();
+//                logger.info(contractNo + " - " + mobile + " - " + amount);
+//                String seqno = CommonUtil.getMchntTxnSsn();
+//                CommonRspData rsp = transferBmu(mobile, "user114", seqno, contractNo, amount);
+//
+//                Map<String, Object> settleMap = new HashMap<>();
+//                String respCode = rsp.getResp_code();
+//                settleMap.put("transferRespCode", respCode);
+//                settleMap.put("investId", investId);
+//                settleMap.put("transferSeqno", rsp.getMchnt_txn_ssn());
+//
+//                if (!respCode.equalsIgnoreCase("0000")) {
+//                    productStatus = Constant.PRODUCT_STATUS_EXCEPTION;  // 产品未能全部转账成功，产品状态设置为异常，需人为干预。
+//                }
+//                settles.add(settleMap);
+//            }
+//        }
+//
+//        // 根据转账返回结果15712898321，修改用户投资转账返回码
+//        if (settles.size() > 0) {
+//            productMapper.updateUserInvestmentTransferCode(settles);
+//        }
 
         // 修改产品状态
         productMapper.updateProductStatus(productId, productStatus);
@@ -170,24 +171,24 @@ public class LoanInvestServiceImpl implements LoanInvestService {
      * @param amt
      * @return
      */
-    private PreAuthRspData preAuth(String outCustNo, String inCustNo, String seqno, String amt) {
-        PreAuthReqData data = new PreAuthReqData();
-        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
-        data.setMchnt_txn_ssn(seqno); // 流水号
-        data.setOut_cust_no(outCustNo);  // 出账账号
-        data.setIn_cust_no(inCustNo); // 入账账户
-        data.setAmt(amt); // 冻结金额
-        data.setRem("test"); // 备注
-
-        try {
-            PreAuthRspData rsp = FuiouService.preAuth(data);
-            logger.info(rsp.toString());
-            return rsp;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    private PreAuthRspData preAuth(String outCustNo, String inCustNo, String seqno, String amt) {
+//        PreAuthReqData data = new PreAuthReqData();
+//        data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
+//        data.setMchnt_txn_ssn(seqno); // 流水号
+//        data.setOut_cust_no(outCustNo);  // 出账账号
+//        data.setIn_cust_no(inCustNo); // 入账账户
+//        data.setAmt(amt); // 冻结金额
+//        data.setRem("test"); // 备注
+//
+//        try {
+//            PreAuthRspData rsp = FuiouService.preAuth(data);
+//            logger.info(rsp.toString());
+//            return rsp;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     /**
      * @param investment
@@ -260,9 +261,10 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         investment.setInvestIncome(income);
         investment.setInvestServiceCharge(new BigDecimal(0.00));
         investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
+
         String seqno = CommonUtil.getMchntTxnSsn();
         investment.setPaySeqno(seqno);
-        investment.setPayResponseCode("9999");
+        investment.setPayResponseCode("0000");
         investment.setTransferResponseCode("9999");
         Integer rows = productMapper.saveUserInvestment(investment);
         if (rows <= 0) {
@@ -281,9 +283,9 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         }
 
         // 4. 第三方支付预授权
-        PreAuthRspData resp = preAuth(mobile, "user114", seqno, amount.toString());
+        CommonRspData resp = transferBmu(mobile, "user114", seqno, null, amount.toString());
         if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
-            productMapper.updateUserInvestmentPay(investment.getInvestId(), resp.getContract_no(), resp.getResp_code());
+            productMapper.updateUserInvestmentPay(investment.getInvestId(), "0", resp.getResp_code());
         } else { // 支付失败， 回滚
             throw new Exception("pay error"); // database rollback
         }

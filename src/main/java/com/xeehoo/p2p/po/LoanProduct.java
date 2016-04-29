@@ -98,6 +98,14 @@ public class LoanProduct {
     }
 
     /**
+     * 产品状态是发布状态
+     * @return
+     */
+    public boolean isRelease(){
+        return checkStatus(Constant.PRODUCT_STATUS_RELEASE);
+    }
+
+    /**
      * 产品为录入状态
      *
      * @return

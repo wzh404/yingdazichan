@@ -61,7 +61,7 @@ public class UserController {
 
         if (user.isEqualPwd(pwd)) {
             String token = TokenUtil.generateAuthorizationToken(name);
-            tokenService.put(token, user.getUserId().toString() + "," + name, 30);
+            tokenService.put(token, user.getUserId().toString() + "," + name, 60 * 24 * 7);
             Map<String, Object> map = CommonUtil.generateJsonMap("OK", token);
             if (StringUtils.isEmpty(user.getEscrowAccount())){
                 map.put("account", false);
@@ -317,7 +317,7 @@ public class UserController {
             return CommonUtil.generateJsonMap("OK", null);
         }
         else{
-            return CommonUtil.generateJsonMap("ER90", "重置密码失败");
+            return CommonUtil.generateJsonMap("ER95", "重置密码失败");
         }
     }
 }
