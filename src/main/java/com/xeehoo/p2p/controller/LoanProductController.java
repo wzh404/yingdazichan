@@ -181,6 +181,25 @@ public class LoanProductController {
     }
 
     /**
+     * 修改产品
+     *
+     * @param request
+     * @param attr
+     * @param product
+     * @return
+     */
+    @RequestMapping(value="/admin/updateProduct")
+    @Permission("0201")
+    public ModelAndView updateProduct(HttpServletRequest request,
+                                    RedirectAttributes attr,
+                                    @ModelAttribute("product")LoanProduct product){
+        investService.updateProduct(product);
+
+        attr.addAttribute("product_id", product.getProductId());
+        return new ModelAndView("redirect:/admin/releaseProduct");
+    }
+
+    /**
      * 产品结算
      *
      * @param request
@@ -222,6 +241,38 @@ public class LoanProductController {
     }
 
     /**
+     * 更改产品状态
+     *
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value="/admin/product/status")
+    @Permission("0201")
+    @ResponseBody
+    public Map<String, Object> changeProductStatus(@RequestParam(value = "product_id", required = true) Integer productId,
+                                                   @RequestParam(value = "status", required = true) String status) {
+        LoanProduct product = investService.getProduct(productId);
+        if (product == null) {
+            return CommonUtil.generateJsonMap("ERROR", "非法参数");
+        }
+        Integer productStatus = 0;
+        if (status.equalsIgnoreCase("complete")){
+            productStatus = Constant.PRODUCT_STATUS_COMPLETE;
+        }
+        if (productStatus == 0){
+            return CommonUtil.generateJsonMap("ERROR", "非法产品状态");
+        }
+        Integer updateRows = investService.updateProductStatus(productId, productStatus);
+        if (updateRows > 0) {
+            return CommonUtil.generateJsonMap("OK", null);
+        }
+        else{
+            return CommonUtil.generateJsonMap("ERROR", "修改失败");
+        }
+    }
+
+
+    /**
      * 满标转账
      *
      * @param request
@@ -231,7 +282,7 @@ public class LoanProductController {
     @RequestMapping(value="/admin/settleAccount")
     @Permission("0201")
     public ModelAndView settleAccount(HttpServletRequest request,
-                                      @RequestParam(value = "product_id", required = false) Integer productId){
+                                      @RequestParam(value = "productId", required = false) Integer productId){
         ModelAndView mav = new ModelAndView("redirect:/admin/product");
         investService.settleProductById(productId);
         return mav;

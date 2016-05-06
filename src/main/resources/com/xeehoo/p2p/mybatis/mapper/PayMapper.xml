@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.RepayMapper">
+    <!-- 支付流水 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanPay" id="pay">
+        <id property="payId" column="pay_id"/>
+        <result property="seqno" column="pay_seqno"/>
+        <result property="respCode" column="pay_resp_code"/>
+        <result property="outAccout" column="pay_out_acc"/>
+        <result property="inAccount" column="pay_in_acc"/>
+        <result property="amount" column="pay_amount"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="payType" column="pay_type"/>
+        <result property="serviceId" column="pay_service_id"/>
+    </resultMap>
+
+    <!-- 插入支付流水 -->
+    <insert id="savePay" parameterType="com.xeehoo.p2p.po.LoanPay">
+        <selectKey resultType="java.lang.Integer"  order="AFTER" keyProperty="payId" >
+            SELECT currval('t_loan_pay_pay_id_seq') AS productId
+        </selectKey>
+
+           INSERT INTO t_loan_pay (
+              pay_seqno,
+              pay_resp_code,
+              pay_out_acc,
+              pay_in_acc,
+              pay_amount,
+              pay_time,
+              pay_type,
+              pay_service_id)
+            VALUES (
+              #{seqno},
+              #{respCode},
+              #{outAccout},
+              #{inAccount},
+              #{amount},
+              #{payTime},
+              #{payType},
+              #{serviceId}
+            )
+    </insert>
+</mapper>

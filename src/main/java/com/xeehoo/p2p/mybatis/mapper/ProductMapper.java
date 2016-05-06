@@ -106,6 +106,13 @@ public interface ProductMapper {
 
     /**
      *
+     * @param loanProduct
+     * @return
+     */
+    public Integer updateProduct(LoanProduct loanProduct);
+
+    /**
+     *
      * @param investId
      * @param investStatus
      * @return

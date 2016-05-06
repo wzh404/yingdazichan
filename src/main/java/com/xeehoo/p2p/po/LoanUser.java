@@ -2,6 +2,7 @@ package com.xeehoo.p2p.po;
 
 import com.xeehoo.p2p.util.Constant;
 import com.xeehoo.p2p.util.EncryptUtil;
+import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -13,6 +14,8 @@ import java.util.Date;
  * Created by wangzunhui on 2015/9/28.
  */
 public class LoanUser implements Serializable {
+    private final Logger logger = Logger.getLogger(LoanUser.class);
+
     private Integer userId;
     private String realName;
     private String loginName;
@@ -274,6 +277,7 @@ public class LoanUser implements Serializable {
 
     /** other function **/
     public String encryptPwd(String pwd){
+        logger.info("pwd is " + pwd);
         return EncryptUtil.encryptPwd(pwd, registerTime, registerIP);
     }
 
@@ -282,6 +286,7 @@ public class LoanUser implements Serializable {
     }
 
     public boolean isEqualPwd(String pwd){
+        logger.info(pwd + " - " + encryptPwd(pwd) + " - " +loginPwd);
         return encryptPwd(pwd).equalsIgnoreCase(loginPwd);
     }
 

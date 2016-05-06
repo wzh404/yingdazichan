@@ -11,20 +11,27 @@ public class LoanUserInvestment {
     private Integer investId;
     private Integer productId;
     private String productName;
-    private Integer userId;
-    private Date investStartDate;
-    private Date investClosingDate;
-    private BigDecimal investAmount;
-    private BigDecimal investIncome;
-    private BigDecimal investServiceCharge;
-    private String investStatus;
-    private Date investTime;
+    private Integer userId; // 投资用户
+    private Date investStartDate; // 开始日期
+    private Date investClosingDate; // 结束日期
+    private BigDecimal investAmount; // 本金
+    private BigDecimal investIncome; // 应收利息
+    private BigDecimal investServiceCharge; // 投资手续费
+    private String investStatus; // 投资状态
+    private Date investTime; // 投资时间
+
+    /**
+     * @deprecated
+     */
     private String paySeqno;
     private String payContractNo;
     private String payResponseCode;
     private String transferResponseCode;
     private String transferSeqno;
     private Date transferTime;
+    /*--------------*/
+
+    private String transferStatus; // 是否债权转让
 
     public boolean isDue(){
         return this.investStatus.equalsIgnoreCase("D");

@@ -54,6 +54,14 @@ public interface LoanInvestService {
      */
     public Integer saveProduct(LoanProduct loanProduct);
 
+
+    /**
+     *
+     * @param loanProduct
+     * @return
+     */
+    public Integer updateProduct(LoanProduct loanProduct);
+
     /**
      *
      * @param productId

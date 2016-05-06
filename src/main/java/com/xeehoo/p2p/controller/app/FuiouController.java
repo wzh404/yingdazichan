@@ -6,6 +6,7 @@ import com.fuiou.util.SecurityUtils;
 import com.xeehoo.p2p.po.SessionObject;
 import com.xeehoo.p2p.service.TokenService;
 import com.xeehoo.p2p.util.CommonUtil;
+import com.xeehoo.p2p.util.Constant;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -143,7 +144,8 @@ public class FuiouController {
         String[] v = tokenService.getUserByToken(token);
         if (v == null) {
             logger.error("token is invalidate.");
-            return null;
+            Map<String, Object> map = CommonUtil.generateJsonMap(Constant.RESULT_RETRY_LOGIN, "请重新登录");
+            return map;
         }
         logger.info("mobile is " + v[1]);
         return bal(v[1]);
@@ -191,7 +193,8 @@ public class FuiouController {
         String[] v = tokenService.getUserByToken(token);
         if (v == null) {
             logger.error("token is invalidate.");
-            return null;
+            Map<String, Object> map = CommonUtil.generateJsonMap(Constant.RESULT_RETRY_LOGIN, "请重新登录");
+            return map;
         }
 
         logger.info("mobile is " + v[1]);
