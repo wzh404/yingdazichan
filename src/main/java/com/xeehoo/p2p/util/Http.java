@@ -22,8 +22,11 @@ public class Http {
         List<String> list = new ArrayList<String>();
         try{  
             URL url = new URL(strURL);  
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();  
-            InputStreamReader isr = new InputStreamReader(conn.getInputStream());  
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+			conn.setConnectTimeout(2000);
+			conn.setReadTimeout(2000);
+
+			InputStreamReader isr = new InputStreamReader(conn.getInputStream());
             BufferedReader br = new BufferedReader(isr);  
             int i = 0;
             while((temp = br.readLine()) != null){ 
@@ -47,7 +50,8 @@ public class Http {
             br.close();  
             isr.close();  
         }catch(Exception e){  
-            e.printStackTrace();  
+            e.printStackTrace();
+			return null;
         }  
         return list;
     } 
@@ -127,9 +131,9 @@ public class Http {
 
 	private static Connection getConn() {
 		String driver = "com.mysql.jdbc.Driver";
-		String url = "jdbc:mysql://192.168.10.10:3306/fesco";
-		String username = "neowave";
-		String password = "neowave";
+		String url = "jdbc:mysql://localhost:3306/fesco?useUnicode=true&characterEncoding=UTF-8";
+		String username = "root";
+		String password = "root";
 		Connection conn = null;
 		try {
 			Class.forName(driver); //classLoader,加载对应驱动
@@ -160,7 +164,7 @@ public class Http {
 			pstmt.setString(9, drug.getScdz());
 			pstmt.setString(10, drug.getCplb());
 			pstmt.setString(11, drug.getYpbwm());
-			pstmt.setString(12, drug.getPzrq());
+			pstmt.setString(12, drug.getPzrq().substring(0,10));
 			pstmt.setString(13, drug.getYpbwm());
 
 			i = pstmt.executeUpdate();
@@ -173,9 +177,9 @@ public class Http {
 
     public static void main(String[] args) {
 //    	String path = "D:/a.txt";
-//		File file = new File(path);
+//		File file = new File(path);i=12005 ; i<16000
 		Connection con = getConn();
-    	for(int i=1000 ; i<2000 ; i++){
+    	for(int i=45001 ; i<65000 ; i++){
     		System.out.println("process - " + i);
 //    		 int  i = 2000;
 //	    	String url = "http://app1.sfda.gov.cn/datasearch/face3/content.jsp?tableId=25&tableName=TABLE25&tableView=国产药品&Id="+i ;
@@ -185,8 +189,25 @@ public class Http {
 	    	//错误连接处理
 //	    	String url = "http://app1.sfda.gov.cn/datasearch/face3/content.jsp?tableId=25&tableName=TABLE25&tableView=国产药品&Id=20000" ;
 	    	List<String> list = methodPa(url);
+
+			int cnt = 0;
+			while (list == null && cnt < 3){
+				try {
+					Thread.sleep(1000*5L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				list = methodPa(url);
+				cnt++;
+			}
+			if (list == null){
+				System.out.println("Error： " + i);
+				continue;
+			}
+
 	    	list = convertResult(list);
 			if (list.size() <= 0){
+				System.out.println("Empty： " + i);
 				continue;
 			}
 
@@ -222,7 +243,7 @@ public class Http {
 			}
 			insert(con, drug);
 			try {
-				Thread.sleep(1000*15L);
+				Thread.sleep(1000 * 3L);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
