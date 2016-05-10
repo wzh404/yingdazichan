@@ -2,11 +2,11 @@ package com.xeehoo.p2p.service.impl;
 
 import com.fuiou.data.*;
 import com.fuiou.service.FuiouService;
+import com.xeehoo.p2p.mybatis.mapper.PayMapper;
 import com.xeehoo.p2p.mybatis.mapper.ProductMapper;
 import com.xeehoo.p2p.mybatis.mapper.RepayMapper;
-import com.xeehoo.p2p.po.LoanProduct;
-import com.xeehoo.p2p.po.LoanUserInvestment;
-import com.xeehoo.p2p.po.LoanUserRepay;
+import com.xeehoo.p2p.mybatis.mapper.TransferMapper;
+import com.xeehoo.p2p.po.*;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.util.*;
 import org.apache.log4j.Logger;
@@ -37,37 +37,58 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     @Autowired
     RepayMapper repayMapper;
 
+    @Autowired
+    PayMapper payMapper;
+
+    @Autowired
+    TransferMapper transferMapper;
+
     /**
      * 6.转账(商户与个人之间)
      *
      * @param outCustNo
      * @return
      */
-    private CommonRspData transferBmu(String outCustNo, String inCustNo, String seqno, String contractNo, String amt) {
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public CommonRspData transferBmu(
+            String outCustNo,
+            String inCustNo,
+            String seqno,
+            String contractNo,
+            String amt) throws Exception {
+        LoanPay pay = new LoanPay();
+        pay.setAmount(new BigDecimal(amt).divide(new BigDecimal(100.0)).setScale(2, BigDecimal.ROUND_HALF_UP));
+        pay.setInAccount(inCustNo);
+        pay.setOutAccout(outCustNo);
+        pay.setSeqno(seqno);
+        pay.setRespCode("9999");
+        pay.setPayTime(new Date());
+
+        Integer rows = payMapper.savePay(pay);
+        if (rows <= 0) {
+            return null;
+        }
+
         TransferBmuReqData data = new TransferBmuReqData();
-//        String seqno = CommonUtil.getMchntTxnSsn();
         data.setMchnt_cd(environment.getProperty("mchnt_cd")); // 商户号
         data.setMchnt_txn_ssn(seqno); // 流水号
         data.setOut_cust_no(outCustNo);  // 转出账号
         data.setIn_cust_no(inCustNo);   // 转入账号
-
-        if (!StringUtils.isEmpty(contractNo)) {
+        if (! StringUtils.isEmpty(contractNo)) {
             data.setContract_no(contractNo); //预授权号
         }
         data.setAmt(amt); // 划拨金额
-        data.setRem("test"); // 备注
+        data.setRem("-"); // 备注
 
         try {
             CommonRspData rsp = FuiouService.transferBmu(data);
-            logger.info(rsp.toString());
+            if (rsp != null) {
+                payMapper.updateRespcode(pay.getPayId(), rsp.getResp_code());
+            }
 
             return rsp;
         } catch (Exception e) {
-            e.printStackTrace();
-            CommonRspData rsp = new CommonRspData();
-            rsp.setResp_code("9999");
-            rsp.setMchnt_txn_ssn(seqno);
-            return rsp;
+            return null;
         }
     }
 
@@ -246,6 +267,13 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             return 0;
         }
 
+        // 2. 第三方支付转账
+        String seqno = CommonUtil.getMchntTxnSsn();
+//        CommonRspData resp = transferBmu(mobile, "user114", seqno, null, amount.toString());
+//        if (resp != null && !"0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
+//            throw new Exception("pay error"); // database rollback
+//        }
+
         // 2. 用户投资项目
         LoanUserInvestment investment = new LoanUserInvestment();
         investment.setProductId(productId);
@@ -253,7 +281,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         investment.setUserId(userId);
         investment.setInvestAmount(amt);
         investment.setInvestTime(new Date());
-        investment.setInvestStartDate(InterestUtil.tomorrow()); // 计息日期为次日
+        investment.setInvestStartDate(InterestUtil.tomorrow());  // 计息日期为次日
         investment.setInvestClosingDate(
                 InterestUtil.calculateInvestClosingDate(investment.getInvestStartDate(), product.getInvestDay()));
 
@@ -262,10 +290,13 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         investment.setInvestServiceCharge(new BigDecimal(0.00));
         investment.setInvestStatus(Constant.USER_INVEST_STATUS_UNDUE); // 未到期
 
-        String seqno = CommonUtil.getMchntTxnSsn();
         investment.setPaySeqno(seqno);
         investment.setPayResponseCode("0000");
         investment.setTransferResponseCode("9999");
+        investment.setTransferStatus("N");
+        investment.setUserMobile(mobile);
+        investment.setInvestRate(product.getLoanRate());
+
         Integer rows = productMapper.saveUserInvestment(investment);
         if (rows <= 0) {
             throw new Exception("saveUserInvestment failed"); // database rollback
@@ -285,12 +316,136 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         // 4. 第三方支付预授权
         CommonRspData resp = transferBmu(mobile, "user114", seqno, null, amount.toString());
         if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
-            productMapper.updateUserInvestmentPay(investment.getInvestId(), "0", resp.getResp_code());
+//            productMapper.updateUserInvestmentPay(investment.getInvestId(), "0", resp.getResp_code());
         } else { // 支付失败， 回滚
             throw new Exception("pay error"); // database rollback
         }
 
         return 1; // OK
+    }
+
+    /**
+     * 债权转让申请
+     *
+     * @return
+     */
+    @Override
+    public Integer transfer(Integer investId, BigDecimal x) {
+        LoanUserInvestment investment = productMapper.getUserInvestment(investId);
+        if (investment == null)
+            return 0;
+
+        LoanProduct product = productMapper.getProduct(investment.getProductId());
+        if (product == null)
+            return 0;
+
+        LoanTransfer transfer = new LoanTransfer();
+        transfer.setTransferStatus("R");
+        transfer.setTransferAmount(new BigDecimal(0.0));
+        transfer.setTransferDiscount(x.setScale(2, BigDecimal.ROUND_HALF_UP));
+        transfer.setTransferFee(new BigDecimal(0.0));
+        transfer.setTransferInUser(0);
+        transfer.setTransferOutUser(investment.getUserId());
+        transfer.setTransferOutMobile(investment.getUserMobile());
+        transfer.setTransferTime(new Date());
+        transfer.setInvestId(investId);
+        transfer.setProductId(product.getProductId());
+        transfer.setProductName(product.getProductName());
+        transfer.setInvestAmount(investment.getInvestAmount());
+        transfer.setInvestStartDate(investment.getInvestStartDate());
+        transfer.setInvestCloseDate(investment.getInvestClosingDate());
+        transfer.setRate(investment.getInvestRate());
+
+        int rows = transferMapper.saveTransfer(transfer);
+        if (rows <= 0){
+            return 0;
+        }
+        return 1;
+    }
+
+    /**
+     * 债权转让完成
+     *
+     * @param transferId
+     * @param userId
+     * @param mobile
+     * @return
+     * @throws Exception
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public Integer transferComplete(Integer transferId, Integer userId, String mobile)
+            throws Exception {
+        LoanTransfer transfer = transferMapper.getTransfer(transferId);
+
+        if (! "R".equalsIgnoreCase(transfer.getTransferStatus())){
+            return 0;
+        }
+
+        LoanUserInvestment investment = productMapper.getUserInvestment(transfer.getInvestId());
+        if (investment == null) {
+            return 0;
+        }
+
+        BigDecimal b = investment.getInvestRate();
+        BigDecimal a = investment.getInvestAmount();
+        long d = InterestUtil.calculateIntervals(investment.getInvestStartDate(), new Date());
+        BigDecimal f = a.add(
+                new BigDecimal(d / 360.0)
+                        .multiply(a)
+                        .multiply(b)
+                        .divide(new BigDecimal(100.0))
+                        .multiply(transfer.getTransferDiscount()))
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal fee = f.multiply(new BigDecimal(0.01)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        if (fee.compareTo(new BigDecimal(1.0)) == -1) { // < 1.0
+            fee = new BigDecimal(1.0);
+        }
+        if (fee.compareTo(new BigDecimal(15.0)) == 1) { // > 15.0
+            fee = new BigDecimal(15.0);
+        }
+
+        String seqno = CommonUtil.getMchntTxnSsn();
+        String seqno2 = CommonUtil.getMchntTxnSsn();
+        while(seqno.equalsIgnoreCase(seqno2)){
+            seqno2 = CommonUtil.getMchntTxnSsn();
+        }
+
+        // 1. 债权转让流水
+        String transferSeqno = seqno +"," + seqno2;
+        Integer rows = transferMapper.updateTransfer(transferId, userId, f, fee, transferSeqno);
+        if (rows <= 0){
+            return 0;
+        }
+
+        // 2. 设置投资人为债权接手人
+        rows = productMapper.updateUserInvestmentTransfer(transfer.getInvestId(), userId, mobile);
+        if (rows <= 0){
+            throw new Exception(" updateUserInvestmentTransfer "); // rollback
+        }
+
+        String plat = "user114";
+        // 3. 接手人 -> 平台  金额：f（转让金额）
+        String sf = new Long(f.multiply(new BigDecimal(100)).longValue()).toString();
+        CommonRspData resp = transferBmu(mobile, plat, seqno, null, sf);
+        if (resp != null && "0000".equalsIgnoreCase(resp.getResp_code())) { // 支付成功
+            // 4. 平台 -> 转让人  transferAmount（转让金额） - transferFee（手续费）
+            String sfee = new Long(f.subtract(fee).multiply(new BigDecimal(100.0)).longValue()).toString();
+            try{
+                transferBmu(plat, transfer.getTransferOutMobile(), seqno2, null, sfee);
+            }catch (Exception e){
+                e.printStackTrace(); // no rollback, 平台转账失败，可以手工转
+            }
+
+            return 1;
+        } else {
+            throw new Exception(" transferBmu "); // rollback
+        }
+    }
+
+    @Override
+    public List<LoanTransfer> getTransfers() {
+        return transferMapper.getTransfers();
     }
 
     @Override

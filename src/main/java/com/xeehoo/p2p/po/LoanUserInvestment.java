@@ -19,6 +19,8 @@ public class LoanUserInvestment {
     private BigDecimal investServiceCharge; // 投资手续费
     private String investStatus; // 投资状态
     private Date investTime; // 投资时间
+    private String userMobile;
+    private BigDecimal investRate;
 
     /**
      * @deprecated
@@ -32,6 +34,30 @@ public class LoanUserInvestment {
     /*--------------*/
 
     private String transferStatus; // 是否债权转让
+
+    public String getUserMobile() {
+        return userMobile;
+    }
+
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
+    }
+
+    public BigDecimal getInvestRate() {
+        return investRate;
+    }
+
+    public void setInvestRate(BigDecimal investRate) {
+        this.investRate = investRate;
+    }
+
+    public String getTransferStatus() {
+        return transferStatus;
+    }
+
+    public void setTransferStatus(String transferStatus) {
+        this.transferStatus = transferStatus;
+    }
 
     public boolean isDue(){
         return this.investStatus.equalsIgnoreCase("D");

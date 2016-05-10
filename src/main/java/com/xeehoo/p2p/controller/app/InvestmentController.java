@@ -155,4 +155,57 @@ public class InvestmentController {
         map.put("data", investService.getAppUserInvestment(userId, investId));
         return map;
     }
+
+    /**
+     * 用户债权转让
+     *
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/app/user/transfer", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> transfer(HttpServletRequest request,
+                                        @RequestParam(value = "invest_id", required = true) Integer investId) {
+////        Integer userId = tokenService.getUserId(token);
+////        if (userId == null) {
+////            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
+////        }
+//
+        Integer res = investService.transfer(investId, new BigDecimal(.95));
+        logger.info("result is " + res);
+
+        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+//        map.put("data", investService.getAppUserInvestment(userId, investId));
+        return map;
+    }
+
+    /**
+     * 用户债权转让
+     *
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/app/user/transferComplete", method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> transferComplete(HttpServletRequest request,
+                                        @RequestParam(value = "transfer_id", required = true) Integer transferId) {
+////        Integer userId = tokenService.getUserId(token);
+////        if (userId == null) {
+////            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
+////        }
+//
+        Integer res = null;
+        try {
+            res = investService.transferComplete(transferId, 3, "18611330404");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("result is " + res);
+
+        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+//        map.put("data", investService.getAppUserInvestment(userId, investId));
+        return map;
+    }
 }

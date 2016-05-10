@@ -21,6 +21,8 @@ public interface ProductMapper {
      */
     public List<LoanProduct> getProductPager(Map<String, Object> map);
 
+
+
     /**
      * 查询产品记录数
      *
@@ -39,11 +41,28 @@ public interface ProductMapper {
 
     /**
      *
+     * @param investId
+     * @return
+     */
+    public LoanUserInvestment getUserInvestment(Integer investId);
+
+
+    /**
+     *
      * @param productId
      * @param amount
      * @return
      */
     public Integer updateProductAmount(@Param("productId")Integer productId, @Param("amount")BigDecimal amount);
+
+    /**
+     *
+     * @param investId
+     * @param userId
+     * @param mobile
+     * @return
+     */
+    public Integer updateUserInvestmentTransfer(@Param("investId")Integer investId, @Param("userId")Integer userId, @Param("mobile")String mobile);
 
     /**
      *

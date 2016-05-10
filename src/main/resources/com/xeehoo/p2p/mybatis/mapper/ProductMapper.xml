@@ -41,11 +41,18 @@
         <result property="transferResponseCode" column="transfer_resp_code"/>
         <result property="transferSeqno" column="transfer_seqno"/>
         <result property="transferTime" column="transfer_time"/>
+        <result property="transferStatus" column="transfer_status"/>
+        <result property="investRate" column="invest_rate"/>
+        <result property="userMobile" column="invest_user_mobile"/>
     </resultMap>
 
     <!-- 根据产品ID获取产品信息 -->
     <select id="getProduct" resultMap="product" parameterType="int">
         SELECT * FROM t_loan_product WHERE product_id = #{productId}
+    </select>
+
+    <select id="getUserInvestment" resultMap="investment" parameterType="int">
+        SELECT * FROM t_loan_user_investment WHERE invest_id = #{investId}
     </select>
 
     <sql id="product_pager_where">
@@ -103,6 +110,15 @@
         UPDATE t_loan_user_investment
            SET invest_status = #{investStatus}
          WHERE invest_id = #{investId}
+    </update>
+
+    <!-- 修改债权转让用户 -->
+    <update id="updateUserInvestmentTransfer">
+        UPDATE t_loan_user_investment
+           SET user_id = #{userId},
+               invest_user_mobile = #{mobile},
+               transfer_status = 'C'
+        WHERE invest_id = #{investId}
     </update>
 
     <!-- 修改产品状态 -->
@@ -231,7 +247,10 @@
             pay_contract_no,
             pay_resp_code,
             transfer_seqno,
-            transfer_resp_code
+            transfer_resp_code,
+            transfer_status,
+            invest_rate,
+            invest_user_mobile
         )
         VALUES (
             #{productId},
@@ -248,7 +267,10 @@
             #{payContractNo},
             #{payResponseCode},
             #{transferSeqno},
-            #{transferResponseCode}
+            #{transferResponseCode},
+            #{transferStatus},
+            #{investRate},
+            #{userMobile}
         )
     </insert>
 

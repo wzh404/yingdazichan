@@ -16,8 +16,7 @@ public class LoanPay {
     private String seqno;
     private String respCode;
     private Date payTime;
-    private String payType;
-    private Integer serviceId;
+
 
     public Integer getPayId() {
         return payId;
@@ -75,19 +74,5 @@ public class LoanPay {
         this.payTime = payTime;
     }
 
-    public String getPayType() {
-        return payType;
-    }
 
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
-    public Integer getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(Integer serviceId) {
-        this.serviceId = serviceId;
-    }
 }

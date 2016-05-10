@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xeehoo.p2p.mybatis.mapper.TransferMapper">
+    <!-- 债权转让 -->
+    <resultMap type="com.xeehoo.p2p.po.LoanTransfer" id="transfer">
+        <id property="transferId" column="transfer_id"/>
+        <result property="transferOutUser" column="transfer_out_user"/>
+        <result property="transferTime" column="transfer_time"/>
+        <result property="transferStatus" column="transfer_status"/>
+        <result property="transferAmount" column="transfer_amount"/>
+        <result property="transferDiscount" column="transfer_discount"/>
+        <result property="transferInUser" column="transfer_in_user"/>
+        <result property="transferPayTime" column="transfer_pay_time"/>
+        <result property="transferFee" column="transfer_fee"/>
+        <result property="transferOutMobile" column="transfer_out_mobile"/>
+
+
+        <result property="investId" column="invest_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="rate" column="loan_rate"/>
+        <result property="investAmount" column="invest_amount"/>
+        <result property="investStartDate" column="invest_start_date"/>
+        <result property="investCloseDate" column="invest_close_date"/>
+        <result property="transferSeqno" column="transfer_seqno"/>
+    </resultMap>
+
+    <!-- 插入债权转让 -->
+    <insert id="saveTransfer" parameterType="com.xeehoo.p2p.po.LoanTransfer">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="transferId">
+            SELECT currval('t_loan_transfer_transfer_id_seq') AS productId
+        </selectKey>
+        INSERT INTO t_loan_credit_transfer (
+            transfer_out_user,
+            transfer_out_mobile,
+            transfer_in_user,
+            transfer_status,
+            transfer_amount,
+            transfer_discount,
+            transfer_fee,
+            transfer_pay_time,
+            transfer_time,
+            invest_id,
+            product_id,
+            product_name,
+            loan_rate,
+            invest_amount,
+            invest_start_date,
+            invest_close_date)
+        VALUES (
+            #{transferOutUser},
+            #{transferOutMobile},
+            #{transferInUser},
+            #{transferStatus},
+            #{transferAmount},
+            #{transferDiscount},
+            #{transferFee},
+            #{transferPayTime},
+            #{transferTime},
+            #{investId},
+            #{productId},
+            #{productName},
+            #{rate},
+            #{investAmount},
+            #{investStartDate},
+            #{investCloseDate}
+        )
+    </insert>
+
+    <!-- 修改应答码 -->
+    <update id="updateTransfer">
+        UPDATE
+            t_loan_credit_transfer
+        SET
+            transfer_in_user = #{userId},
+            transfer_amount = #{amount},
+            transfer_fee = #{fee},
+            transfer_seqno = #{seqno},
+            transfer_status = 'C'
+        WHERE
+            transfer_id = #{transferId}
+    </update>
+
+    <select id="getTransfer" resultMap="transfer" parameterType="int">
+        SELECT * FROM t_loan_credit_transfer WHERE transfer_id = #{transferId}
+    </select>
+
+    <select id="getTransfers" resultMap="transfer">
+        SELECT * FROM t_loan_credit_transfer
+        WHERE transfer_status = 'R'
+    </select>
+</mapper>

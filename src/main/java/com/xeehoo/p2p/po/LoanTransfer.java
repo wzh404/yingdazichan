@@ -11,20 +11,38 @@ public class LoanTransfer {
     private Integer transferId;
     private Integer productId;
     private Integer investId;
-    private String transferOutUser; // 转让用户
-    private String transferInUser;  // 购买用户
+    private Integer transferOutUser; // 转让用户
+    private String transferOutMobile;
+    private Integer transferInUser;  // 购买用户
     private BigDecimal transferAmount; // 转让金额
     private BigDecimal transferFee; // 转让手续费
     private BigDecimal transferDiscount; // 折扣
     private Date transferTime; // 转让发布时间
     private Date transferPayTime; // 转让交易时间
     private String transferStatus; // 转让状态
+    private String transferSeqno;
 
     private String  productName;  // 产品名称
-    private Integer rate;  // 原年化率
+    private BigDecimal rate;  // 原年化率
     private BigDecimal investAmount; // 原投资金额
     private Date investStartDate;//原开始日期
     private Date investCloseDate; // 原终止日期
+
+    public String getTransferSeqno() {
+        return transferSeqno;
+    }
+
+    public void setTransferSeqno(String transferSeqno) {
+        this.transferSeqno = transferSeqno;
+    }
+
+    public String getTransferOutMobile() {
+        return transferOutMobile;
+    }
+
+    public void setTransferOutMobile(String transferOutMobile) {
+        this.transferOutMobile = transferOutMobile;
+    }
 
     public Integer getTransferId() {
         return transferId;
@@ -50,19 +68,19 @@ public class LoanTransfer {
         this.investId = investId;
     }
 
-    public String getTransferOutUser() {
+    public Integer getTransferOutUser() {
         return transferOutUser;
     }
 
-    public void setTransferOutUser(String transferOutUser) {
+    public void setTransferOutUser(Integer transferOutUser) {
         this.transferOutUser = transferOutUser;
     }
 
-    public String getTransferInUser() {
+    public Integer getTransferInUser() {
         return transferInUser;
     }
 
-    public void setTransferInUser(String transferInUser) {
+    public void setTransferInUser(Integer transferInUser) {
         this.transferInUser = transferInUser;
     }
 
@@ -122,11 +140,11 @@ public class LoanTransfer {
         this.productName = productName;
     }
 
-    public Integer getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
-    public void setRate(Integer rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 
