@@ -2,6 +2,7 @@ package com.xeehoo.p2p.service;
 
 import com.xeehoo.p2p.po.LoanProduct;
 import com.xeehoo.p2p.po.LoanTransfer;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.util.LoanPagedListHolder;
 import com.xeehoo.p2p.util.QueryCondition;
 import org.apache.ibatis.annotations.Param;
@@ -70,6 +71,13 @@ public interface LoanInvestService {
      * @return
      */
     public LoanProduct getProduct(Integer productId);
+
+    /**
+     *
+     * @param investId
+     * @return
+     */
+    public LoanUserInvestment getUserInvestment(Integer investId);
 
 //    /**
 //     *
@@ -156,6 +164,16 @@ public interface LoanInvestService {
     public Integer transferComplete(Integer transferId, Integer userId, String mobile)
             throws Exception ;
 
-
+    /**
+     *
+     * @return
+     */
     public List<LoanTransfer> getTransfers();
+
+    /**
+     *
+     * @param transferId
+     * @return
+     */
+    public LoanTransfer getTransfer(Integer transferId);
 }

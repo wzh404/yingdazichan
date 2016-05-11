@@ -2,6 +2,8 @@ package com.xeehoo.p2p.po;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 债权转让
@@ -25,8 +27,17 @@ public class LoanTransfer {
     private String  productName;  // 产品名称
     private BigDecimal rate;  // 原年化率
     private BigDecimal investAmount; // 原投资金额
+    private String investDay; // 产品期限
     private Date investStartDate;//原开始日期
     private Date investCloseDate; // 原终止日期
+
+    public String getInvestDay() {
+        return investDay;
+    }
+
+    public void setInvestDay(String investDay) {
+        this.investDay = investDay;
+    }
 
     public String getTransferSeqno() {
         return transferSeqno;
@@ -170,5 +181,25 @@ public class LoanTransfer {
 
     public void setInvestCloseDate(Date investCloseDate) {
         this.investCloseDate = investCloseDate;
+    }
+
+
+    public String getInvestDayUnit(){
+        return  investDay.substring(this.investDay.length() - 1);
+    }
+
+    public String getInvestDayUnitName(){
+        Map<String, String> map = new HashMap<String, String>(4);
+        map.put("D", "天");
+        map.put("W", "周");
+        map.put("M", "个月");
+        map.put("Y", "年");
+
+        String unit = getInvestDayUnit();
+        return map.get(unit);
+    }
+
+    public String getInvestDayValue(){
+        return investDay.substring(0, this.investDay.length() - 1);
     }
 }

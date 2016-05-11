@@ -383,7 +383,10 @@
             invest_amount,
             invest_income,
             invest_time,
-            invest_status
+            invest_status,
+            invest_rate,
+            invest_start_date,
+            invest_closing_date
         FROM
             t_loan_user_investment
         WHERE

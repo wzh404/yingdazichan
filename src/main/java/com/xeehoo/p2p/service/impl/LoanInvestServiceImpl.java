@@ -234,7 +234,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     }
 
     /**
-     * 投资人投标
+     * 投标
      *
      * @param productId
      * @param userId
@@ -339,11 +339,29 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         if (product == null)
             return 0;
 
+        BigDecimal b = investment.getInvestRate();
+        BigDecimal a = investment.getInvestAmount();
+        long d = InterestUtil.calculateIntervals(investment.getInvestStartDate(), investment.getInvestClosingDate());
+        BigDecimal f = a.add(
+                new BigDecimal(d / 360.0)
+                        .multiply(a)
+                        .multiply(b)
+                        .divide(new BigDecimal(100.0))
+                        .multiply(x))
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal fee = f.multiply(new BigDecimal(0.01)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        if (fee.compareTo(new BigDecimal(1.0)) == -1) { // < 1.0
+            fee = new BigDecimal(1.0);
+        }
+        if (fee.compareTo(new BigDecimal(15.0)) == 1) { // > 15.0
+            fee = new BigDecimal(15.0);
+        }
+
         LoanTransfer transfer = new LoanTransfer();
-        transfer.setTransferStatus("R");
-        transfer.setTransferAmount(new BigDecimal(0.0));
+        transfer.setTransferStatus(Constant.TRANSFER_STATUS_REQUEST);
+        transfer.setTransferAmount(f);
         transfer.setTransferDiscount(x.setScale(2, BigDecimal.ROUND_HALF_UP));
-        transfer.setTransferFee(new BigDecimal(0.0));
+        transfer.setTransferFee(fee);
         transfer.setTransferInUser(0);
         transfer.setTransferOutUser(investment.getUserId());
         transfer.setTransferOutMobile(investment.getUserMobile());
@@ -355,6 +373,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         transfer.setInvestStartDate(investment.getInvestStartDate());
         transfer.setInvestCloseDate(investment.getInvestClosingDate());
         transfer.setRate(investment.getInvestRate());
+        transfer.setInvestDay(product.getInvestDay());
 
         int rows = transferMapper.saveTransfer(transfer);
         if (rows <= 0){
@@ -377,7 +396,6 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     public Integer transferComplete(Integer transferId, Integer userId, String mobile)
             throws Exception {
         LoanTransfer transfer = transferMapper.getTransfer(transferId);
-
         if (! "R".equalsIgnoreCase(transfer.getTransferStatus())){
             return 0;
         }
@@ -385,24 +403,6 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         LoanUserInvestment investment = productMapper.getUserInvestment(transfer.getInvestId());
         if (investment == null) {
             return 0;
-        }
-
-        BigDecimal b = investment.getInvestRate();
-        BigDecimal a = investment.getInvestAmount();
-        long d = InterestUtil.calculateIntervals(investment.getInvestStartDate(), new Date());
-        BigDecimal f = a.add(
-                new BigDecimal(d / 360.0)
-                        .multiply(a)
-                        .multiply(b)
-                        .divide(new BigDecimal(100.0))
-                        .multiply(transfer.getTransferDiscount()))
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal fee = f.multiply(new BigDecimal(0.01)).setScale(2, BigDecimal.ROUND_HALF_UP);
-        if (fee.compareTo(new BigDecimal(1.0)) == -1) { // < 1.0
-            fee = new BigDecimal(1.0);
-        }
-        if (fee.compareTo(new BigDecimal(15.0)) == 1) { // > 15.0
-            fee = new BigDecimal(15.0);
         }
 
         String seqno = CommonUtil.getMchntTxnSsn();
@@ -413,6 +413,9 @@ public class LoanInvestServiceImpl implements LoanInvestService {
 
         // 1. 债权转让流水
         String transferSeqno = seqno +"," + seqno2;
+        BigDecimal f = transfer.getTransferAmount();
+        BigDecimal fee = transfer.getTransferFee();
+
         Integer rows = transferMapper.updateTransfer(transferId, userId, f, fee, transferSeqno);
         if (rows <= 0){
             return 0;
@@ -449,6 +452,11 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     }
 
     @Override
+    public LoanTransfer getTransfer(Integer transferId) {
+        return transferMapper.getTransfer(transferId);
+    }
+
+    @Override
     public LoanPagedListHolder getProductPager(int page, Map<String, Object> cond) {
         Integer totalSize = getTotalProduct(cond);
         List<LoanProduct> products = getInvestProductPager(page, Constant.PAGE_DEFAULT_SIZE, cond);
@@ -475,6 +483,11 @@ public class LoanInvestServiceImpl implements LoanInvestService {
     @Override
     public LoanProduct getProduct(Integer productId) {
         return productMapper.getProduct(productId);
+    }
+
+    @Override
+    public LoanUserInvestment getUserInvestment(Integer investId) {
+        return productMapper.getUserInvestment(investId);
     }
 
 //    @Override

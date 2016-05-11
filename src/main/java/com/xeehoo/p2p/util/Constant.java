@@ -19,8 +19,12 @@ public class Constant {
     public final static int PRODUCT_STATUS_OVERDUE = 6; // 逾期
 
     public final static String USER_INVEST_STATUS_UNDUE = "U";  // 未到期
-    public final static String USER_INVEST_STATUS_DUE = "D"; // 已到期
-    public final static String USER_INVEST_STATUS_OVERDUE = "O"; // 逾期
+    public final static String USER_INVEST_STATUS_DUE = "D"; // 到期, 已还款
+    public final static String USER_INVEST_STATUS_OVERDUE = "O"; // 逾期， 未还款
+
+    public final static String TRANSFER_STATUS_REQUEST = "R"; // 申请转让
+    public final static String TRANSFER_STATUS_COMPLETE = "C"; // 转让成功
+    public final static String TRANSFER_STATUS_FAILED = "F"; // 转让失败
 
     public final static int USER_STATUS_NORMAL = 0x0001;
 

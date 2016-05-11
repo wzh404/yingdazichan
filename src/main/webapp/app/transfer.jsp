@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -31,33 +31,33 @@
 <body>
 <div class="i-assets-data">
     <dl class="Wide">
-        <dt>总额度</dt>
+        <dt>转让金额</dt>
         <dd>
-            <em><label id="labMJGuiMo" style="color:#1172bd">${totalAmount}</label></em><span class="fw-normal"><label id="labUnit">元</label></span>
+            <em><label id="labMJGuiMo" style="color:#1172bd">${transfer.transferAmount}</label></em>
+            <span class="fw-normal"><label id="labUnit">元</label></span>
         </dd>
     </dl>
     <dl class="Deadline">
         <dt>投资期限</dt>
-        <dd><em><label id="labQiXian">${investDayValue}</label></em><span class="fw-normal"><label id="labQiXianDesc">${investDayUnitName}</label></span>
+        <dd><em><label id="labQiXian">${transfer.getInvestDayValue()}</label></em><span class="fw-normal">
+            <label id="labQiXianDesc">${transfer.getInvestDayUnitName()}</label></span>
         </dd>
     </dl>
     <dl class="border-none Yield">
         <dt class="iocn-help-pr">年化收益率</dt>
-        <dd><em><label id="labShouYiLv" style="color:#FF0033">11.0</label></em>%</dd>
+        <dd><em><label id="labShouYiLv" style="color:#FF0033">${transfer.rate}</label></em>%</dd>
     </dl>
 </div>
 <div class="d-main">
     <ul class="d-con">
-        <li><label id="labLockJinDu"><span class="d-con-t">产品进度</span>
-
-            <div class="Progress">
-                <span style="width: ${progress}%"></span>
-            </div>
-            <span class="Progress-text">${progress}%</span>
-        </label></li>
-        <li><span class="d-con-t">起息日</span><label id="labQiXiRi">${startDay}</label></li>
+        <li><span class="d-con-t">转让人</span><label id="labQiXiRi1">${transfer.transferOutMobile}</label></li>
+        <li><span class="d-con-t">投资金额</span><label id="labQiXiRi2">${transfer.investAmount}</label></li>
+        <li><span class="d-con-t">转让折扣</span><label id="labQiXiRi5">${transfer.transferDiscount}</label></li>
+        <li><span class="d-con-t">起息日</span><label id="labQiXiRi3"><fmt:formatDate value="${transfer.investStartDate}" pattern="yyyy-MM-dd"/></label></li>
+        <li><span class="d-con-t">结息日</span><label id="labJieXiRi"><fmt:formatDate value="${transfer.investCloseDate}" pattern="yyyy-MM-dd"/></label></li>
         <li><span class="d-con-t">分配方式</span><label id="labFenPeiFangShi">到期分配</label></li>
     </ul>
+
     <dl class="d-con-z">
         <dt>产品简介</dt>
         <dd><label id="labProJieShao">本项目为个人购车贷款产品。由于银行按揭贷款审批有一定的周期，在该周期内由合作方优先借款人进行初步审核，审核通过后再由合作方向聚有财提交在按揭额度内的融资申请。由合作方进行担保，当抵押车辆销售后立即要求借款人进行还款。</label>

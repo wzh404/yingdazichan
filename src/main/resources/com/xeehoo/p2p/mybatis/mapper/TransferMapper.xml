@@ -22,6 +22,7 @@
         <result property="productName" column="product_name"/>
         <result property="rate" column="loan_rate"/>
         <result property="investAmount" column="invest_amount"/>
+        <result property="investDay" column="invest_day"/>
         <result property="investStartDate" column="invest_start_date"/>
         <result property="investCloseDate" column="invest_close_date"/>
         <result property="transferSeqno" column="transfer_seqno"/>
@@ -47,6 +48,7 @@
             product_name,
             loan_rate,
             invest_amount,
+            invest_day,
             invest_start_date,
             invest_close_date)
         VALUES (
@@ -64,6 +66,7 @@
             #{productName},
             #{rate},
             #{investAmount},
+            #{investDay},
             #{investStartDate},
             #{investCloseDate}
         )

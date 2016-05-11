@@ -1,7 +1,9 @@
 package com.xeehoo.p2p.controller.app;
 
 import com.xeehoo.p2p.po.LoanProduct;
+import com.xeehoo.p2p.po.LoanTransfer;
 import com.xeehoo.p2p.po.LoanUser;
+import com.xeehoo.p2p.po.LoanUserInvestment;
 import com.xeehoo.p2p.service.LoanInvestService;
 import com.xeehoo.p2p.service.LoanUserService;
 import com.xeehoo.p2p.service.TokenService;
@@ -190,22 +192,89 @@ public class InvestmentController {
     @RequestMapping(value = "/app/user/transferComplete", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Map<String, Object> transferComplete(HttpServletRequest request,
-                                        @RequestParam(value = "transfer_id", required = true) Integer transferId) {
-////        Integer userId = tokenService.getUserId(token);
-////        if (userId == null) {
-////            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
-////        }
-//
+                                        @RequestParam(value = "transfer_id", required = true) Integer transferId,
+                                        @RequestParam(value = "pwd", required = true) String payPwd,
+                                        @RequestHeader(value = "authorization", required = true) String token) {
+        String val = tokenService.get(token);
+        if (val == null){
+            return CommonUtil.generateJsonMap("ER01", "请重新登录");
+        }
+
+        String[] v = val.split(",");
+        if (v == null || v.length != 2){
+            return CommonUtil.generateJsonMap("ER98", "数据错误");
+        }
+
+        Integer userId = Integer.parseInt(v[0]);
+        LoanUser user = userService.getUser(v[1]);
+        logger.info("user is " + userId + " - mobile is " + v[1]);
+        if (user == null){
+            return CommonUtil.generateJsonMap("ER10", "用户不存在");
+        }
+
+        if (StringUtils.isEmpty(user.getPayPwd())){
+            return CommonUtil.generateJsonMap("ER12", "没有设置支付密码");
+        }
+
+        if (!user.isEqualPayPwd(payPwd)){
+            return CommonUtil.generateJsonMap("ER11", "支付密码不正确");
+        }
+
         Integer res = null;
         try {
-            res = investService.transferComplete(transferId, 3, "18611330404");
+            res = investService.transferComplete(transferId, userId, v[1]);
         } catch (Exception e) {
             e.printStackTrace();
         }
         logger.info("result is " + res);
 
         Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
-//        map.put("data", investService.getAppUserInvestment(userId, investId));
         return map;
+    }
+
+    /**
+     * 债权转让列表
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/app/user/transfers", method = {RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> transfers(HttpServletRequest request) {
+        List<LoanTransfer> transfers = investService.getTransfers();
+        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
+        map.put("data", transfers);
+
+        return map;
+    }
+
+    @RequestMapping(value = "/app/transfer/detail", method = {RequestMethod.GET})
+    public ModelAndView getTransfer(HttpServletRequest request,
+                                    @RequestParam(value = "transfer_id", required = true) Integer transferId){
+        LoanTransfer transfer = investService.getTransfer(transferId);
+        if (transfer == null){
+            return new ModelAndView("/admin/error");
+        }
+        return new ModelAndView("/app/transfer", "transfer", transfer);
+    }
+
+    @RequestMapping(value = "/app/user/investment", method = {RequestMethod.GET})
+    public ModelAndView getUserInvestment(HttpServletRequest request,
+                                    @RequestParam(value = "invest_id", required = true) Integer investId){
+        LoanUserInvestment investment = investService.getUserInvestment(investId);
+        if (investment == null){
+            return new ModelAndView("/admin/error");
+        }
+
+        LoanProduct product = investService.getProduct(investment.getProductId());
+        if (product == null){
+            return new ModelAndView("/admin/error");
+        }
+
+        ModelAndView mav = new ModelAndView("/app/investment");
+        mav.addObject("investment", investment);
+        mav.addObject("product", product);
+
+        return mav;
     }
 }
