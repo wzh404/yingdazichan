@@ -89,7 +89,7 @@ public class FuiouController {
 
 //        Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
         data.setAmt(amt);   // 金额
-        data.setPage_notify_url(environment.getProperty("recharge_back_url")); //回调地址
+        data.setPage_notify_url(environment.getProperty("app_recharge_back_url")); //回调地址
 
         data.setSignature(SecurityUtils.sign(data.getSignature()));
         ModelAndView mav = new ModelAndView("/app/app_quick_recharge");
@@ -123,7 +123,7 @@ public class FuiouController {
 
         Long longAmt = amt.multiply(new BigDecimal(100)).longValue();
         data.setAmt(longAmt.toString());   // 金额
-        data.setPage_notify_url(environment.getProperty("withdraw_back_url")); //回调地址
+        data.setPage_notify_url(environment.getProperty("app_withdraw_back_url")); //回调地址
         data.setSignature(SecurityUtils.sign(data.getSignature()));
 
         ModelAndView mav = new ModelAndView("/app/app_quick_recharge");

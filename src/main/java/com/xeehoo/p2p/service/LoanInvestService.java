@@ -151,7 +151,7 @@ public interface LoanInvestService {
      * @param discount
      * @return
      */
-    public Integer transfer(Integer investId, BigDecimal discount);
+    public Integer transfer(Integer investId, Integer userId, BigDecimal discount);
 
     /**
      *
@@ -176,4 +176,12 @@ public interface LoanInvestService {
      * @return
      */
     public LoanTransfer getTransfer(Integer transferId);
+
+    /**
+     *
+     * @param investId
+     * @return
+     * @throws Exception
+     */
+    public Integer cancelTransferRequest(Integer investId) throws  Exception;
 }

@@ -159,7 +159,7 @@ public class InvestmentController {
     }
 
     /**
-     * 用户债权转让
+     * 用户债权转让发布
      *
      *
      * @param request
@@ -168,22 +168,25 @@ public class InvestmentController {
     @RequestMapping(value = "/app/user/transfer", method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
     public Map<String, Object> transfer(HttpServletRequest request,
-                                        @RequestParam(value = "invest_id", required = true) Integer investId) {
-////        Integer userId = tokenService.getUserId(token);
-////        if (userId == null) {
-////            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
-////        }
-//
-        Integer res = investService.transfer(investId, new BigDecimal(.95));
-        logger.info("result is " + res);
+                                        @RequestParam(value = "invest_id", required = true) Integer investId,
+                                        @RequestParam(value = "amount", required = true) BigDecimal amount,
+                                        @RequestHeader(value = "authorization", required = true) String token) {
+        Integer userId = tokenService.getUserId(token);
+        if (userId == null) {
+            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
+        }
 
-        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
-//        map.put("data", investService.getAppUserInvestment(userId, investId));
-        return map;
+        Integer res = investService.transfer(investId, userId, amount);
+        logger.info("result is " + res);
+        if (res <= 0){
+            return CommonUtil.generateJsonMap("ER10", "转让申请失败!");
+        }
+
+        return CommonUtil.generateJsonMap("OK", null);
     }
 
     /**
-     * 用户债权转让
+     * 用户债权转让完成
      *
      *
      * @param request
@@ -225,11 +228,14 @@ public class InvestmentController {
             res = investService.transferComplete(transferId, userId, v[1]);
         } catch (Exception e) {
             e.printStackTrace();
+            return CommonUtil.generateJsonMap("ER99", "转让失败");
         }
         logger.info("result is " + res);
 
-        Map<String, Object> map = CommonUtil.generateJsonMap("OK", null);
-        return map;
+        if (res > 0)
+            return CommonUtil.generateJsonMap("OK", null);
+        else
+            return CommonUtil.generateJsonMap("ER99", "转让失败");
     }
 
     /**
@@ -246,6 +252,37 @@ public class InvestmentController {
         map.put("data", transfers);
 
         return map;
+    }
+
+    /**
+     *
+     * @param request
+     * @param investId
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/app/user/transfer/cancel", method = {RequestMethod.GET})
+    @ResponseBody
+    public Map<String, Object> cancelTransferRequest(
+            HttpServletRequest request,
+            @RequestParam(value = "invest_id", required = true) Integer investId,
+            @RequestHeader(value = "authorization", required = true) String token){
+        Integer userId = tokenService.getUserId(token);
+        if (userId == null) {
+            return CommonUtil.generateJsonMap("ER90", "非法参数,请重新登录");
+        }
+
+        try{
+            int res = investService.cancelTransferRequest(investId);
+            if (res > 0){
+                return CommonUtil.generateJsonMap("OK", null);
+            }
+            else{
+                return CommonUtil.generateJsonMap("ER81", "取消失败");
+            }
+        }catch (Exception e){
+            return CommonUtil.generateJsonMap("ER80", "取消失败");
+        }
     }
 
     @RequestMapping(value = "/app/transfer/detail", method = {RequestMethod.GET})

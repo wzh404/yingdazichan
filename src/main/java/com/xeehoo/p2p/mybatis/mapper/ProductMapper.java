@@ -66,6 +66,20 @@ public interface ProductMapper {
 
     /**
      *
+     * @param investId
+     * @return
+     */
+    public Integer updateUserInvestmentTransferStatus(@Param("investId")Integer investId);
+
+    /**
+     *
+     * @param investId
+     * @return
+     */
+    public Integer cancelInvestmentTransferRequest(@Param("investId")Integer investId);
+
+    /**
+     *
      * @param investment
      * @return
      */

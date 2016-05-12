@@ -72,7 +72,7 @@
         )
     </insert>
 
-    <!-- 修改应答码 -->
+    <!-- 债权转让完成，修改应答码及状态 -->
     <update id="updateTransfer">
         UPDATE
             t_loan_credit_transfer
@@ -84,6 +84,8 @@
             transfer_status = 'C'
         WHERE
             transfer_id = #{transferId}
+          AND
+            transfer_status = 'R'
     </update>
 
     <select id="getTransfer" resultMap="transfer" parameterType="int">
@@ -91,7 +93,24 @@
     </select>
 
     <select id="getTransfers" resultMap="transfer">
-        SELECT * FROM t_loan_credit_transfer
-        WHERE transfer_status = 'R'
+        SELECT
+          *
+        FROM
+          t_loan_credit_transfer
+        WHERE
+          transfer_status = 'R'
+        ORDER BY transfer_id DESC
     </select>
+
+    <!-- 取消债权转让 -->
+    <update id="cancelTransferRequest">
+        UPDATE
+            t_loan_credit_transfer
+        SET
+            transfer_status = 'F'
+        WHERE
+            invest_id = #{investId}
+        AND
+            transfer_status = 'R'
+    </update>
 </mapper>

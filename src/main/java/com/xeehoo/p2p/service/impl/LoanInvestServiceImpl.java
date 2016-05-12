@@ -330,25 +330,52 @@ public class LoanInvestServiceImpl implements LoanInvestService {
      * @return
      */
     @Override
-    public Integer transfer(Integer investId, BigDecimal x) {
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public Integer transfer(Integer investId, Integer userId, BigDecimal transferAmount) {
         LoanUserInvestment investment = productMapper.getUserInvestment(investId);
-        if (investment == null)
+        if (investment == null) {
+            logger.warn("invalid invest id!");
             return 0;
+        }
+
+        if (investment.getUserId().intValue() != userId.intValue()){
+            logger.warn("invalid user id!");
+            return 0;
+        }
+
+        if (! "N".equalsIgnoreCase(investment.getTransferStatus()) &&
+            ! "U".equalsIgnoreCase(investment.getInvestStatus())){
+            logger.warn("transfer status != N && invest status != U");
+            return 0;
+        }
 
         LoanProduct product = productMapper.getProduct(investment.getProductId());
-        if (product == null)
+        if (product == null) {
+            logger.warn("invalid product!");
             return 0;
+        }
 
-        BigDecimal b = investment.getInvestRate();
-        BigDecimal a = investment.getInvestAmount();
-        long d = InterestUtil.calculateIntervals(investment.getInvestStartDate(), investment.getInvestClosingDate());
-        BigDecimal f = a.add(
-                new BigDecimal(d / 360.0)
-                        .multiply(a)
-                        .multiply(b)
-                        .divide(new BigDecimal(100.0))
-                        .multiply(x))
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+//        BigDecimal b = investment.getInvestRate();
+//        BigDecimal a = investment.getInvestAmount();
+//        // closing_date - now 利息补偿天数
+//        long d = InterestUtil.calculateIntervals(new Date(), investment.getInvestClosingDate());
+//        BigDecimal f = a.add(
+//                new BigDecimal(d / 360.0)
+//                        .multiply(a)
+//                        .multiply(b)
+//                        .divide(new BigDecimal(100.0))
+//                        .multiply(x))
+//                .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        BigDecimal f = investment.getInvestAmount().add(investment.getInvestIncome());
+        if (transferAmount.compareTo(f) == 1){
+            logger.warn("invalid transfer amount!");
+            return 0;
+        }
+
+        BigDecimal discount = transferAmount.divide(f, 2, BigDecimal.ROUND_HALF_UP);
+
+        // 手续费计算
         BigDecimal fee = f.multiply(new BigDecimal(0.01)).setScale(2, BigDecimal.ROUND_HALF_UP);
         if (fee.compareTo(new BigDecimal(1.0)) == -1) { // < 1.0
             fee = new BigDecimal(1.0);
@@ -357,11 +384,17 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             fee = new BigDecimal(15.0);
         }
 
+        int rows = productMapper.updateUserInvestmentTransferStatus(investId);
+        if (rows <= 0){
+            logger.warn("update user investment transfer status failed!");
+            return 0;
+        }
+
         LoanTransfer transfer = new LoanTransfer();
         transfer.setTransferStatus(Constant.TRANSFER_STATUS_REQUEST);
-        transfer.setTransferAmount(f);
-        transfer.setTransferDiscount(x.setScale(2, BigDecimal.ROUND_HALF_UP));
-        transfer.setTransferFee(fee);
+        transfer.setTransferAmount(transferAmount);
+        transfer.setTransferDiscount(discount);
+        transfer.setTransferFee(fee);// 手续费
         transfer.setTransferInUser(0);
         transfer.setTransferOutUser(investment.getUserId());
         transfer.setTransferOutMobile(investment.getUserMobile());
@@ -375,7 +408,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         transfer.setRate(investment.getInvestRate());
         transfer.setInvestDay(product.getInvestDay());
 
-        int rows = transferMapper.saveTransfer(transfer);
+        rows = transferMapper.saveTransfer(transfer);
         if (rows <= 0){
             return 0;
         }
@@ -397,11 +430,18 @@ public class LoanInvestServiceImpl implements LoanInvestService {
             throws Exception {
         LoanTransfer transfer = transferMapper.getTransfer(transferId);
         if (! "R".equalsIgnoreCase(transfer.getTransferStatus())){
+            logger.info("**** transfer status != R");
             return 0;
         }
 
         LoanUserInvestment investment = productMapper.getUserInvestment(transfer.getInvestId());
         if (investment == null) {
+            logger.info("**** investment is null");
+            return 0;
+        }
+
+        if (investment.getUserId().intValue() == userId.intValue()){
+            logger.info("**** investment user == transfer user");
             return 0;
         }
 
@@ -418,6 +458,7 @@ public class LoanInvestServiceImpl implements LoanInvestService {
 
         Integer rows = transferMapper.updateTransfer(transferId, userId, f, fee, transferSeqno);
         if (rows <= 0){
+            logger.info("**** updateTransfer failed");
             return 0;
         }
 
@@ -444,6 +485,31 @@ public class LoanInvestServiceImpl implements LoanInvestService {
         } else {
             throw new Exception(" transferBmu "); // rollback
         }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public Integer cancelTransferRequest(Integer investId) throws  Exception{
+        LoanUserInvestment investment = productMapper.getUserInvestment(investId);
+        if (investment == null) {
+            return 0;
+        }
+
+        if (! "R".equalsIgnoreCase(investment.getTransferStatus()) &&
+            ! "U".equalsIgnoreCase(investment.getInvestStatus())){
+            return 0;
+        }
+
+        int rows = productMapper.cancelInvestmentTransferRequest(investId);
+        if (rows <= 0){
+            return 0;
+        }
+
+        transferMapper.cancelTransferRequest(investId);
+        if (rows <= 0){
+            throw new Exception(" cancel");
+        }
+        return 1;
     }
 
     @Override

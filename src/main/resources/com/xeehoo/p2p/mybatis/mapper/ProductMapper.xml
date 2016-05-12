@@ -112,20 +112,58 @@
          WHERE invest_id = #{investId}
     </update>
 
-    <!-- 修改债权转让用户 -->
+    <!-- 债权转让完成， 修改债权转让用户 -->
     <update id="updateUserInvestmentTransfer">
-        UPDATE t_loan_user_investment
-           SET user_id = #{userId},
-               invest_user_mobile = #{mobile},
-               transfer_status = 'C'
-        WHERE invest_id = #{investId}
+        UPDATE
+              t_loan_user_investment
+          SET
+              user_id = #{userId},
+              invest_user_mobile = #{mobile},
+              transfer_status = 'N'
+        WHERE
+              invest_id = #{investId}
+          AND
+              transfer_status = 'R'
+          AND
+              invest_status = 'U'
+    </update>
+
+    <!-- 债权转让申请 -->
+    <update id="updateUserInvestmentTransferStatus">
+        UPDATE
+            t_loan_user_investment
+           SET
+            transfer_status = 'R'
+        WHERE
+            invest_id = #{investId}
+          AND
+            invest_status = 'U'
+          AND
+            transfer_status = 'N'
+    </update>
+
+    <!-- 取消债权转让申请 -->
+    <update id="cancelInvestmentTransferRequest">
+        UPDATE
+            t_loan_user_investment
+          SET
+            transfer_status = 'N'
+        WHERE
+            invest_id = #{investId}
+          AND
+            invest_status = 'U'
+          AND
+            transfer_status = 'R'
     </update>
 
     <!-- 修改产品状态 -->
     <update id="updateProductStatus">
-        UPDATE t_loan_product
-        SET product_status = #{productStatus}
-        WHERE product_id = #{productId}
+        UPDATE
+            t_loan_product
+        SET
+            product_status = #{productStatus}
+        WHERE
+            product_id = #{productId}
     </update>
 
     <!-- 修改产品状态 -->
@@ -386,7 +424,8 @@
             invest_status,
             invest_rate,
             invest_start_date,
-            invest_closing_date
+            invest_closing_date,
+            transfer_status
         FROM
             t_loan_user_investment
         WHERE
